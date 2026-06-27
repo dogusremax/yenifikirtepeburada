@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yeni Fikirtepe | RE/MAX Doğuş – Fikirtepe Gayrimenkul Merkezi</title>
+<meta name="description" content="Yeni Fikirtepe'de teslim aldığınız dairenizin güncel satılık ve kiralık değerini ücretsiz öğrenin. RE/MAX Doğuş, Fikirtepe'nin gayrimenkul merkezi.">
+<meta name="robots" content="index, follow">
+<meta name="author" content="RE/MAX Doğuş">
+<link rel="canonical" href="https://yenifikirtepe.net/">
+<link rel="icon" type="image/png" href="favicon.png">
+<meta name="theme-color" content="#0a2a5e">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Yeni Fikirtepe">
+<meta property="og:locale" content="tr_TR">
+<meta property="og:title" content="Yeni Fikirtepe | RE/MAX Doğuş – Fikirtepe Gayrimenkul Merkezi">
+<meta property="og:description" content="Yeni Fikirtepe'de teslim aldığınız dairenizin güncel satılık ve kiralık değerini ücretsiz öğrenin. RE/MAX Doğuş, Fikirtepe'nin gayrimenkul merkezi.">
+<meta property="og:url" content="https://yenifikirtepe.net/">
+<meta property="og:image" content="https://yenifikirtepe.net/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Yeni Fikirtepe | RE/MAX Doğuş – Fikirtepe Gayrimenkul Merkezi">
+<meta name="twitter:description" content="Yeni Fikirtepe'de teslim aldığınız dairenizin güncel satılık ve kiralık değerini ücretsiz öğrenin. RE/MAX Doğuş, Fikirtepe'nin gayrimenkul merkezi.">
+<meta name="twitter:image" content="https://yenifikirtepe.net/og-image.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600&family=Archivo:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  @view-transition{navigation:auto}
+  ::view-transition-old(root),::view-transition-new(root){animation-duration:.28s}
+  body{animation:fadein .35s ease both}
+  @keyframes fadein{from{opacity:0}to{opacity:1}}
+
+  :root{
+    --blue:#0a2a5e;
+    --red:#e2231a;
+    --ink:#1a2230;
+    --gray:#6b7280;
+    --line:#e3e6ec;
+    --bg:#ffffff;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{
+    font-family:'DIN Neuzeit Grotesk','Archivo',sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    min-height:100vh;
+    position:relative;
+    overflow-x:hidden;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding:0 24px;
+    text-align:center;
+  }
+  .topnav{
+    width:calc(100% + 48px);
+    margin:0 -24px;
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    align-items:center;
+    gap:8px 30px;
+    padding:22px 24px;
+    background:var(--blue);
+    border-bottom:1px solid rgba(255,255,255,.12);
+    position:relative;z-index:2;
+  }
+  .topnav a{
+    text-decoration:none;
+    color:#fff;
+    font-size:.95rem;
+    font-weight:500;
+    letter-spacing:.01em;
+    position:relative;
+    padding:4px 0;
+    opacity:.88;
+    transition:.18s;
+  }
+  .topnav a::after{
+    content:'';position:absolute;left:0;bottom:-2px;width:0;height:2px;
+    background:var(--red);transition:.2s;
+  }
+  .topnav a:hover{opacity:1}
+  .topnav a:hover::after{width:100%}
+  .bg{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+  .bg .balloon{position:absolute;right:-70px;top:90px;width:420px;height:auto;opacity:.06;filter:saturate(.85);animation:float 9s ease-in-out infinite}
+  .bg .ghost{position:absolute;left:50%;bottom:5vh;transform:translateX(-50%);font-size:17vw;font-weight:700;letter-spacing:-.03em;white-space:nowrap;color:rgba(10,42,94,.06);user-select:none}
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-16px)}}
+  .content{
+    position:relative;z-index:1;
+    margin-top:14vh;
+    width:100%;
+    max-width:640px;
+  }
+  h1{
+    font-family:'DIN Neuzeit Grotesk','Archivo',sans-serif;
+    font-weight:600;
+    font-size:clamp(3.4rem,11vw,6rem);
+    color:var(--blue);
+    letter-spacing:-.01em;
+    line-height:1.05;
+    white-space:nowrap;
+  }
+  h1 .sqdot{
+    display:inline-block;
+    width:.14em;height:.14em;
+    background:var(--red);
+    border-radius:.02em;
+    margin-left:.05em;
+    vertical-align:baseline;
+  }
+  .subtitle{
+    font-weight:300;
+    font-size:clamp(.95rem,2.4vw,1.15rem);
+    color:var(--gray);
+    margin-top:16px;
+    letter-spacing:.01em;
+  }
+  .menu{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:16px;
+    margin-top:42px;
+  }
+  .card{
+    display:flex;
+    align-items:flex-start;
+    gap:14px;
+    text-decoration:none;
+    padding:22px 20px;
+    border-radius:16px;
+    border:1px solid var(--line);
+    background:rgba(255,255,255,.7);
+    backdrop-filter:blur(3px);
+    position:relative;
+    transition:transform .2s, box-shadow .2s, border-color .2s;
+  }
+  .card:hover{
+    transform:translateY(-4px);
+    box-shadow:0 18px 40px rgba(10,42,94,.14);
+    border-color:var(--blue);
+  }
+  .cic{
+    flex-shrink:0;
+    width:46px;height:46px;
+    border-radius:12px;
+    background:var(--blue);
+    color:#fff;
+    display:grid;place-items:center;
+    transition:background .2s;
+  }
+  .cic svg{width:24px;height:24px}
+  .card:hover .cic{background:var(--red)}
+  .ctxt{display:flex;flex-direction:column;gap:3px}
+  .ctxt b{color:var(--blue);font-size:1.02rem;font-weight:600;line-height:1.25}
+  .ctxt small{color:var(--gray);font-size:.82rem;font-weight:300;line-height:1.4}
+  .car{
+    position:absolute;top:18px;right:18px;
+    color:var(--blue);opacity:.4;
+    transition:transform .2s, opacity .2s;
+  }
+  .card:hover .car{transform:translateX(4px);opacity:1;color:var(--red)}
+  @media(max-width:560px){
+    .menu{grid-template-columns:1fr}
+  }
+
+  /* Mobil hamburger menü */
+  .navbar{position:relative}
+  .menu-toggle{display:none}
+  @media(max-width:760px){
+    .navbar{background:var(--blue);position:relative;z-index:20}
+    .menu-toggle{display:block;position:absolute;top:14px;right:18px;
+      width:44px;height:44px;border:none;background:transparent;cursor:pointer;z-index:40;padding:0}
+    .menu-toggle span{display:block;width:26px;height:3px;background:#fff;margin:5px auto;transition:.3s;border-radius:2px}
+    .menu-toggle.open span:nth-child(1){transform:translateY(8px) rotate(45deg)}
+    .menu-toggle.open span:nth-child(2){opacity:0}
+    .menu-toggle.open span:nth-child(3){transform:translateY(-8px) rotate(-45deg)}
+    /* kapalı bar: sadece logo alanı + hamburger; linkler gizli */
+    .navbar{min-height:64px}
+    .topnav{flex-direction:column;align-items:stretch;gap:0;max-height:0;overflow:hidden;
+      transition:max-height .35s ease;padding:0 24px}
+    .topnav.open{max-height:640px;padding-top:8px;padding-bottom:16px}
+    .topnav a{width:100%;padding:14px 2px;font-size:1.05rem;border-bottom:1px solid rgba(255,255,255,.12);opacity:1}
+    .topnav a:last-child{border-bottom:none}
+    .topnav a::after{display:none}
+  }
+
+</style>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZNHG94R2JK"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-ZNHG94R2JK');
+</script>
+</head>
+<body>
+  <div class="bg">
+    <img class="balloon" src="balloon.png" alt="">
+    <div class="ghost">Yeni Fikirtepe</div>
+  </div>
+    <div class="navbar">
+  <button class="menu-toggle" id="menuToggle" aria-label="Menü" onclick="this.classList.toggle('open');document.getElementById('mainNav').classList.toggle('open')">
+    <span></span><span></span><span></span>
+  </button>
+  <nav class="topnav" id="mainNav">
+    <a href="index.html" class="active">Anasayfa</a>
+    <a href="hakkimizda.html">Hakkımızda</a>
+    <a href="hizmetlerimiz.html">Hizmetlerimiz</a>
+    <a href="etaplar.html">Etaplar</a>
+    <a href="ekibimiz.html">Ekibimiz</a>
+    <a href="satis-sonrasi.html">Satış Sonrası Hizmetler</a>
+    <a href="kiralama-asamalari.html">Kiralama Aşamaları</a>
+    <a href="videolar.html">Videolar</a>
+    <a href="sorulariniz.html">Sorularınız</a>
+    <a href="sosyal-medya.html">Sosyal Medya Hesaplarımız</a>
+    <a href="iletisim.html">Bize Ulaşın</a>
+  </nav>
+  </div>
+  <div class="content">
+    <h1>Yeni Fikirtepe<span class="sqdot"></span></h1>
+    <p class="subtitle">Daireniz için değer öğrenin ya da size uygun daireyi bulalım.</p>
+    <nav class="menu">
+      <a href="satilik-deger.html" class="card">
+        <span class="cic">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V8l7-4 7 4v13"/><path d="M9 21v-6h6v6"/></svg>
+        </span>
+        <span class="ctxt"><b>Satılık değerini öğren</b><small>Dairenizin güncel satış değerini hesaplayalım</small></span>
+        <span class="car">→</span>
+      </a>
+      <a href="kiralik-deger.html" class="card">
+        <span class="cic">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V8l7-4 7 4v13"/><path d="M10 12h4"/><path d="M12 10v4"/></svg>
+        </span>
+        <span class="ctxt"><b>Kiralık değerini öğren</b><small>Dairenizin aylık kira değerini öğrenin</small></span>
+        <span class="car">→</span>
+      </a>
+      <a href="almak-istiyorum.html" class="card">
+        <span class="cic">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        </span>
+        <span class="ctxt"><b>Satılık daire arıyorum</b><small>Size uygun satılık daireyi bulalım</small></span>
+        <span class="car">→</span>
+      </a>
+      <a href="kiralamak-istiyorum.html" class="card">
+        <span class="cic">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5 12 3l9 6.5"/><path d="M5 21V10.5"/><path d="M19 21V10.5"/><path d="M9 21v-5a3 3 0 0 1 6 0v5"/></svg>
+        </span>
+        <span class="ctxt"><b>Kiralık daire arıyorum</b><small>Size uygun kiralık daireyi bulalım</small></span>
+        <span class="car">→</span>
+      </a>
+    </nav>
+  </div>
+  <!-- WhatsApp sabit buton -->
+  <a href="https://wa.me/905324724148" target="_blank" rel="noopener" aria-label="WhatsApp ile yazın"
+     style="position:fixed;right:22px;bottom:22px;z-index:9999;width:58px;height:58px;border-radius:50%;
+            background:#25D366;display:grid;place-items:center;box-shadow:0 6px 20px rgba(0,0,0,.25);
+            transition:transform .2s;text-decoration:none"
+     onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'">
+    <svg viewBox="0 0 24 24" width="32" height="32"><path fill="#fff" d="M12 2a10 10 0 0 0-8.5 15.3L2 22l4.8-1.5A10 10 0 1 0 12 2zm0 18a8 8 0 0 1-4.1-1.1l-.3-.2-2.8.9.9-2.7-.2-.3A8 8 0 1 1 12 20zm4.5-5.8c-.2-.1-1.4-.7-1.6-.8-.2-.1-.4-.1-.5.1l-.7.9c-.1.2-.3.2-.5.1a6.5 6.5 0 0 1-3.2-2.8c-.1-.2 0-.4.1-.5l.4-.5c.1-.1.1-.2.2-.4 0-.1 0-.3 0-.4l-.7-1.7c-.2-.4-.4-.4-.5-.4h-.5c-.2 0-.4.1-.6.3a2.7 2.7 0 0 0-.8 2c0 1.2.9 2.4 1 2.5.1.2 1.7 2.7 4.2 3.8 1.6.7 2.2.7 3 .6.5-.1 1.4-.6 1.6-1.1.2-.6.2-1 .1-1.1z"/></svg>
+  </a>
+  <script>
+    // mobilde bir linke tıklayınca menü kapansın
+    document.querySelectorAll('#mainNav a').forEach(function(a){
+      a.addEventListener('click', function(){
+        document.getElementById('mainNav').classList.remove('open');
+        document.getElementById('menuToggle').classList.remove('open');
+      });
+    });
+  </script>
+</body>
+</html>

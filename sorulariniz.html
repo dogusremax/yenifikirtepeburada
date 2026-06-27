@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sorularınız | Yeni Fikirtepe – RE/MAX Doğuş</title>
+<meta name="description" content="Yeni Fikirtepe ve Fikirtepe gayrimenkul hakkında en çok sorulan sorular: kentsel dönüşüm, teslim, tapu masrafları, emlak hizmet bedeli, değerleme ve kiralama süreçleri.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://yenifikirtepe.net/sorulariniz.html">
+<link rel="icon" type="image/png" href="favicon.png">
+<meta name="theme-color" content="#0a2a5e">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Yeni Fikirtepe">
+<meta property="og:locale" content="tr_TR">
+<meta property="og:title" content="Sorularınız | Yeni Fikirtepe – RE/MAX Doğuş">
+<meta property="og:description" content="Fikirtepe gayrimenkul hakkında en çok sorulan sorular ve yanıtları.">
+<meta property="og:url" content="https://yenifikirtepe.net/sorulariniz.html">
+<meta property="og:image" content="https://yenifikirtepe.net/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  @view-transition{navigation:auto}
+  ::view-transition-old(root),::view-transition-new(root){animation-duration:.28s}
+  body{animation:fadein .35s ease both}
+  @keyframes fadein{from{opacity:0}to{opacity:1}}
+  :root{--blue:#0a2a5e;--blue-mid:#143d82;--red:#e2231a;--ink:#0f1722;--gray:#5b6473;--line:#e6e9ef;--bg:#ffffff;--soft:#f5f7fb}
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:'DIN Neuzeit Grotesk','Archivo',sans-serif;color:var(--ink);background:var(--bg);line-height:1.7;-webkit-font-smoothing:antialiased;position:relative;overflow-x:hidden}
+  a{color:inherit}
+
+  .topnav{width:100%;display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:8px 30px;padding:22px 24px;background:var(--blue);border-bottom:1px solid rgba(255,255,255,.12);position:relative;z-index:2}
+  .topnav a{text-decoration:none;color:#fff;font-size:.95rem;font-weight:500;letter-spacing:.01em;position:relative;padding:4px 0;opacity:.88;transition:.18s}
+  .topnav a::after{content:'';position:absolute;left:0;bottom:-2px;width:0;height:2px;background:var(--red);transition:.2s}
+  .topnav a:hover{opacity:1} .topnav a:hover::after{width:100%}
+  .topnav a.active{opacity:1} .topnav a.active::after{width:100%}
+
+  .bg{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+  .bg .balloon{position:absolute;right:-70px;top:90px;width:420px;height:auto;opacity:.06;filter:saturate(.85);animation:float 9s ease-in-out infinite}
+  .bg .ghost{position:absolute;left:50%;bottom:5vh;transform:translateX(-50%);font-size:17vw;font-weight:700;letter-spacing:-.03em;white-space:nowrap;color:rgba(10,42,94,.06);user-select:none}
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-16px)}}
+
+  .wrap{max-width:840px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
+  .back{display:inline-flex;align-items:center;gap:8px;text-decoration:none;color:var(--gray);font-size:.92rem;font-weight:500;margin-top:30px}
+  .back:hover{color:var(--blue)}
+
+  .phead{text-align:left;padding:46px 0 10px}
+  .phead h1{font-size:clamp(2.2rem,5.4vw,3.4rem);color:var(--blue);font-weight:700;letter-spacing:-.02em;line-height:1.08}
+  .phead h1 .sq{display:inline-block;width:.13em;height:.13em;background:var(--red);border-radius:.02em;margin-left:.04em;vertical-align:baseline}
+  .phead .lead{margin:18px 0 0;color:var(--gray);font-size:1.1rem;font-weight:300;max-width:680px}
+
+  .grp{margin:30px 0}
+  .gtitle{font-size:1.15rem;color:var(--blue);font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:12px}
+  .gtitle::after{content:'';flex:1;height:1px;background:var(--line)}
+
+  .faq{border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.8);backdrop-filter:blur(2px);margin-bottom:12px;overflow:hidden;transition:.2s}
+  .faq[open]{border-color:rgba(10,42,94,.25);box-shadow:0 10px 28px rgba(10,42,94,.08)}
+  .faq summary{list-style:none;cursor:pointer;padding:20px 22px;font-size:1.04rem;font-weight:600;color:var(--ink);display:flex;justify-content:space-between;align-items:center;gap:16px}
+  .faq summary::-webkit-details-marker{display:none}
+  .faq[open] summary{color:var(--blue)}
+  .chev{flex-shrink:0;font-size:1.4rem;color:var(--red);transition:transform .25s;line-height:1}
+  .faq[open] .chev{transform:rotate(180deg)}
+  .ans{padding:0 22px 20px}
+  .ans p{color:#3a4453;font-weight:300;font-size:.98rem}
+
+  .cta{background:var(--blue);color:#fff;border-radius:18px;text-align:center;padding:44px 30px;margin:34px 0 60px}
+  .cta h2{font-size:clamp(1.4rem,2.8vw,1.9rem);font-weight:700;margin-bottom:10px}
+  .cta p{color:#bcc8de;font-weight:300;margin-bottom:24px}
+  .cta .btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+  .cta a{text-decoration:none;font-weight:600;padding:14px 28px;border-radius:10px;transition:.2s}
+  .cta .pri{background:#fff;color:var(--blue)} .cta .pri:hover{background:var(--red);color:#fff}
+  .cta .sec{border:1px solid rgba(255,255,255,.5);color:#fff} .cta .sec:hover{background:rgba(255,255,255,.12)}
+
+  /* Mobil hamburger menü */
+  .navbar{position:relative}
+  .menu-toggle{display:none}
+  @media(max-width:760px){
+    .navbar{background:var(--blue);position:relative;z-index:20}
+    .menu-toggle{display:block;position:absolute;top:14px;right:18px;
+      width:44px;height:44px;border:none;background:transparent;cursor:pointer;z-index:40;padding:0}
+    .menu-toggle span{display:block;width:26px;height:3px;background:#fff;margin:5px auto;transition:.3s;border-radius:2px}
+    .menu-toggle.open span:nth-child(1){transform:translateY(8px) rotate(45deg)}
+    .menu-toggle.open span:nth-child(2){opacity:0}
+    .menu-toggle.open span:nth-child(3){transform:translateY(-8px) rotate(-45deg)}
+    /* kapalı bar: sadece logo alanı + hamburger; linkler gizli */
+    .navbar{min-height:64px}
+    .topnav{flex-direction:column;align-items:stretch;gap:0;max-height:0;overflow:hidden;
+      transition:max-height .35s ease;padding:0 24px}
+    .topnav.open{max-height:640px;padding-top:8px;padding-bottom:16px}
+    .topnav a{width:100%;padding:14px 2px;font-size:1.05rem;border-bottom:1px solid rgba(255,255,255,.12);opacity:1}
+    .topnav a:last-child{border-bottom:none}
+    .topnav a::after{display:none}
+  }
+
+</style>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZNHG94R2JK"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-ZNHG94R2JK');
+</script>
+</head>
+<body>
+  <div class="bg">
+    <img class="balloon" src="balloon.png" alt="">
+    <div class="ghost">Yeni Fikirtepe</div>
+  </div>
+
+    <div class="navbar">
+  <button class="menu-toggle" id="menuToggle" aria-label="Menü" onclick="this.classList.toggle('open');document.getElementById('mainNav').classList.toggle('open')">
+    <span></span><span></span><span></span>
+  </button>
+  <nav class="topnav" id="mainNav">
+    <a href="index.html">Anasayfa</a>
+    <a href="hakkimizda.html">Hakkımızda</a>
+    <a href="hizmetlerimiz.html">Hizmetlerimiz</a>
+    <a href="etaplar.html">Etaplar</a>
+    <a href="ekibimiz.html">Ekibimiz</a>
+    <a href="satis-sonrasi.html">Satış Sonrası Hizmetler</a>
+    <a href="kiralama-asamalari.html">Kiralama Aşamaları</a>
+    <a href="videolar.html">Videolar</a>
+    <a href="sorulariniz.html" class="active">Sorularınız</a>
+    <a href="sosyal-medya.html">Sosyal Medya Hesaplarımız</a>
+    <a href="iletisim.html">Bize Ulaşın</a>
+  </nav>
+  </div>
+
+  <div class="wrap">
+    <a href="index.html" class="back">← Ana sayfa</a>
+
+    <div class="phead">
+      <h1>Sorularınız<span class="sq"></span></h1>
+      <p class="lead">Yeni Fikirtepe ve gayrimenkul süreçleri hakkında en çok merak edilen soruları sizin için derledik.</p>
+    </div>
+
+      <div class="grp">
+        <div class="gtitle">Kentsel Dönüşüm ve Teslim</div>
+        <details class="faq">
+          <summary>Yeni Fikirtepe kaç etaptan oluşuyor?<span class="chev">⌄</span></summary>
+          <div class="ans"><p>Yeni Fikirtepe, İstanbul'un en büyük kentsel dönüşüm projelerinden biri olup toplam 19 etapta hayata geçirilmektedir. Her etap farklı konut tipleri, ticari alanlar ve sosyal yaşam olanaklarıyla planlanmıştır. Etaplara ait konut sayıları ve daire tiplerini Etaplar sayfamızdan inceleyebilirsiniz.</p></div>
+        </details>
+        <details class="faq">
+          <summary>Teslim aldığım dairenin güncel değerini nasıl öğrenebilirim?<span class="chev">⌄</span></summary>
+          <div class="ans"><p>Sitemizdeki "Satılık değerini öğrenin" veya "Kiralık değerini öğrenin" formunu doldurmanız yeterli. Etap, daire tipi ve brüt metrekare bilgilerinizle birlikte uzman danışmanımız bölgedeki güncel emsal verileri analiz ederek size özel bir değerleme raporu hazırlar.</p></div>
+        </details>
+        <details class="faq">
+          <summary>Kentsel dönüşüm kapsamındaki sıfır konutlarda KDV avantajı var mı?<span class="chev">⌄</span></summary>
+          <div class="ans"><p>Kentsel dönüşüm kapsamında inşa edilen bir konutu "ilk el" olarak satın alıyorsanız, bazı durumlarda %1 KDV avantajından yararlanabilirsiniz. Bu durum konutun ve satışın özelliklerine göre değişiklik gösterir; işlem öncesinde mutlaka uzman danışmanımıza ve mali müşavirinize danışmanızı öneririz.</p></div>
+        </details>
+        <details class="faq">
+          <summary>Daha önce müteahhitle yaptığım sözleşmeler ne olacak?<span class="chev">⌄</span></summary>
+          <div class="ans"><p>Bu konu hukuki süreçlere bağlı olup parsel ve sözleşme bazında değişkenlik gösterir. RE/MAX Doğuş Yeni Fikirtepe olarak, hukuk departmanımız ve çözüm ortaklarımız aracılığıyla sizi doğru bilgiye ve doğru uzmanlara yönlendiriyoruz. Detaylı değerlendirme için bizimle iletişime geçebilirsiniz.</p></div>
+        </details>
+      </div>
+      <div class="grp">
+        <div class="gtitle">Satış ve Alım Süreci</div>
+        <details class="faq">
+          <summary>Emlak danışmanı hizmet bedeli ne kadar?<span class="chev">⌄</span></summary>
+          <div class="ans"><p>Türkiye'de emlak danışmanlığı hizmet bedeli genel olarak satış bedelinin %4'ü + KDV şeklinde uygulanır ve çoğunlukla %2 alıcı, %2 satıcı olacak biçimde paylaşılır. Güncel oranlar ve size özel koşullar için danışmanımızla görüşebilirsiniz.</p></div>
+        </details>
+        <details class="faq">
+          <summary>Ev alırken/satarken tapu masrafı ne kadar ve kime aittir?<span class="chev">⌄</span></summary>
+          <div class="ans"><p>Tapu devir harcı yasal olarak satış bedelinin %4'ü oranındadır ve mevzuata göre alıcı ile satıcı arasında yarı yarıya paylaşılması gerekir. Uygulamada taraflar kendi aralarında farklı bir anlaşma yapabilir; ancak bu anlaşma yalnızca tarafları bağlar, resmi oranı değiştirmez. Ayrıca Döner Sermaye Hizmet Bedeli gibi ek kalemler de bulunur. Emlak ve konut devirlerinde süreç farklıdır; bu konuda danışmanlarımıza ulaşırsanız süreci ve detayları şeffaf bir şekilde öğrenebilirsiniz.</p></div>
+        </details>
+        <details class="faq">
+          <summary>Satış bedelini düşük göstermek riskli mi?<span class="chev">⌄</span></summary>
+          <div class="ans"><p>Evet. Satış bedelinin belediye rayiç değerinin altında veya gerçek değerinden düşük gösterilmesi ciddi vergi cezası riski doğurur. Gelir İdaresi'nin dijital denetimleri nedeniyle bu tür beyanlar yaptırımlara yol açabilir. Doğru ve şeffaf beyan her zaman en güvenli yoldur. Bu konuda ofisimizin hukuk departmanına ve vergi uzmanlarına istediğiniz zaman ulaşabilirsiniz.</p></div>
+        </details>
+        <details class="faq">
+          <summary>Gayrimenkulümü satışa çıkarmadan önce ne yapmalıyım?<span class="chev">⌄</span></summary>
+          <div class="ans"><p>İlk adım doğru fiyatı belirlemektir. Ücretsiz değerleme talebinde bulunarak bölgedeki güncel emsallere dayalı bir fiyat analizine ulaşabilirsiniz. Ardından profesyonel fotoğraf, ilan çalışması ve dijital tanıtımla gayrimenkulünüz doğru alıcıyla en kısa sürede buluşturulur.</p></div>
+        </details>
+      </div>
+      <div class="grp">
+        <div class="gtitle">Kiralama ve Genel</div>
+        <details class="faq">
+          <summary>Kiralamada hizmet bedeli ne kadar?<span class="chev">⌄</span></summary>
+          <div class="ans"><p>Ev kiralama işlemlerinde emlak danışmanlığı hizmet bedeli genellikle bir aylık kira bedeli tutarındadır ve çoğunlukla kiracı tarafından ödenir. Farklı bir anlaşma yapılması durumunda bu, sözleşmede açıkça belirtilir.</p></div>
+        </details>
+        <details class="faq">
+          <summary>Kiralama süreci ne kadar sürer ve nasıl ilerler?<span class="chev">⌄</span></summary>
+          <div class="ans"><p>Süreç; ücretsiz kira değerlemesi, pazarlama, profesyonel tanıtım, potansiyel kiracı görüşmeleri, kiracı değerlendirmesi, teklif-müzakere, sözleşme ve güvenli teslim adımlarından oluşur. Kiralama Aşamaları sayfamızda tüm adımları detaylıca bulabilirsiniz.</p></div>
+        </details>
+        <details class="faq">
+          <summary>Değerleme hizmeti ücretli mi?<span class="chev">⌄</span></summary>
+          <div class="ans"><p>Hayır. RE/MAX Doğuş Yeni Fikirtepe olarak gayrimenkul sahiplerine satılık ve kiralık değerleme hizmetini ücretsiz sunuyoruz. Bölgesel veriler ve emsal analizleri doğrultusunda mülkünüzün güncel piyasa değerini belirliyoruz.</p></div>
+        </details>
+        <details class="faq">
+          <summary>Tapu devrinden sonra da destek alabilir miyim?<span class="chev">⌄</span></summary>
+          <div class="ans"><p>Kesinlikle. Bizim için hizmet tapu devrinde veya anahtar tesliminde sona ermez. Tapu işlemleri, portföy yönetimi, hukuki süreçler ve yeniden satış analizleri gibi konularda satış sonrasında da yanınızdayız. Detaylar için Satış Sonrası Hizmetler sayfamıza göz atabilirsiniz.</p></div>
+        </details>
+        <details class="faq">
+          <summary>Ofisinize nasıl ulaşabilirim?<span class="chev">⌄</span></summary>
+          <div class="ans"><p>Ofisimiz Dumlupınar Mahallesi, Özen Sk. (Nuhoğlu Yenitepe Sitesi 2. Etap), Kadıköy / İstanbul adresindedir. Hafta içi 09:00–18:30, hafta sonu 10:00–17:00 saatleri arasında açığız. Adres, telefon ve harita için Bize Ulaşın sayfamızı ziyaret edebilirsiniz.</p></div>
+        </details>
+      </div>
+
+    <div class="cta">
+      <h2>Sorunuzun cevabını bulamadınız mı?</h2>
+      <p>Uzman danışmanlarımız tüm sorularınızı yanıtlamaktan memnuniyet duyar.</p>
+      <div class="btns">
+        <a href="iletisim.html" class="pri">Bize ulaşın</a>
+        <a href="satilik-deger.html" class="sec">Değer öğren</a>
+      </div>
+    </div>
+  </div>
+  <!-- WhatsApp sabit buton -->
+  <a href="https://wa.me/905324724148" target="_blank" rel="noopener" aria-label="WhatsApp ile yazın"
+     style="position:fixed;right:22px;bottom:22px;z-index:9999;width:58px;height:58px;border-radius:50%;
+            background:#25D366;display:grid;place-items:center;box-shadow:0 6px 20px rgba(0,0,0,.25);
+            transition:transform .2s;text-decoration:none"
+     onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'">
+    <svg viewBox="0 0 24 24" width="32" height="32"><path fill="#fff" d="M12 2a10 10 0 0 0-8.5 15.3L2 22l4.8-1.5A10 10 0 1 0 12 2zm0 18a8 8 0 0 1-4.1-1.1l-.3-.2-2.8.9.9-2.7-.2-.3A8 8 0 1 1 12 20zm4.5-5.8c-.2-.1-1.4-.7-1.6-.8-.2-.1-.4-.1-.5.1l-.7.9c-.1.2-.3.2-.5.1a6.5 6.5 0 0 1-3.2-2.8c-.1-.2 0-.4.1-.5l.4-.5c.1-.1.1-.2.2-.4 0-.1 0-.3 0-.4l-.7-1.7c-.2-.4-.4-.4-.5-.4h-.5c-.2 0-.4.1-.6.3a2.7 2.7 0 0 0-.8 2c0 1.2.9 2.4 1 2.5.1.2 1.7 2.7 4.2 3.8 1.6.7 2.2.7 3 .6.5-.1 1.4-.6 1.6-1.1.2-.6.2-1 .1-1.1z"/></svg>
+  </a>
+  <script>
+    // mobilde bir linke tıklayınca menü kapansın
+    document.querySelectorAll('#mainNav a').forEach(function(a){
+      a.addEventListener('click', function(){
+        document.getElementById('mainNav').classList.remove('open');
+        document.getElementById('menuToggle').classList.remove('open');
+      });
+    });
+  </script>
+</body>
+</html>
