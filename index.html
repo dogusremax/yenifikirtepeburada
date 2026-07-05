@@ -167,6 +167,37 @@ h1 .sqdot{display:inline-block;width:.14em;height:.14em;background:var(--red-sof
   .ctxt b{white-space:normal;font-size:.88rem}
 }
 
+/* ---------- nöbetçi danışman kartı ---------- */
+.duty{position:fixed;left:18px;bottom:18px;z-index:9998;width:300px;max-width:calc(100vw - 110px);
+  background:rgba(8,20,45,.92);backdrop-filter:blur(14px);
+  border:1px solid var(--line);border-radius:18px;padding:16px;
+  box-shadow:0 20px 50px rgba(0,0,0,.5);text-align:left;
+  transform:translateY(140%);opacity:0;
+  transition:transform .6s cubic-bezier(.2,.8,.25,1),opacity .5s}
+.duty.show{transform:translateY(0);opacity:1}
+.duty .tag{font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--red-soft)}
+.duty .row{display:flex;align-items:center;gap:12px;margin-top:10px}
+.duty .avatar{width:56px;height:56px;border-radius:50%;flex:none;
+  background:linear-gradient(135deg,#1C4488,#0a2a5e);border:2px solid var(--red-soft);
+  display:grid;place-items:center;font-weight:700;font-size:1.05rem;color:#fff;
+  overflow:hidden;position:relative}
+.duty .avatar img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top}
+.duty .who b{display:block;font-size:1rem;color:#fff;line-height:1.2}
+.duty .who small{color:rgba(255,255,255,.6);font-size:.78rem;font-weight:300}
+.duty .acts{display:flex;gap:8px;margin-top:14px}
+.duty .acts a{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;
+  padding:10px 8px;border-radius:10px;font-size:.85rem;font-weight:600;text-decoration:none;transition:.2s}
+.duty .call{background:var(--red);color:#fff}
+.duty .call:hover{background:#c11c14}
+.duty .wapp{background:#1faa53;color:#fff}
+.duty .wapp:hover{background:#178f45}
+.duty .close{position:absolute;top:8px;right:10px;background:none;border:none;color:rgba(255,255,255,.5);
+  font-size:1.2rem;cursor:pointer;line-height:1;padding:4px}
+.duty .close:hover{color:#fff}
+@media(max-width:760px){
+  .duty{left:12px;bottom:12px;width:264px;padding:14px}
+}
+
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none!important;transition:none!important}
   .bg video{display:none}
@@ -238,6 +269,19 @@ h1 .sqdot{display:inline-block;width:.14em;height:.14em;background:var(--red-sof
       </a>
     </nav>
   </div>
+  <!-- Nöbetçi danışman kartı -->
+  <aside class="duty" id="dutyCard" aria-label="Günün nöbetçi danışmanı">
+    <button class="close" id="dutyClose" aria-label="Kapat">×</button>
+    <span class="tag">Bugünün Nöbetçi Danışmanı</span>
+    <div class="row">
+      <div class="avatar" id="dutyAvatar"></div>
+      <div class="who"><b id="dutyName"></b><small>RE/MAX Doğuş Gayrimenkul Danışmanı</small></div>
+    </div>
+    <div class="acts">
+      <a class="call" href="tel:+905324724148">📞 Hemen Ara</a>
+      <a class="wapp" id="dutyWa" href="#" target="_blank" rel="noopener">WhatsApp</a>
+    </div>
+  </aside>
   <!-- WhatsApp sabit buton -->
   <a href="https://wa.me/905324724148" target="_blank" rel="noopener" aria-label="WhatsApp ile yazın"
      style="position:fixed;right:22px;bottom:22px;z-index:9999;width:58px;height:58px;border-radius:50%;
@@ -255,6 +299,51 @@ h1 .sqdot{display:inline-block;width:.14em;height:.14em;background:var(--red-sof
       kick();
       document.addEventListener('touchstart', kick, {once:true, passive:true});
       document.addEventListener('click', kick, {once:true});
+    })();
+    // ---- nöbetçi danışman rotasyonu (referans: 6 Temmuz 2026 = Gizem Gök)
+    (function(){
+      var rota = [
+        {n:"Özlem Varol",     p:"1ZcDqNhYVBJlARSUk46APolmWsyZLMexe"},
+        {n:"Ayşegül Alpay",   p:"1OWki4Z752FukK9Yk2io9R4zVwdhovd8q"},
+        {n:"Ayşegül Aras",    p:"1cQeMhl60upaKl-7Ssrw-TfKCdor97M0q"},
+        {n:"Derya Öztürk",    p:"1sWcPmlDYj0Tz7HYuh6u_TNKTXY9H6AeQ"},
+        {n:"Gamze Yetkin",    p:"1qQjf0VhmCwLywOD9yBsMguPlCMt7wJr9"},
+        {n:"Gizem Gök",       p:"1ppuPVDhFcBZyY4QDBMHgL7acTy6SAQdR"},
+        {n:"İrem Aleyna Tetik",p:"1K6kJuM3AnValMiy41pLuqN66WQmDXLjT"},
+        {n:"Orhan Özazman",   p:"1JNN6eHt1Vy4YR-_taSkZxSQ7jrhDaxge"},
+        {n:"Evşen Özazman",   p:"1-J0do4DhzN_AGC0PU1hi-fu-YPIvr9AE"}
+      ];
+      var refDate = new Date(2026,6,6);      // 6 Temmuz 2026
+      var refIndex = 5;                       // Gizem Gök
+      var today = new Date();
+      var days = Math.floor((today - refDate) / 86400000);
+      var idx = ((refIndex + days) % rota.length + rota.length) % rota.length;
+      var kisi = rota[idx];
+      var name = kisi.n;
+      var initials = name.split(' ').map(function(p){return p.charAt(0)}).join('').slice(0,2);
+      document.getElementById('dutyName').textContent = name;
+      var av = document.getElementById('dutyAvatar');
+      av.textContent = initials;
+      if(kisi.p){
+        var foto = new Image();
+        foto.onload = function(){ av.appendChild(foto); };
+        foto.src = 'https://drive.google.com/thumbnail?id=' + kisi.p + '&sz=w240';
+        foto.alt = name;
+      }
+      document.getElementById('dutyWa').href = 'https://wa.me/905324724148?text=' +
+        encodeURIComponent('Merhaba, nöbetçi danışman ' + name + ' ile görüşmek istiyorum.');
+
+      var card = document.getElementById('dutyCard');
+      var key = 'dutyDismiss-' + today.toDateString();
+      var dismissed = false;
+      try{ dismissed = localStorage.getItem(key) === '1'; }catch(e){}
+      if(!dismissed){
+        setTimeout(function(){ card.classList.add('show'); }, 2600);
+      }
+      document.getElementById('dutyClose').addEventListener('click', function(){
+        card.classList.remove('show');
+        try{ localStorage.setItem(key,'1'); }catch(e){}
+      });
     })();
     document.querySelectorAll('#mainNav a').forEach(function(a){
       a.addEventListener('click', function(){
