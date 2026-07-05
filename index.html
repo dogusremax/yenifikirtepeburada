@@ -57,7 +57,7 @@
   .bg{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
   .bg video{width:100%;height:100%;object-fit:cover;object-position:center 62%}
   .bg::after{content:"";position:absolute;inset:0;
-    background:linear-gradient(180deg,rgba(4,11,28,.72) 0%,rgba(4,11,28,.42) 34%,rgba(4,11,28,.36) 60%,rgba(4,11,28,.88) 100%)}
+    background:linear-gradient(180deg,rgba(4,11,28,.72) 0%,rgba(4,11,28,.42) 34%,rgba(4,11,28,.30) 58%,rgba(4,11,28,.92) 100%)}
   .bg .balloon{position:absolute;right:4%;top:10%;width:120px;height:auto;animation:float 10s ease-in-out infinite;filter:drop-shadow(0 12px 26px rgba(0,0,0,.4))}
   @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-16px)}}
 
@@ -79,7 +79,8 @@
   .topnav a:hover{opacity:1;color:var(--red-soft)}
   .topnav a:hover::after{width:100%}
 
-  .content{position:relative;z-index:1;margin-top:11vh;width:100%;max-width:660px;padding-bottom:60px}
+  .content{position:relative;z-index:1;width:100%;max-width:1040px;min-height:calc(100svh - 96px);display:flex;flex-direction:column;align-items:center;padding:9vh 0 96px}
+.content .spacer{flex:1}
   h1{
     font-weight:700;
     font-size:clamp(3.2rem,10.5vw,5.6rem);
@@ -89,31 +90,34 @@
   }
   h1 .sqdot{display:inline-block;width:.14em;height:.14em;background:var(--red-soft);border-radius:.02em;margin-left:.05em;vertical-align:baseline}
   .subtitle{font-weight:300;font-size:clamp(.95rem,2.4vw,1.15rem);color:rgba(255,255,255,.82);margin-top:16px;letter-spacing:.01em;text-shadow:0 2px 14px rgba(0,0,0,.5)}
-  .menu{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:42px}
+  .menu{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;width:100%}
   .card{
-    display:flex;align-items:flex-start;gap:14px;text-decoration:none;
-    padding:22px 20px;border-radius:16px;
+    display:flex;align-items:center;gap:12px;text-decoration:none;
+    padding:13px 22px 13px 14px;border-radius:999px;
     border:1px solid var(--line);
-    background:rgba(8,20,45,.55);
-    backdrop-filter:blur(8px);
+    background:rgba(6,16,38,.55);
+    backdrop-filter:blur(10px);
     position:relative;text-align:left;
     transition:transform .2s, box-shadow .2s, border-color .2s, background .2s;
   }
   .card:hover{
-    transform:translateY(-4px);
-    box-shadow:0 18px 40px rgba(0,0,0,.4);
+    transform:translateY(-3px);
+    box-shadow:0 14px 34px rgba(0,0,0,.45);
     border-color:var(--red-soft);
-    background:rgba(10,26,58,.72);
+    background:rgba(10,26,58,.78);
   }
-  .cic{flex-shrink:0;width:46px;height:46px;border-radius:12px;background:rgba(255,255,255,.10);border:1px solid var(--line);color:#fff;display:grid;place-items:center;transition:background .2s,border-color .2s}
-  .cic svg{width:24px;height:24px}
+  .cic{flex-shrink:0;width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.10);border:1px solid var(--line);color:#fff;display:grid;place-items:center;transition:background .2s,border-color .2s}
+  .cic svg{width:20px;height:20px}
   .card:hover .cic{background:var(--red);border-color:var(--red)}
-  .ctxt{display:flex;flex-direction:column;gap:3px}
-  .ctxt b{color:#fff;font-size:1.02rem;font-weight:600;line-height:1.25}
-  .ctxt small{color:rgba(255,255,255,.62);font-size:.82rem;font-weight:300;line-height:1.4}
-  .car{position:absolute;top:18px;right:18px;color:#fff;opacity:.35;transition:transform .2s,opacity .2s}
-  .card:hover .car{transform:translateX(4px);opacity:1;color:var(--red-soft)}
-  @media(max-width:560px){.menu{grid-template-columns:1fr}}
+  .ctxt{display:flex;flex-direction:column}
+  .ctxt b{color:#fff;font-size:.95rem;font-weight:600;line-height:1.2;white-space:nowrap}
+  .ctxt small{display:none}
+  .car{display:none}
+  @media(max-width:760px){
+    .menu{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .card{padding:12px 14px;border-radius:14px}
+    .ctxt b{white-space:normal;font-size:.88rem}
+  }
 
   /* Mobil hamburger menü */
   .navbar{position:relative;width:100%}
@@ -179,6 +183,7 @@
   <div class="content">
     <h1>Yeni Fikirtepe<span class="sqdot"></span></h1>
     <p class="subtitle">Daireniz için değer öğrenin ya da size uygun daireyi bulalım.</p>
+    <div class="spacer"></div>
     <nav class="menu">
       <a href="satilik-deger.html" class="card">
         <span class="cic">
