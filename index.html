@@ -338,15 +338,9 @@ h1 .sqdot{display:inline-block;width:.14em;height:.14em;background:var(--red-sof
         encodeURIComponent('Merhaba, nöbetçi danışman ' + name + ' ile görüşmek istiyorum.');
 
       var card = document.getElementById('dutyCard');
-      var key = 'dutyDismiss-' + today.toDateString();
-      var dismissed = false;
-      try{ dismissed = localStorage.getItem(key) === '1'; }catch(e){}
-      if(!dismissed){
-        setTimeout(function(){ card.classList.add('show'); }, 2600);
-      }
+      setTimeout(function(){ card.classList.add('show'); }, 2600);
       document.getElementById('dutyClose').addEventListener('click', function(){
         card.classList.remove('show');
-        try{ localStorage.setItem(key,'1'); }catch(e){}
       });
     })();
     document.querySelectorAll('#mainNav a').forEach(function(a){
