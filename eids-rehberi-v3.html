@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EİDS & Sosyal Medya İlan Rehberi | Yeni Fikirtepe – RE/MAX Doğuş</title>
+<meta name="description" content="Emlakçılar için sosyal medya ilan düzenlemeleri: EİDS yetki doğrulaması, neyin serbest neyin yasak olduğu, cezalar ve güvenli içerik stratejisi. RE/MAX Doğuş uyum rehberi.">
+<meta name="robots" content="index, follow">
+<meta name="author" content="RE/MAX Doğuş">
+<link rel="canonical" href="https://yenifikirtepeburada.com/eids-rehberi.html">
+<link rel="icon" type="image/png" href="favicon.png">
+<meta name="theme-color" content="#0a2a5e">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Yeni Fikirtepe">
+<meta property="og:locale" content="tr_TR">
+<meta property="og:title" content="EİDS & Sosyal Medya İlan Rehberi | Yeni Fikirtepe – RE/MAX Doğuş">
+<meta property="og:description" content="Emlakçılar için sosyal medya ilan düzenlemeleri, EİDS yetki doğrulaması, cezalar ve güvenli içerik stratejisi.">
+<meta property="og:url" content="https://yenifikirtepeburada.com/eids-rehberi.html">
+<meta property="og:image" content="https://yenifikirtepeburada.com/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="EİDS & Sosyal Medya İlan Rehberi | Yeni Fikirtepe">
+<meta name="twitter:description" content="Emlakçılar için sosyal medya ilan düzenlemeleri, EİDS yetki doğrulaması, cezalar ve güvenli içerik stratejisi.">
+<meta name="twitter:image" content="https://yenifikirtepeburada.com/og-image.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  @view-transition{navigation:auto}
+  ::view-transition-old(root),::view-transition-new(root){animation-duration:.28s}
+  body{animation:fadein .35s ease both}
+  @keyframes fadein{from{opacity:0}to{opacity:1}}
+
+  :root{
+    --blue:#0a2a5e; --blue-mid:#143d82; --red:#e2231a;
+    --ink:#0f1722; --gray:#5b6473; --line:#e6e9ef; --bg:#ffffff; --soft:#f5f7fb;
+    --green:#1f7a4d; --green-soft:#eef6f0; --green-line:#cfe6d6;
+    --red-soft:#fdeeed; --red-line:#f6cfcc;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'DIN Neuzeit Grotesk','Archivo',sans-serif;
+    color:var(--ink);background:var(--bg);line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit}
+
+  /* NAV (ana sayfayla aynı) */
+  .topnav{
+    width:100%;display:flex;flex-wrap:wrap;justify-content:center;align-items:center;
+    gap:8px 30px;padding:22px 24px;background:var(--blue);
+    border-bottom:1px solid rgba(255,255,255,.12);
+  }
+  .topnav a{
+    text-decoration:none;color:#fff;font-size:.95rem;font-weight:500;letter-spacing:.01em;
+    position:relative;padding:4px 0;opacity:.88;transition:.18s;
+  }
+  .topnav a::after{content:'';position:absolute;left:0;bottom:-2px;width:0;height:2px;background:var(--red);transition:.2s}
+  .topnav a:hover{opacity:1}
+  .topnav a:hover::after{width:100%}
+  .topnav a.active{opacity:1}
+  .topnav a.active::after{width:100%}
+
+  .wrap{max-width:920px;margin:0 auto;padding:0 24px}
+  .back{display:inline-flex;align-items:center;gap:8px;text-decoration:none;color:var(--gray);font-size:.92rem;font-weight:500;margin-top:30px}
+  .back:hover{color:var(--blue)}
+
+  /* HERO */
+  .phead{text-align:left;padding:46px 0 10px}
+  .phead .kicker{display:inline-flex;align-items:center;gap:10px;font-size:.76rem;letter-spacing:.26em;text-transform:uppercase;color:var(--red);font-weight:600;margin-bottom:18px}
+  .phead .kicker::before,.phead .kicker::after{content:'';width:24px;height:1px;background:var(--red);opacity:.5}
+  .phead h1{font-size:clamp(2.2rem,5.4vw,3.3rem);color:var(--blue);font-weight:700;letter-spacing:-.02em;line-height:1.06}
+  .phead h1 .sq{display:inline-block;width:.13em;height:.13em;background:var(--red);border-radius:.02em;margin-left:.04em;vertical-align:baseline}
+  .phead .lead{margin:18px 0 0;color:var(--gray);font-size:1.1rem;font-weight:300}
+
+  section{padding:38px 0}
+  .sec-kicker{font-size:.74rem;letter-spacing:.22em;text-transform:uppercase;color:var(--red);font-weight:600;margin-bottom:10px}
+  .sec-h{font-size:clamp(1.5rem,3.2vw,2rem);color:var(--blue);font-weight:700;letter-spacing:-.01em;margin-bottom:6px}
+  .sec-sub{color:var(--gray);font-size:1.02rem;font-weight:300;max-width:64ch;margin-bottom:26px}
+
+  /* durum rozeti */
+  .badge{display:inline-flex;align-items:center;gap:9px;background:var(--red-soft);border:1px solid var(--red-line);color:#a5130b;font-weight:600;font-size:.8rem;letter-spacing:.03em;padding:7px 14px;border-radius:999px;margin-top:8px}
+  .badge .dot{width:7px;height:7px;border-radius:50%;background:var(--red);display:inline-block}
+
+  /* istatistik kartları */
+  .gstats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:26px}
+  .gstat{background:#fff;border:1px solid var(--line);border-radius:14px;padding:22px}
+  .gstat .num{font-size:1.7rem;font-weight:700;color:var(--blue);line-height:1.05;letter-spacing:-.01em}
+  .gstat.red .num{color:var(--red)}
+  .gstat.solid{background:var(--blue);border-color:var(--blue)}
+  .gstat.solid .num{color:#fff;font-size:1.35rem}
+  .gstat.solid .lbl{color:#c3cee1}
+  .gstat .lbl{font-size:.86rem;color:var(--gray);margin-top:7px;line-height:1.45}
+  .gstat .lbl span{color:#9aa3ae}
+
+  /* callout */
+  .callout{margin-top:24px;background:var(--soft);border:1px solid var(--line);border-left:4px solid var(--blue);border-radius:12px;padding:18px 20px;display:flex;gap:14px;align-items:flex-start}
+  .callout .ar{color:var(--blue);font-weight:700;font-size:1.15rem;line-height:1.2}
+  .callout p{margin:0;font-size:1rem;color:#2c3543}
+
+  /* araç */
+  .tool{background:var(--blue);border-radius:18px;padding:34px 30px;margin-top:8px}
+  .tool .sec-kicker{color:#f2a9a2}
+  .tool .sec-h{color:#fff}
+  .tool .sec-sub{color:#aeb9d0}
+  .toolcard{background:#fff;border-radius:16px;padding:24px}
+  .qrow{display:flex;gap:12px;align-items:flex-start}
+  .qrow + .qrow{margin-top:20px;padding-top:20px;border-top:1px dashed var(--line)}
+  .qnum{flex:0 0 auto;width:26px;height:26px;border-radius:50%;background:var(--blue);color:#fff;font-weight:700;font-size:.82rem;display:flex;align-items:center;justify-content:center}
+  .qbody{flex:1 1 auto}
+  .qtitle{font-weight:700;font-size:1.05rem;color:var(--blue)}
+  .opts{display:flex;gap:12px;flex-wrap:wrap;margin-top:13px}
+  .opt{flex:1 1 220px;text-align:left;border:1.5px solid var(--line);background:var(--soft);border-radius:12px;padding:13px 15px;cursor:pointer;font-size:.92rem;font-weight:500;color:#26333e;transition:.15s;display:flex;justify-content:space-between;align-items:center;gap:8px;font-family:inherit}
+  .opt:hover{border-color:var(--blue)}
+  .opt.sel{border-color:var(--blue);background:#eef2f9}
+  .opt .pin{color:var(--blue);font-weight:800;opacity:0}
+  .opt.sel .pin{opacity:1}
+  .hidden{display:none}
+  .verdict{margin-top:22px;border:1.5px solid var(--line);border-radius:14px;padding:20px 22px}
+  .verdict .vtop{display:flex;align-items:center;gap:12px}
+  .verdict .vic{width:34px;height:34px;border-radius:50%;color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:800;flex:0 0 auto}
+  .verdict .vlabel{font-weight:800;font-size:.72rem;letter-spacing:.12em}
+  .verdict .vtitle{font-weight:700;font-size:1.1rem;color:var(--blue);margin-top:1px}
+  .verdict p{margin:12px 0 0;font-size:.94rem;color:#3a4855}
+  .reset{margin-top:15px;border:1px solid var(--line);background:#fff;color:var(--gray);font-weight:600;font-size:.83rem;padding:8px 14px;border-radius:999px;cursor:pointer;font-family:inherit}
+  .reset:hover{border-color:var(--blue);color:var(--blue)}
+
+  /* izin/yasak */
+  .yn{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+  .ync{background:#fff;border-radius:16px;overflow:hidden}
+  .ync.ok{border:1px solid var(--green-line)}
+  .ync.no{border:1px solid var(--red-line)}
+  .ynh{padding:15px 22px;display:flex;align-items:center;gap:10px;font-weight:700;font-size:1rem;letter-spacing:.02em}
+  .ync.ok .ynh{background:var(--green-soft);border-bottom:1px solid var(--green-line);color:#155e3a}
+  .ync.no .ynh{background:var(--red-soft);border-bottom:1px solid var(--red-line);color:#a5130b}
+  .ynh .cir{width:25px;height:25px;border-radius:50%;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.9rem}
+  .ync.ok .cir{background:var(--green)}
+  .ync.no .cir{background:var(--red)}
+  .ync ul{list-style:none;margin:0;padding:6px 22px 18px}
+  .ync li{padding:11px 0;font-size:.94rem;line-height:1.55;color:#33414d;border-bottom:1px solid #f0f1f4}
+  .ync li:last-child{border-bottom:none}
+  .notebox{margin-top:18px;font-size:.86rem;color:#8a6d1f;line-height:1.55;background:#fbf4e0;border:1px solid #ecdcae;border-radius:10px;padding:12px 16px}
+
+  /* kart grid */
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+  .card{border:1px solid var(--line);border-radius:14px;padding:20px;background:#fff}
+  .card .ct{font-weight:700;font-size:1.05rem;color:var(--blue);margin-bottom:6px}
+  .card .cn{font-size:.9rem;color:var(--gray);margin-bottom:8px;letter-spacing:.03em;text-transform:uppercase;font-weight:600}
+  .card p{font-size:.92rem;color:#3a4855;line-height:1.6}
+  .card.num40{position:relative}
+  .card.num40 .big{font-size:2.4rem;font-weight:800;color:#dfe4ee;line-height:1}
+  .card.dark{background:var(--blue);border-color:var(--blue)}
+  .card.dark .ct{color:#fff}
+  .card.dark .big{color:#3d5480}
+  .card.dark p{color:#c3cee1}
+  .card.green{background:var(--green-soft);border-color:var(--green-line)}
+  .card.green .ct{color:#155e3a}
+  .card.redc{background:var(--red-soft);border-color:var(--red-line)}
+  .card.redc .ct{color:#a5130b}
+
+  /* checklist */
+  .checklist{background:#fff;border:1px solid var(--line);border-radius:16px;padding:8px 8px;max-width:760px}
+  .chk{display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:10px;cursor:pointer}
+  .chk + .chk{border-top:1px solid #f2f3f6}
+  .chk:hover{background:var(--soft)}
+  .chk .box{flex:0 0 auto;width:24px;height:24px;border-radius:7px;border:2px solid #cfd4dd;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.85rem;transition:.12s}
+  .chk.on .box{background:var(--green);border-color:var(--green)}
+  .chk .box .tick{opacity:0}
+  .chk.on .box .tick{opacity:1}
+  .chk .txt{font-size:.98rem;color:#26333e;font-weight:500}
+  .chk .txt span{color:#9aa3ae}
+
+  /* timeline */
+  .tl{position:relative;padding-left:26px;border-left:2px solid var(--line);display:flex;flex-direction:column;gap:20px}
+  .tl .it{position:relative}
+  .tl .it .d{position:absolute;left:-33px;top:2px;width:13px;height:13px;border-radius:50%;background:#fff;border:3px solid #b9c0cc}
+  .tl .it.red .d{background:var(--red-soft);border-color:var(--red)}
+  .tl .it.final .d{width:15px;height:15px;background:var(--blue);border-color:var(--blue)}
+  .tl .dt{font-weight:700;font-size:.82rem;color:var(--gray)}
+  .tl .it.red .dt{color:#a5130b}
+  .tl .it.final .dt{color:var(--blue)}
+  .tl .tx{font-size:.94rem;color:#33414d;line-height:1.5;margin-top:2px}
+  .tl .it.final .tx{color:var(--blue);font-weight:600}
+
+  /* alıntı bandı */
+  .quote{background:var(--blue);border-radius:18px;padding:48px 34px;text-align:center;margin-top:8px}
+  .quote .qk{font-size:.74rem;letter-spacing:.22em;text-transform:uppercase;color:#f2a9a2;font-weight:600}
+  .quote blockquote{margin:16px auto 0;max-width:60ch;font-size:clamp(1.2rem,2.6vw,1.55rem);line-height:1.4;color:#fff;font-weight:600;letter-spacing:-.01em}
+  .quote .qby{margin-top:14px;color:#aeb9d0;font-size:.9rem}
+  .quote .qp{margin:22px auto 0;max-width:62ch;color:#c3cee1;font-size:.94rem;font-weight:300;line-height:1.65}
+
+  /* akordeon */
+  .acc{display:flex;flex-direction:column;gap:12px}
+  .accit{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  .acch{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:17px 22px;cursor:pointer;font-weight:600;font-size:1rem;color:var(--blue)}
+  .acch:hover{background:var(--soft)}
+  .acch .pm{color:var(--gray);font-size:1.2rem;line-height:1}
+  .accbody{padding:0 22px 18px;font-size:.94rem;line-height:1.65;color:#44515d;display:none}
+  .accbody.open{display:block}
+  .accbody ul{margin:0;padding-left:20px}
+  .accbody li{margin-bottom:8px}
+  .accbody li:last-child{margin-bottom:0}
+  .accbody p{margin:0 0 10px}
+  .accbody p:last-child{margin:0}
+
+  .foot-note{margin:30px 0 60px;font-size:.78rem;color:#9098a3;line-height:1.6;border-top:1px solid var(--line);padding-top:18px}
+
+  /* köşe ana sayfa butonu */
+  .corner-home{position:fixed;top:13px;right:16px;z-index:60;display:inline-flex;align-items:center;gap:7px;
+    background:#fff;color:var(--blue);text-decoration:none;font-weight:700;font-size:.85rem;letter-spacing:.01em;
+    padding:9px 15px;border-radius:999px;border:1px solid rgba(255,255,255,.6);box-shadow:0 4px 14px rgba(0,0,0,.28);transition:.18s}
+  .corner-home:hover{background:var(--soft);transform:translateY(-1px)}
+  .corner-home svg{display:block}
+  @media(max-width:760px){
+    .corner-home{top:13px;left:14px;right:auto;padding:9px 14px;font-size:.82rem}
+  }
+
+  @media(max-width:760px){
+    .gstats{grid-template-columns:repeat(2,1fr)}
+    .yn{grid-template-columns:1fr}
+  }
+  @media(max-width:480px){
+    .gstats{grid-template-columns:1fr}
+  }
+
+  /* arka plan filigranı */
+  body{position:relative;overflow-x:hidden}
+  .bg{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+  .bg .balloon{position:absolute;right:-70px;top:90px;width:420px;height:auto;opacity:.06;filter:saturate(.85);animation:float 9s ease-in-out infinite}
+  .bg .ghost{position:absolute;left:50%;bottom:5vh;transform:translateX(-50%);font-size:17vw;font-weight:700;letter-spacing:-.03em;white-space:nowrap;color:rgba(10,42,94,.06);user-select:none}
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-16px)}}
+  .topnav,.wrap{position:relative;z-index:1}
+
+  /* mobil hamburger */
+  .navbar{position:relative}
+  .menu-toggle{display:none}
+  @media(max-width:760px){
+    .navbar{background:var(--blue);position:relative;z-index:20;min-height:64px}
+    .menu-toggle{display:block;position:absolute;top:14px;right:18px;width:44px;height:44px;border:none;background:transparent;cursor:pointer;z-index:40;padding:0}
+    .menu-toggle span{display:block;width:26px;height:3px;background:#fff;margin:5px auto;transition:.3s;border-radius:2px}
+    .menu-toggle.open span:nth-child(1){transform:translateY(8px) rotate(45deg)}
+    .menu-toggle.open span:nth-child(2){opacity:0}
+    .menu-toggle.open span:nth-child(3){transform:translateY(-8px) rotate(-45deg)}
+    .topnav{flex-direction:column;align-items:stretch;gap:0;max-height:0;overflow:hidden;transition:max-height .35s ease;padding:0 24px}
+    .topnav.open{max-height:720px;padding-top:8px;padding-bottom:16px}
+    .topnav a{width:100%;padding:14px 2px;font-size:1.05rem;border-bottom:1px solid rgba(255,255,255,.12);opacity:1}
+    .topnav a:last-child{border-bottom:none}
+    .topnav a::after{display:none}
+  }
+</style>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZNHG94R2JK"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-ZNHG94R2JK');
+</script>
+</head>
+<body>
+  <div class="bg">
+    <img class="balloon" src="balloon.png" alt="">
+    <div class="ghost">Yeni Fikirtepe</div>
+  </div>
+
+  <a href="index.html" class="corner-home" aria-label="Ana sayfaya dön">
+    <svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><path fill="currentColor" d="M12 3.2 2.5 11.3l1.3 1.5L5 11.9V20h5v-5h4v5h5v-8.1l1.2 1 1.3-1.6L12 3.2z"/></svg>
+    <span>Ana sayfa</span>
+  </a>
+
+  <div class="navbar">
+  <button class="menu-toggle" id="menuToggle" aria-label="Menü" onclick="this.classList.toggle('open');document.getElementById('mainNav').classList.toggle('open')">
+    <span></span><span></span><span></span>
+  </button>
+  <nav class="topnav" id="mainNav">
+    <a href="index.html">Anasayfa</a>
+    <a href="hakkimizda.html">Hakkımızda</a>
+    <a href="hizmetlerimiz.html">Hizmetlerimiz</a>
+    <a href="etaplar.html">Etaplar</a>
+    <a href="ekibimiz.html">Ekibimiz</a>
+    <a href="satis-sonrasi.html">Satış Sonrası Hizmetler</a>
+    <a href="kiralama-asamalari.html">Kiralama Aşamaları</a>
+    <a href="videolar.html">Videolar</a>
+    <a href="sorulariniz.html">Sorularınız</a>
+    <a href="sosyal-medya.html">Sosyal Medya Hesaplarımız</a>
+    <a href="iletisim.html">Bize Ulaşın</a>
+    <a href="kariyer-v25.html" target="_blank" rel="noopener">Doğuş Kariyer</a>
+    <a href="eids-rehberi-v3.html" class="active">EİDS Rehberi</a>
+  </nav>
+  </div>
+
+  <div class="wrap">
+    <a href="index.html" class="back">← Ana sayfa</a>
+
+    <!-- HERO / ÖZET -->
+    <div class="phead" id="ozet">
+      <span class="kicker">EİDS &amp; Sosyal Medya Uyum Rehberi</span>
+      <h1>Emlakçılar için sosyal medya ilan düzenlemeleri<span class="sq"></span></h1>
+      <p class="lead">Instagram, Facebook ve WhatsApp'ta taşınmaz ilanı paylaşımı <b style="color:var(--blue);font-weight:600">tamamen yasak değil</b> — ama ciddi biçimde kısıtlı. Emlak ofisleri ve danışmanları sosyal medyada yalnızca <b style="color:var(--blue);font-weight:600">EİDS doğrulaması yapılmış ilanların linkini</b> paylaşabilir.</p>
+      <div class="badge"><span class="dot"></span> Kural yürürlükte · 2026 ortası itibarıyla hafifletilmedi</div>
+    </div>
+
+    <section style="padding-top:14px">
+      <div class="gstats">
+        <div class="gstat red"><div class="num">286.206 ₺</div><div class="lbl">Her aykırılık için azami idari para cezası <span>(2026)</span></div></div>
+        <div class="gstat"><div class="num">1.426</div><div class="lbl">Erişime engellenen sosyal medya hesabı <span>(Ara. 2024)</span></div></div>
+        <div class="gstat"><div class="num">5 mio ₺</div><div class="lbl">Meta'ya kesilen toplam ceza <span>(13 Haz. 2026)</span></div></div>
+        <div class="gstat solid"><div class="num">1 Şub 2026</div><div class="lbl">Satılık konut dahil tüm satılık ilanlarda yetki doğrulaması zorunlu</div></div>
+      </div>
+      <div class="callout">
+        <span class="ar">→</span>
+        <p><b>Tek cümlelik kural:</b> Belirli bir taşınmazı fiyat/konumla “satılık/kiralık” diye sunuyorsan bu bir <i>ilandır</i> ve EİDS doğrulaması olmadan sosyal medyada paylaşılamaz. Bölge, marka ve bilgilendirme içerikleri “ilan” değildir — serbesttir.</p>
+      </div>
+    </section>
+
+    <!-- ARAÇ -->
+    <section id="arac">
+      <div class="tool">
+        <div class="sec-kicker">İnteraktif Araç</div>
+        <div class="sec-h">Bunu paylaşabilir miyim?</div>
+        <div class="sec-sub">3 soruyu yanıtla, paylaşımının serbest mi, izinli mi yoksa yasak mı olduğunu anında gör.</div>
+        <div class="toolcard">
+          <!-- Q1 -->
+          <div class="qrow">
+            <div class="qnum">1</div>
+            <div class="qbody">
+              <div class="qtitle">Paylaşımın belirli bir taşınmazı mı konu alıyor?</div>
+              <div class="opts">
+                <button class="opt" data-q="1" data-val="belirli"><span>Evet — belirli bir daire / arsa / iş yeri</span><span class="pin">●</span></button>
+                <button class="opt" data-q="1" data-val="bolge"><span>Hayır — bölge / marka / bilgilendirme</span><span class="pin">●</span></button>
+              </div>
+            </div>
+          </div>
+          <!-- Q2 -->
+          <div class="qrow hidden" id="q2row">
+            <div class="qnum">2</div>
+            <div class="qbody">
+              <div class="qtitle">Bu taşınmaz için e-Devlet'ten EİDS yetkin var mı?</div>
+              <div class="opts">
+                <button class="opt" data-q="2" data-val="var"><span>Evet — mal sahibi ofise yetki verdi</span><span class="pin">●</span></button>
+                <button class="opt" data-q="2" data-val="yok"><span>Hayır / emin değilim</span><span class="pin">●</span></button>
+              </div>
+            </div>
+          </div>
+          <!-- Q3 -->
+          <div class="qrow hidden" id="q3row">
+            <div class="qnum">3</div>
+            <div class="qbody">
+              <div class="qtitle">Paylaşımı nasıl yapacaksın?</div>
+              <div class="opts">
+                <button class="opt" data-q="3" data-val="link"><span>Portaldaki doğrulanmış ilanın linkini</span><span class="pin">●</span></button>
+                <button class="opt" data-q="3" data-val="direkt"><span>Doğrudan fiyat + görsel + konumlu post/Reels</span><span class="pin">●</span></button>
+              </div>
+            </div>
+          </div>
+          <!-- VERDICT -->
+          <div id="verdict"></div>
+          <button class="reset hidden" id="resetBtn">↺ Baştan başla</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- İZİN / YASAK -->
+    <section id="kurallar">
+      <div class="sec-kicker">Net Kurallar</div>
+      <div class="sec-h" style="margin-bottom:24px">Ne paylaşılabilir, ne yasak</div>
+      <div class="yn">
+        <div class="ync ok">
+          <div class="ynh"><span class="cir">✓</span> İZİN VERİLENLER</div>
+          <ul>
+            <li>EİDS doğrulaması yapılmış (portalda yayımlanan) bir ilanın <b>linkinin</b> paylaşılması.</li>
+            <li>Marka / ofis tanıtımı, bölge analizleri, yatırım değerlendirmeleri.</li>
+            <li>Sektörel bilgilendirme içerikleri, ofis içi çalışmalar.</li>
+            <li>Başarı hikâyeleri (belirli daire ilanı olmadan).</li>
+          </ul>
+        </div>
+        <div class="ync no">
+          <div class="ynh"><span class="cir">✕</span> YASAK / RİSKLİ</div>
+          <ul>
+            <li>Doğrulanmamış, doğrudan “ilan mahiyetli” görsel / video / fiyat / konum paylaşımı.</li>
+            <li>Yetkilendirilmediğin (e-Devlet'ten yetki almadığın) bir taşınmaza dair paylaşım.</li>
+            <li>Yetki belgesi olmayan kişilerce yapılan her türlü ilan paylaşımı.</li>
+            <li>WhatsApp/Telegram gruplarında doğrulanmamış portföy dolaştırmak.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="notebox"><b>Not:</b> “İlan” ile “bilgilendirme içeriği” arasındaki sınır hâlâ resmi olarak netleştirilmemiştir; bu belirsizlik sektörün başlıca şikâyet konusudur. Şüphede kalırsan içeriği çizginin güvenli tarafına kur.</div>
+    </section>
+
+    <!-- CEZALAR -->
+    <section id="cezalar">
+      <div class="sec-kicker">Yaptırımlar</div>
+      <div class="sec-h">Cezalar ve riskler</div>
+      <div class="sec-sub">En somut ve kesin risk idari para cezası ve hesap erişim engelidir. Yetki belgesi iptali de gündemdedir.</div>
+      <div class="cards">
+        <div class="card redc"><div class="cn">İdari para cezası</div><div class="ct" style="font-size:1.35rem">28.620 – 286.206 ₺</div><p>Her bir aykırılık için (6563 sayılı Kanun md. 12). Üst sınır 2026 için %25,49 yeniden değerlemeyle belirlendi.</p></div>
+        <div class="card"><div class="cn">Erişim engeli</div><div class="ct" style="font-size:1.35rem">1.426 hesap</div><p>Aykırı ilan paylaşan sosyal medya hesaplarına erişim engeli (26 Ara. 2024 kümülatif).</p></div>
+        <div class="card"><div class="cn">Yetki belgesi iptali</div><div class="ct" style="font-size:1.35rem">Tekrarlanan ihlal</div><p>Giderilmeyen aykırılıklarda yetki belgesinin iptali gündemde (“yasal çalışma başlatıldı”, Ara. 2024).</p></div>
+        <div class="card"><div class="cn">Platforma ceza</div><div class="ct" style="font-size:1.35rem">5.000.000 ₺</div><p>Meta'ya Instagram/Facebook/WhatsApp'taki aykırı ilanlar için toplam ceza (13 Haz. 2026).</p></div>
+      </div>
+      <p style="margin-top:18px;font-size:.94rem;color:var(--gray);line-height:1.55">Daha geniş tablo: Bakanlık, taşınmaz ilanlarıyla haksız fiyat artışlarına aracılık eden <b style="color:var(--blue)">1.423 emlak işletmesine toplam 173,3 milyon ₺</b> idari para cezası kestiğini açıkladı.</p>
+    </section>
+
+    <!-- EİDS YETKİ -->
+    <section id="eids">
+      <div class="sec-kicker">e-Devlet Süreci</div>
+      <div class="sec-h">Belirli bir daireyi paylaşmanın tek güvenli yolu</div>
+      <div class="sec-sub">Bir taşınmazı sosyal medyada göstermek istiyorsan sıra şu: önce yetki, sonra portal, en son link.</div>
+      <div class="cards">
+        <div class="card num40"><div class="big">01</div><div class="ct" style="margin-top:8px">Mülkü EİDS'de doğrula</div><p>Mal sahibi e-Devlet'teki <i>“EİDS Taşınmaz İlanı Yetkilendirme İşlemleri”</i> ekranından (Web Tapu bağlantılı), taşınmazı ve ofisinin <b>7 haneli yetki belgesi numarasını</b> seçerek yetki verir. Ücretsizdir, süre asgari 3 aydır.</p></div>
+        <div class="card num40"><div class="big">02</div><div class="ct" style="margin-top:8px">Portalda doğrulanmış ilanı yayınla</div><p>İlan sitesinde <b>EİDS logolu</b> ilanı yayına al. Daire turu videosu, tüm görseller ve fiyat orada dursun. Sistem malik/yetki kontrolünü otomatik yapar.</p></div>
+        <div class="card num40 dark"><div class="big">03</div><div class="ct" style="margin-top:8px">Sosyal medyada linki paylaş</div><p>Story'de link sticker, bio'da link. Kısa teaser + “detaylar ve tüm görseller ilanımızda → link”. Fiyatı/adresi postun içine gömmeden linke yönlendir.</p></div>
+      </div>
+      <div class="callout" style="border-left-color:var(--blue)"><span class="ar">!</span><p><b>Unutma:</b> EİDS yetkisi; yetkilendirme sözleşmesi, taşınmaz gösterme belgesi ve aracılık sözleşmesi gibi belgelerin yerine <b>geçmez</b>. Bu belgeleri düzenleme zorunluluğu devam eder. Bireysel ilanlar yalnızca malik, eşi veya 1./2. derece kan hısımları tarafından verilebilir.</p></div>
+    </section>
+
+    <!-- İÇERİK STRATEJİSİ -->
+    <section id="strateji">
+      <div class="sec-kicker">Güvenli İçerik</div>
+      <div class="sec-h">Sosyal medyada ne çekmeli?</div>
+      <div class="sec-sub">Videoyu çizginin güvenli tarafına kur: markayı, bölgeyi, bilgiyi ve süreci anlatan içerikler “ilan” değildir ve serbesttir.</div>
+      <div class="cards">
+        <div class="card green"><div class="ct" style="font-size:.98rem">A · Bölge otoritesi videoları</div><p>En güçlü ve en güvenli koz — özellikle Fikirtepe gibi dönüşüm bölgeleri. “Hangi etap teslim oldu?”, “manzara/kat/cephe farkı fiyatı nasıl etkiler?” Belirli daire satışa çıkarmadan, fiyat vermeden anlatım + drone/yürüyüş çekimi.</p></div>
+        <div class="card green"><div class="ct" style="font-size:.98rem">B · Eğitici / danışmanlık</div><p>“Devirli satışta alıcı nelere dikkat etmeli?”, “Kapora dolandırıcılığından korunma”, “EİDS nedir, yetki belgesiz emlakçıdan neden uzak durulmalı?” Hem bilgi verir hem ofisi meşru taraf olarak konumlar.</p></div>
+        <div class="card green"><div class="ct" style="font-size:.98rem">C · Marka + insan</div><p>Danışman tanıtımları (“Ben [isim], Fikirtepe uzmanınız”), ofis içi anlar, ekip, “bugün 2 sözleşme yaptık” tarzı başarı anları, izinli müşteri memnuniyeti / teslim videoları.</p></div>
+        <div class="card green"><div class="ct" style="font-size:.98rem">D · Süreç &amp; sosyal kanıt</div><p>“Bir evi satışa çıkarırken ofis ne yapıyor?” akışı: değerleme → emsal raporu → ilan → satış. Adres/fiyat vermeden anonim vaka anlatımları.</p></div>
+      </div>
+      <div class="cards" style="grid-template-columns:1fr 1fr;margin-top:16px">
+        <div class="card redc"><div class="ct" style="font-size:.98rem">✕ KESİN YAPMA</div><p>Doğrudan post/Reels olarak “Satılık 3+1, [proje/etap], X milyon ₺, DM'den ulaşın” tarzı, doğrulaması olmayan fiyatlı/konumlu ilan paylaşımı. <b>Ceza tam olarak buradan gelir.</b></p></div>
+        <div class="card"><div class="ct" style="font-size:.98rem">Üretim ipuçları</div><p>15–45 sn dikey Reels/TikTok; ilk 3 sn'de kanca (“Fikirtepe'de tapu dağılmadan daire satılır mı? Evet.”); uyumlu CTA (“Sorularınız için DM” / “İlanlarımız profilde”). Haftalık ritim: 2 bölge/bilgi + 1 marka/insan + doğrulanmış ilan linkleri story'de.</p></div>
+      </div>
+    </section>
+
+    <!-- CHECKLIST -->
+    <section id="liste">
+      <div class="sec-kicker">Kontrol Listesi</div>
+      <div class="sec-h">İlan mahiyetli paylaşımda görünür olmalı</div>
+      <div class="sec-sub">Paylaşmadan önce işaretle. (Yönetmelik md. 12 &amp; 14)</div>
+      <div class="checklist">
+        <div class="chk"><span class="box"><span class="tick">✓</span></span><span class="txt">Yetki belgesi numarası <span>(7 hane)</span></span></div>
+        <div class="chk"><span class="box"><span class="tick">✓</span></span><span class="txt">İşletme adı / unvanı <span>(yetki belgesindeki)</span></span></div>
+        <div class="chk"><span class="box"><span class="tick">✓</span></span><span class="txt">İl / ilçe / mahalle <span>(+ ada / parsel; adres hariç)</span></span></div>
+        <div class="chk"><span class="box"><span class="tick">✓</span></span><span class="txt">İletişim bilgisi</span></div>
+        <div class="chk"><span class="box"><span class="tick">✓</span></span><span class="txt">Enerji kimlik bilgisi <span>(varsa)</span></span></div>
+        <div class="chk"><span class="box"><span class="tick">✓</span></span><span class="txt">Doğrulanmış ilan linki <span>(EİDS logolu portal ilanı)</span></span></div>
+      </div>
+    </section>
+
+    <!-- ZAMAN ÇİZELGESİ -->
+    <section id="zaman">
+      <div class="sec-kicker">Mevzuat Arka Planı</div>
+      <div class="sec-h" style="margin-bottom:24px">Zaman çizelgesi</div>
+      <div class="tl">
+        <div class="it"><span class="d"></span><div class="dt">5 Haziran 2018</div><div class="tx">Taşınmaz Ticareti Hakkında Yönetmelik yürürlüğe girdi.</div></div>
+        <div class="it"><span class="d"></span><div class="dt">31 Ağustos 2023</div><div class="tx">İnternet ilanlarına kimlik/yetki doğrulama yükümlülüğü eklendi (md. 12, RG 32295).</div></div>
+        <div class="it"><span class="d"></span><div class="dt">1 Kasım 2023</div><div class="tx">Faz 1 — Kimlik doğrulaması (tüm ilan verenler).</div></div>
+        <div class="it"><span class="d"></span><div class="dt">15 Eylül 2024</div><div class="tx">Faz 2 — Yetki doğrulaması devreye alındı (31 Ara. 2024'e kadar geçiş).</div></div>
+        <div class="it red"><span class="d"></span><div class="dt">26 Aralık 2024</div><div class="tx">Sosyal medyada aykırı ilanlara erişim engeli + Meta'ya ceza açıklandı; 1.426 hesap engellendi.</div></div>
+        <div class="it"><span class="d"></span><div class="dt">1 Ocak 2025</div><div class="tx">Kiralık taşınmaz ilanlarında yetki doğrulaması zorunlu.</div></div>
+        <div class="it"><span class="d"></span><div class="dt">7 Nisan 2025</div><div class="tx">Satılık iş yeri ilanlarında yetki doğrulaması zorunlu.</div></div>
+        <div class="it final"><span class="d"></span><div class="dt">1 Şubat 2026 · FİNAL</div><div class="tx">Satılık konut dahil tüm satılık taşınmaz ilanlarında yetki doğrulaması zorunlu — kesinleşti ve yürürlükte.</div></div>
+        <div class="it red"><span class="d"></span><div class="dt">13 Haziran 2026</div><div class="tx">Meta'ya toplam 5 milyon ₺ ceza açıklandı; denetimler kararlılıkla sürüyor.</div></div>
+      </div>
+    </section>
+
+    <!-- GEREKÇE -->
+    <section>
+      <div class="quote">
+        <div class="qk">Gerekçe</div>
+        <blockquote>“Sosyal medya platformlarının yaygınlaşmasıyla ilanların farklı mecralardan da yayımlanmasına müsaade etmeyeceğiz.”</blockquote>
+        <div class="qby">— Ticaret Bakanı Ömer Bolat</div>
+        <p class="qp">Bakanlığın gerekçesi: sahte ilanların, ilan kirliliğinin, spekülatif/fahiş fiyat artışlarının ve tüketici mağduriyetlerinin önlenmesi; yetki belgesiz ve kayıt dışı emlakçılık (“çantacı/ayakçı”) ile mücadele; kapora dolandırıcılığının engellenmesi.</p>
+      </div>
+    </section>
+
+    <!-- DURUM & UYARILAR -->
+    <section id="durum">
+      <div class="sec-kicker">7 Temmuz 2026</div>
+      <div class="sec-h" style="margin-bottom:24px">Güncel durum, eşikler &amp; uyarılar</div>
+      <div class="acc">
+        <div class="accit">
+          <div class="acch"><span>Güncel durum</span><span class="pm">+</span></div>
+          <div class="accbody">1 Şubat 2026 satılık taşınmaz zorunluluğu kesinleşti ve yürürlükte; ertelenmedi. Sosyal medya kısıtlaması hafifletilmedi; Bakanlık denetim ve yaptırımları (Haziran 2026 Meta cezası dahil) sürdürüyor. Doğan Demir'in soru önergesine Bakan Bolat henüz yazılı yanıt vermedi; beklenen resmi “uygulama kılavuzu” henüz yayımlanmadı.</div>
+        </div>
+        <div class="accit">
+          <div class="acch"><span>Eşikler — kararı değiştirebilecek gelişmeler</span><span class="pm">+</span></div>
+          <div class="accbody"><ul>
+            <li>Bakanlık resmi bir “uygulama kılavuzu” yayımlar veya doğrulanmış ilanların sosyal medyada serbest paylaşımına açık izin verirse → strateji gevşetilebilir.</li>
+            <li>Soru önergesine verilecek yanıt “bilgilendirme içeriği” ile “ilan” ayrımını netleştirirse → içerik politikası güncellenmeli.</li>
+            <li>Herhangi bir erteleme/iptal kararı çıkmadıkça mevcut katı uyum korunmalı; 2026 ortası itibarıyla böyle bir gevşetme yok.</li>
+          </ul></div>
+        </div>
+        <div class="accit">
+          <div class="acch"><span>Uyarılar &amp; çekinceler</span><span class="pm">+</span></div>
+          <div class="accbody"><ul>
+            <li>Bazı haberler bunu “tamamen yasak” diye sunar; hukuki gerçek daha nüanslıdır — yasak <b>doğrulanmamış ilan paylaşımına</b> yöneliktir, tüm sosyal medya kullanımına değil.</li>
+            <li>286.206 ₺ üst sınırı 2026 içindir (25 Ara. 2025, 33118 sayılı RG; %25,49 yeniden değerleme). Rakam her yıl güncellenir; ilk duyuruda 158.460 ₺ idi.</li>
+            <li>Yetki belgesi iptaline dair “yasal çalışma başlattık” ifadesi Aralık 2024'e aittir; doğrudan iptalin tam yürürlük durumu net değil — en somut risk idari para cezası ve hesap engelidir.</li>
+            <li>Bu rehber bilgilendirme amaçlıdır; bağlayıcı hukuki görüş değildir. Güncel mevzuat için Ticaret Bakanlığı ve resmî kaynaklar esas alınmalıdır.</li>
+          </ul></div>
+        </div>
+        <div class="accit">
+          <div class="acch"><span>Sektör tepkileri</span><span class="pm">+</span></div>
+          <div class="accbody">
+            <p><b style="color:var(--blue)">Emlak Kulübü</b> yetki belgeli danışmanların hesaplarının kapanmasından doğan mağduriyeti Bakan'a iletti; sosyal medya platformlarına da EİDS'ye uyumlu altyapı kurma süresi verilmesini önerdi.</p>
+            <p><b style="color:var(--blue)">TEMFED</b> düzenlemeyi genel olarak destekliyor; kayıt dışı emlakçılıkla mücadele açısından olumlu buluyor (~69 bin belgeli, ~20 bin belgesiz emlakçı).</p>
+            <p><b style="color:var(--blue)">TBMM:</b> CHP milletvekilleri Doğan Demir (10 maddelik soru önergesi — “ilan” vs “bilgilendirme” kriteri) ve Aykut Kaya (araştırma önergesi — ~1.500 hesabın kapanması) girişimde bulundu.</p>
+          </div>
+        </div>
+      </div>
+      <p class="foot-note">EİDS &amp; Sosyal Medya Uyum Rehberi · RE/MAX DOĞUŞ · Hazırlanma tarihi: 7 Temmuz 2026. Bilgilendirme amaçlıdır; bağlayıcı hukuki görüş değildir. Resmî kaynaklar: <a href="https://www.ticaret.gov.tr" target="_blank" rel="noopener" style="color:var(--blue)">Ticaret Bakanlığı</a> · <a href="https://www.resmigazete.gov.tr" target="_blank" rel="noopener" style="color:var(--blue)">Resmî Gazete</a> · <a href="https://www.turkiye.gov.tr" target="_blank" rel="noopener" style="color:var(--blue)">e-Devlet (EİDS Yetkilendirme)</a>.</p>
+  </div>
+
+  <!-- WhatsApp sabit buton -->
+  <a href="https://wa.me/902163151515" target="_blank" rel="noopener" aria-label="WhatsApp ile yazın"
+     style="position:fixed;right:22px;bottom:22px;z-index:9999;width:58px;height:58px;border-radius:50%;
+            background:#25D366;display:grid;place-items:center;box-shadow:0 6px 20px rgba(0,0,0,.25);
+            transition:transform .2s;text-decoration:none"
+     onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'">
+    <svg viewBox="0 0 24 24" width="32" height="32"><path fill="#fff" d="M12 2a10 10 0 0 0-8.5 15.3L2 22l4.8-1.5A10 10 0 1 0 12 2zm0 18a8 8 0 0 1-4.1-1.1l-.3-.2-2.8.9.9-2.7-.2-.3A8 8 0 1 1 12 20zm4.5-5.8c-.2-.1-1.4-.7-1.6-.8-.2-.1-.4-.1-.5.1l-.7.9c-.1.2-.3.2-.5.1a6.5 6.5 0 0 1-3.2-2.8c-.1-.2 0-.4.1-.5l.4-.5c.1-.1.1-.2.2-.4 0-.1 0-.3 0-.4l-.7-1.7c-.2-.4-.4-.4-.5-.4h-.5c-.2 0-.4.1-.6.3a2.7 2.7 0 0 0-.8 2c0 1.2.9 2.4 1 2.5.1.2 1.7 2.7 4.2 3.8 1.6.7 2.2.7 3 .6.5-.1 1.4-.6 1.6-1.1.2-.6.2-1 .1-1.1z"/></svg>
+  </a>
+
+  <script>
+    // mobil menü kapanışı
+    document.querySelectorAll('#mainNav a').forEach(function(a){
+      a.addEventListener('click', function(){
+        document.getElementById('mainNav').classList.remove('open');
+        document.getElementById('menuToggle').classList.remove('open');
+      });
+    });
+
+    // ---- İnteraktif araç ----
+    var state = { q1:null, q2:null, q3:null };
+    var V = {
+      serbest:    { accent:'var(--green)', bg:'var(--green-soft)', border:'var(--green-line)', label:'SERBEST',  labelColor:'var(--green)', icon:'✓', title:'Bu içerik serbest — paylaşabilirsin.', body:'Belirli bir taşınmazı fiyat/konumla “satılık/kiralık” olarak sunmadığın sürece bölge analizi, marka tanıtımı, eğitici ve bilgilendirici içerikler “ilan” sayılmaz. EİDS doğrulaması gerekmez.' },
+      yasakYetki: { accent:'var(--red)', bg:'var(--red-soft)', border:'var(--red-line)', label:'YASAK', labelColor:'var(--red)', icon:'✕', title:'Yetkin olmadan paylaşamazsın.', body:'Bu taşınmaz için önce e-Devlet üzerinden EİDS yetkisi almalısın (mal sahibi ofisinin 7 haneli yetki belgesi no’su ile yetki verir). Yetki olmadan yapılan her paylaşım aykırılıktır.' },
+      izinli:     { accent:'var(--blue)', bg:'#eef2f9', border:'#cdd8ec', label:'İZİNLİ', labelColor:'var(--blue)', icon:'✓', title:'Doğrulanmış ilanın linkini paylaşabilirsin.', body:'Portalda EİDS logolu doğrulanmış ilanı yayınla, sosyal medyada yalnızca o ilanın linkini paylaş (story link sticker / bio). İlan mahiyetli paylaşımda yetki belgesi no, işletme unvanı, il/ilçe/mahalle ve iletişimi eklemeyi unutma.' },
+      yasakDirekt:{ accent:'var(--red)', bg:'var(--red-soft)', border:'var(--red-line)', label:'YASAK', labelColor:'var(--red)', icon:'✕', title:'Doğrudan fiyatlı/konumlu ilan postu atma.', body:'“Satılık 3+1, X milyon ₺, DM’den ulaşın” tarzı doğrulaması olmayan post/Reels tam olarak ceza kaynağıdır. Bunun yerine portaldaki doğrulanmış ilanın LİNKİNİ paylaş.' }
+    };
+
+    function tone(){
+      var s = state;
+      if (s.q1 === 'bolge') return 'serbest';
+      if (s.q1 === 'belirli' && s.q2 === 'yok') return 'yasakYetki';
+      if (s.q1 === 'belirli' && s.q2 === 'var' && s.q3 === 'link') return 'izinli';
+      if (s.q1 === 'belirli' && s.q2 === 'var' && s.q3 === 'direkt') return 'yasakDirekt';
+      return null;
+    }
+
+    function render(){
+      document.querySelectorAll('.opt').forEach(function(b){
+        var q=b.dataset.q, v=b.dataset.val;
+        b.classList.toggle('sel', state['q'+q]===v);
+      });
+      document.getElementById('q2row').classList.toggle('hidden', state.q1!=='belirli');
+      document.getElementById('q3row').classList.toggle('hidden', !(state.q1==='belirli' && state.q2==='var'));
+      var t = tone(), box = document.getElementById('verdict');
+      if (t){
+        var v = V[t];
+        box.innerHTML =
+          '<div class="verdict" style="background:'+v.bg+';border-color:'+v.border+'">'+
+            '<div class="vtop">'+
+              '<div class="vic" style="background:'+v.accent+'">'+v.icon+'</div>'+
+              '<div><div class="vlabel" style="color:'+v.labelColor+'">'+v.label+'</div>'+
+              '<div class="vtitle">'+v.title+'</div></div>'+
+            '</div>'+
+            '<p>'+v.body+'</p>'+
+          '</div>';
+      } else { box.innerHTML=''; }
+      document.getElementById('resetBtn').classList.toggle('hidden', state.q1===null);
+    }
+
+    document.querySelectorAll('.opt').forEach(function(b){
+      b.addEventListener('click', function(){
+        var q=b.dataset.q, v=b.dataset.val;
+        if (q==='1'){ state.q1=v; state.q2=null; state.q3=null; }
+        else if (q==='2'){ state.q2=v; state.q3=null; }
+        else if (q==='3'){ state.q3=v; }
+        render();
+        if (tone()){
+          var el=document.getElementById('verdict');
+          var y=el.getBoundingClientRect().top+window.scrollY-90;
+          window.scrollTo({top:y,behavior:'smooth'});
+        }
+      });
+    });
+    document.getElementById('resetBtn').addEventListener('click', function(){
+      state={q1:null,q2:null,q3:null}; render();
+    });
+
+    // ---- checklist ----
+    document.querySelectorAll('.chk').forEach(function(c){
+      c.addEventListener('click', function(){ c.classList.toggle('on'); });
+    });
+
+    // ---- akordeon ----
+    document.querySelectorAll('.acch').forEach(function(h){
+      h.addEventListener('click', function(){
+        var body=h.nextElementSibling, pm=h.querySelector('.pm');
+        var open=body.classList.toggle('open');
+        pm.textContent = open ? '−' : '+';
+      });
+    });
+  </script>
+</body>
+</html>
