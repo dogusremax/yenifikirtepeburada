@@ -129,6 +129,11 @@
     .topnav a::after{display:none}
   }
 
+  .radios{display:flex;flex-direction:column;gap:10px}
+  .radiobtn{display:flex;align-items:center;gap:11px;border:1.5px solid var(--line);border-radius:12px;padding:13px 15px;cursor:pointer;font-size:.95rem;font-weight:500;color:var(--ink);background:var(--soft);transition:.15s}
+  .radiobtn:hover{border-color:var(--blue)}
+  .radiobtn.sel{border-color:var(--blue);background:#eef2f9}
+  .radiobtn input[type=radio]{width:18px;height:18px;accent-color:var(--blue);margin:0;padding:0;box-shadow:none;flex:0 0 auto}
 </style>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZNHG94R2JK"></script>
@@ -154,8 +159,45 @@
         <input type="hidden" name="_subject" value="Yeni Satılık Değer Talebi">
       <p style="display:none"><label>Boş bırakın: <input name="bot-field"></label></p>
       <div class="group">
-        <label>Daireniz hangi etapta?</label>
-        <input type="text" name="etap" placeholder="Örn. 1. Etap">
+        <label>Mülkünüz hangi sitede?</label>
+        <select name="site" required>
+          <option value="" disabled selected>Seçiniz</option>
+          <option>1071 Kadıköy</option>
+          <option>Alya Life Residence</option>
+          <option>Anka Evim Kadıköy</option>
+          <option>Brooklyn Life</option>
+          <option>Brooklyn Park</option>
+          <option>Concord İstanbul</option>
+          <option>Concord İstanbul 2. Etap</option>
+          <option>Evinpark Kadıköy</option>
+          <option>Fortis Sinanlı</option>
+          <option>İki Yaka Fikirtepe</option>
+          <option>İstanbul 216</option>
+          <option>İstanbul 216 2. Etap</option>
+          <option>Mina Towers</option>
+          <option>Obaköy Haldız</option>
+          <option>Optimist Residence</option>
+          <option>Pırlanta Göztepe</option>
+          <option>Renovia İstanbul</option>
+          <option>Şua Elite Concept</option>
+          <option>The Mandarins</option>
+          <option>Torkam Sitesi</option>
+          <option>Uplife Kadıköy</option>
+          <option>Emlak Konut Yenifikirtepe</option>
+          <option>Yenitepe Kadıköy</option>
+          <option>Diğer (listede yok)</option>
+        </select>
+      </div>
+            <div class="group" id="ekBlok" style="display:none">
+        <label>Mülkü nasıl edindiniz?</label>
+        <div class="radios">
+          <label class="radiobtn"><input type="radio" name="edinme" value="Toprak sahibiyim"> Toprak sahibiyim</label>
+          <label class="radiobtn"><input type="radio" name="edinme" value="Emlak Konut'tan aldım"> Emlak Konut'tan aldım</label>
+        </div>
+      </div>
+      <div class="group" id="etapGroup" style="display:none">
+        <label>Hangi etap?</label>
+        <input type="text" name="etap" placeholder="Örn. 3. Etap">
       </div>
 
       <div class="row">
@@ -245,5 +287,30 @@
       });
     });
   </script>
+<script>
+(function(){
+  var siteSel = document.querySelector('select[name="site"]');
+  var ekBlok = document.getElementById('ekBlok');
+  var etapGroup = document.getElementById('etapGroup');
+  if(!siteSel) return;
+  function reset(){
+    if(ekBlok) ekBlok.style.display='none';
+    if(etapGroup) etapGroup.style.display='none';
+    document.querySelectorAll('input[name="edinme"]').forEach(function(r){r.checked=false;});
+    document.querySelectorAll('.radiobtn').forEach(function(l){l.classList.remove('sel');});
+  }
+  siteSel.addEventListener('change', function(){
+    reset();
+    if(siteSel.value === 'Emlak Konut Yenifikirtepe' && ekBlok){ ekBlok.style.display=''; }
+  });
+  document.querySelectorAll('input[name="edinme"]').forEach(function(r){
+    r.addEventListener('change', function(){
+      document.querySelectorAll('.radiobtn').forEach(function(l){l.classList.remove('sel');});
+      var w=r.closest('.radiobtn'); if(w) w.classList.add('sel');
+      if(etapGroup) etapGroup.style.display='';
+    });
+  });
+})();
+</script>
 </body>
 </html>
