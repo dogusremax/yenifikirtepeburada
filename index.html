@@ -312,31 +312,43 @@ h1 .sqdot{display:inline-block;width:.14em;height:.14em;background:var(--red-sof
         {n:"Özlem Varol",     p:"1ZcDqNhYVBJlARSUk46APolmWsyZLMexe"},
         {n:"Ayşegül Alpay",   p:"1OWki4Z752FukK9Yk2io9R4zVwdhovd8q"},
         {n:"Ayşegül Aras",    p:"1cQeMhl60upaKl-7Ssrw-TfKCdor97M0q"},
+        {n:"Ofis Nöbeti",     office:true},
         {n:"Gamze Yetkin",    p:"1qQjf0VhmCwLywOD9yBsMguPlCMt7wJr9"},
         {n:"Gizem Gök",       p:"1ppuPVDhFcBZyY4QDBMHgL7acTy6SAQdR"},
         {n:"İrem Aleyna Tetik",p:"1K6kJuM3AnValMiy41pLuqN66WQmDXLjT"},
         {n:"Orhan Özazman",   p:"1JNN6eHt1Vy4YR-_taSkZxSQ7jrhDaxge"},
         {n:"Evşen Özazman",   p:"1-J0do4DhzN_AGC0PU1hi-fu-YPIvr9AE"}
       ];
-      var refDate = new Date(2026,6,6);      // 6 Temmuz 2026
-      var refIndex = 4;                       // Gizem Gök (8 kişilik rota)
+      var refDate = new Date(2026,6,14);     // 14 Temmuz 2026 = Gamze Yetkin
+      var refIndex = 4;                       // Gamze (9 slot: Derya yerine Ofis Nöbeti)
       var today = new Date();
       var days = Math.floor((today - refDate) / 86400000);
       var idx = ((refIndex + days) % rota.length + rota.length) % rota.length;
       var kisi = rota[idx];
       var name = kisi.n;
-      var initials = name.split(' ').map(function(p){return p.charAt(0)}).join('').slice(0,2);
       document.getElementById('dutyName').textContent = name;
       var av = document.getElementById('dutyAvatar');
-      av.textContent = initials;
-      if(kisi.p){
-        var foto = new Image();
-        foto.onload = function(){ av.appendChild(foto); };
-        foto.src = 'https://drive.google.com/thumbnail?id=' + kisi.p + '&sz=w240';
-        foto.alt = name;
+      var sub = document.querySelector('#dutyCard .who small');
+      var tag = document.querySelector('#dutyCard .tag');
+      var waBtn = document.getElementById('dutyWa');
+      if(kisi.office){
+        av.textContent = '🏢';
+        if(sub) sub.textContent = 'RE/MAX Doğuş — Ofis';
+        if(tag) tag.textContent = 'Bugün Ofis Nöbeti';
+        waBtn.href = 'https://wa.me/902163151515?text=' +
+          encodeURIComponent('Merhaba, RE/MAX Doğuş ofisi ile görüşmek istiyorum.');
+      } else {
+        var initials = name.split(' ').map(function(p){return p.charAt(0)}).join('').slice(0,2);
+        av.textContent = initials;
+        if(kisi.p){
+          var foto = new Image();
+          foto.onload = function(){ av.appendChild(foto); };
+          foto.src = 'https://drive.google.com/thumbnail?id=' + kisi.p + '&sz=w240';
+          foto.alt = name;
+        }
+        waBtn.href = 'https://wa.me/902163151515?text=' +
+          encodeURIComponent('Merhaba, nöbetçi danışman ' + name + ' ile görüşmek istiyorum.');
       }
-      document.getElementById('dutyWa').href = 'https://wa.me/902163151515?text=' +
-        encodeURIComponent('Merhaba, nöbetçi danışman ' + name + ' ile görüşmek istiyorum.');
 
       var card = document.getElementById('dutyCard');
       setTimeout(function(){ card.classList.add('show'); }, 2600);
