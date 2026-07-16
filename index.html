@@ -306,32 +306,52 @@ h1 .sqdot{display:inline-block;width:.14em;height:.14em;background:var(--red-sof
       document.addEventListener('touchstart', kick, {once:true, passive:true});
       document.addEventListener('click', kick, {once:true});
     })();
-    // ---- nöbetçi danışman rotasyonu (referans: 6 Temmuz 2026 = Gizem Gök)
+    // ---- nöbetçi danışman rotasyonu (7 kişilik döngü — çapa: 23 Temmuz 2026 = Gamze Yetkin)
     (function(){
-      var rota = [
-        {n:"Özlem Varol",     p:"1ZcDqNhYVBJlARSUk46APolmWsyZLMexe"},
-        {n:"Ayşegül Alpay",   p:"1OWki4Z752FukK9Yk2io9R4zVwdhovd8q"},
-        {n:"Ayşegül Aras",    p:"1cQeMhl60upaKl-7Ssrw-TfKCdor97M0q"},
-        {n:"Ofis Nöbeti",     office:true},
-        {n:"Gamze Yetkin",    p:"1qQjf0VhmCwLywOD9yBsMguPlCMt7wJr9"},
-        {n:"Gizem Gök",       p:"1ppuPVDhFcBZyY4QDBMHgL7acTy6SAQdR"},
-        {n:"İrem Aleyna Tetik",p:"1K6kJuM3AnValMiy41pLuqN66WQmDXLjT"},
-        {n:"Orhan Özazman",   p:"1JNN6eHt1Vy4YR-_taSkZxSQ7jrhDaxge"},
-        {n:"Evşen Özazman",   p:"1-J0do4DhzN_AGC0PU1hi-fu-YPIvr9AE"}
-      ];
-      var refDate = new Date(2026,6,14);     // 14 Temmuz 2026 = Gamze Yetkin
-      var refIndex = 4;                       // Gamze (9 slot: Derya yerine Ofis Nöbeti)
-      var today = new Date();
-      var days = Math.floor((today - refDate) / 86400000);
-      var idx = ((refIndex + days) % rota.length + rota.length) % rota.length;
-      var kisi = rota[idx];
-      var name = kisi.n;
+      var foto = {
+        "Gamze Yetkin":      "1qQjf0VhmCwLywOD9yBsMguPlCMt7wJr9",
+        "Gizem Gök":         "1ppuPVDhFcBZyY4QDBMHgL7acTy6SAQdR",
+        "İrem Aleyna Tetik": "1K6kJuM3AnValMiy41pLuqN66WQmDXLjT",
+        "Orhan Özazman":     "1JNN6eHt1Vy4YR-_taSkZxSQ7jrhDaxge",
+        "Evşen Özazman":     "1-J0do4DhzN_AGC0PU1hi-fu-YPIvr9AE",
+        "Özlem Varol":       "1ZcDqNhYVBJlARSUk46APolmWsyZLMexe",
+        "Ayşegül Alpay":     "1OWki4Z752FukK9Yk2io9R4zVwdhovd8q"
+      };
+      var rota = ["Gamze Yetkin","Gizem Gök","İrem Aleyna Tetik","Orhan Özazman",
+                  "Evşen Özazman","Özlem Varol","Ayşegül Alpay"];
+      var refDate = new Date(2026,6,23);   // 23 Temmuz 2026 = Gamze Yetkin
+
+      // Takvimle birebir istisna günler (ayrılanların yerine doldurulan günler)
+      var plan = {
+        "2026-07-16":"İrem Aleyna Tetik",
+        "2026-07-17":"Orhan Özazman",
+        "2026-07-18":"Evşen Özazman",
+        "2026-07-19":"Özlem Varol",
+        "2026-07-20":"Ayşegül Alpay",
+        "2026-07-21":"Orhan Özazman",
+        "2026-07-22":"Evşen Özazman",
+        "2026-08-01":"Evşen Özazman"
+      };
+
+      var t = new Date();
+      var bugun = new Date(t.getFullYear(), t.getMonth(), t.getDate());
+      var key = bugun.getFullYear() + '-' +
+                ('0'+(bugun.getMonth()+1)).slice(-2) + '-' +
+                ('0'+bugun.getDate()).slice(-2);
+      var name;
+      if(plan[key]){
+        name = plan[key];
+      } else {
+        var days = Math.round((bugun - refDate) / 86400000);
+        name = rota[((days % rota.length) + rota.length) % rota.length];
+      }
+
       document.getElementById('dutyName').textContent = name;
       var av = document.getElementById('dutyAvatar');
       var sub = document.querySelector('#dutyCard .who small');
       var tag = document.querySelector('#dutyCard .tag');
       var waBtn = document.getElementById('dutyWa');
-      if(kisi.office){
+      if(name === 'Ofis Nöbeti'){
         av.textContent = '🏢';
         if(sub) sub.textContent = 'RE/MAX Doğuş — Ofis';
         if(tag) tag.textContent = 'Bugün Ofis Nöbeti';
@@ -340,11 +360,11 @@ h1 .sqdot{display:inline-block;width:.14em;height:.14em;background:var(--red-sof
       } else {
         var initials = name.split(' ').map(function(p){return p.charAt(0)}).join('').slice(0,2);
         av.textContent = initials;
-        if(kisi.p){
-          var foto = new Image();
-          foto.onload = function(){ av.appendChild(foto); };
-          foto.src = 'https://drive.google.com/thumbnail?id=' + kisi.p + '&sz=w240';
-          foto.alt = name;
+        if(foto[name]){
+          var im = new Image();
+          im.onload = function(){ av.appendChild(im); };
+          im.src = 'https://drive.google.com/thumbnail?id=' + foto[name] + '&sz=w240';
+          im.alt = name;
         }
         waBtn.href = 'https://wa.me/902163151515?text=' +
           encodeURIComponent('Merhaba, nöbetçi danışman ' + name + ' ile görüşmek istiyorum.');
