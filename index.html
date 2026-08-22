@@ -400,29 +400,45 @@ h1 .sqdot{display:inline-block;width:.14em;height:.14em;background:var(--red-sof
         name = rota[((days % rota.length) + rota.length) % rota.length];
       }
 
-      document.getElementById('dutyName').textContent = name;
-      var av = document.getElementById('dutyAvatar');
-      var sub = document.querySelector('#dutyCard .who small');
-      var tag = document.querySelector('#dutyCard .tag');
-      var waBtn = document.getElementById('dutyWa');
-      if(name === 'Ofis Nöbeti'){
-        av.textContent = '🏢';
-        if(sub) sub.textContent = 'RE/MAX Doğuş — Ofis';
-        if(tag) tag.textContent = 'Bugün Ofis Nöbeti';
-        waBtn.href = 'https://wa.me/905324724148?text=' +
-          encodeURIComponent('Merhaba, RE/MAX Doğuş ofisi ile görüşmek istiyorum.');
-      } else {
-        var initials = name.split(' ').map(function(p){return p.charAt(0)}).join('').slice(0,2);
-        av.textContent = initials;
-        if(foto[name]){
-          var im = new Image();
-          im.onload = function(){ av.appendChild(im); };
-          im.src = 'https://drive.google.com/thumbnail?id=' + foto[name] + '&sz=w240';
-          im.alt = name;
+      function render(name){
+        document.getElementById('dutyName').textContent = name;
+        var av = document.getElementById('dutyAvatar');
+        var sub = document.querySelector('#dutyCard .who small');
+        var tag = document.querySelector('#dutyCard .tag');
+        var waBtn = document.getElementById('dutyWa');
+        if(name === 'Ofis Nöbeti'){
+          av.textContent = '🏢';
+          if(sub) sub.textContent = 'RE/MAX Doğuş — Ofis';
+          if(tag) tag.textContent = 'Bugün Ofis Nöbeti';
+          waBtn.href = 'https://wa.me/905324724148?text=' +
+            encodeURIComponent('Merhaba, RE/MAX Doğuş ofisi ile görüşmek istiyorum.');
+        } else {
+          var initials = name.split(' ').map(function(p){return p.charAt(0)}).join('').slice(0,2);
+          av.textContent = initials;
+          if(foto[name]){
+            var im = new Image();
+            im.onload = function(){ av.appendChild(im); };
+            im.src = 'https://drive.google.com/thumbnail?id=' + foto[name] + '&sz=w240';
+            im.alt = name;
+          }
+          waBtn.href = 'https://wa.me/905324724148?text=' +
+            encodeURIComponent('Merhaba, nöbetçi danışman ' + name + ' ile görüşmek istiyorum.');
         }
-        waBtn.href = 'https://wa.me/905324724148?text=' +
-          encodeURIComponent('Merhaba, nöbetçi danışman ' + name + ' ile görüşmek istiyorum.');
       }
+      render(name);
+
+      // Nöbet uygulamasından canlı oku (Google Takvim ile birebir); olmazsa üstteki tablo/formül kalır
+      try{
+        var ctrl = new AbortController(); setTimeout(function(){ ctrl.abort(); }, 4000);
+        fetch('https://script.google.com/macros/s/AKfycbzDMpgNZAhXFZfCbp3iuUxNAJwjq8pB2xt86eluuj2JPNU-J2sfeCHUsG1m0OrJjo7RvA/exec?action=today', {signal: ctrl.signal})
+          .then(function(r){ return r.json(); })
+          .then(function(j){
+            if(j && j.ok && j.name && j.date === key){
+              var n = (j.name === 'Ofis') ? 'Ofis Nöbeti' : j.name;
+              if(n !== name){ name = n; render(name); }
+            }
+          }).catch(function(){});
+      }catch(e){}
 
       var card = document.getElementById('dutyCard');
       setTimeout(function(){ card.classList.add('show'); }, 2600);
