@@ -218,6 +218,13 @@ h1 .sqdot{display:inline-block;width:.14em;height:.14em;background:var(--red-sof
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZNHG94R2JK"></script>
 <script>
+function guvenliJson(r){
+  return r.text().then(function(t){
+    try{ return JSON.parse(t); }
+    catch(e){ console.warn('JSON beklenirken baska icerik geldi:', String(t).slice(0,120)); return null; }
+  }).catch(function(){ return null; });
+}
+
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
@@ -431,14 +438,14 @@ h1 .sqdot{display:inline-block;width:.14em;height:.14em;background:var(--red-sof
       try{
         var ctrl = new AbortController(); setTimeout(function(){ ctrl.abort(); }, 4000);
         fetch('https://script.google.com/macros/s/AKfycbzDMpgNZAhXFZfCbp3iuUxNAJwjq8pB2xt86eluuj2JPNU-J2sfeCHUsG1m0OrJjo7RvA/exec?action=today', {signal: ctrl.signal})
-          .then(function(r){ return r.json(); })
+          .then(guvenliJson)
           .then(function(j){
             if(j && j.ok && j.name && j.date === key){
               var n = (j.name === 'Ofis') ? 'Ofis Nöbeti' : j.name;
               if(n !== name){ name = n; render(name); }
             }
           }).catch(function(){});
-      }catch(e){}
+      }catch(e){ console.warn('Sessiz hata:', e); }
 
       var card = document.getElementById('dutyCard');
       setTimeout(function(){ card.classList.add('show'); }, 2600);
