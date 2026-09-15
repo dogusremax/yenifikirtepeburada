@@ -134,6 +134,13 @@
   .radiobtn:hover{border-color:var(--blue)}
   .radiobtn.sel{border-color:var(--blue);background:#eef2f9}
   .radiobtn input[type=radio]{width:18px;height:18px;accent-color:var(--blue);margin:0;padding:0;box-shadow:none;flex:0 0 auto}
+
+.info{background:#fff;border:1px solid var(--line);border-radius:12px;padding:28px 32px;box-shadow:0 18px 50px rgba(10,42,94,.07);margin-top:28px}
+.info h2{font-size:1.02rem;color:var(--blue);font-weight:600;margin:22px 0 6px;line-height:1.3}
+.info h2:first-child{margin-top:0}
+.info p{color:var(--gray);font-weight:300;font-size:.96rem;line-height:1.6;margin:0}
+.info a{color:var(--blue);font-weight:500;text-decoration:underline}
+@media(max-width:520px){.info{padding:22px 20px}}
 </style>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZNHG94R2JK"></script>
@@ -142,6 +149,62 @@
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
   gtag('config', 'G-ZNHG94R2JK');
+</script>
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "FAQPage",
+ "mainEntity": [
+  {
+   "@type": "Question",
+   "name": "Satılık değerleme nasıl yapılır?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Formda verdiğiniz bilgilerle dairenizi Yeni Fikirtepe ve çevresindeki güncel satış ve ilan emsalleriyle karşılaştırıyoruz. Fiyatı belirleyen başlıca etkenler dairenin bulunduğu site ve etap, kat, oda sayısı, brüt metrekare ve cephe ya da manzara durumudur."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Değerleme ücretli mi?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Hayır, tamamen ücretsizdir. Talep bırakmanız sizi satış yapmaya zorunlu kılmaz."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Sonucu ne zaman öğrenirim?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Aynı gün içinde. Danışmanımız, tercihinize göre telefonla ya da WhatsApp üzerinden size ulaşır."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Hangi sitelerde değerleme yapıyorsunuz?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Emlak Konut Yeni Fikirtepe etaplarının yanı sıra Concord İstanbul, İstanbul 216, Mina Towers, Brooklyn Park, Uplife Kadıköy, The Mandarins ve Fikirtepe çevresindeki diğer sitelerde. Siteniz listede yoksa “Diğer” seçeneğiyle talep bırakabilirsiniz."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Doğru fiyat neden önemli?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Piyasanın üzerinde fiyatlanan daireler uzun süre satılmaz; altında fiyatlananlar ise değer kaybına yol açar. Emsallere dayalı bir fiyat, dairenizin makul sürede ve gerçek değerinden satılmasını sağlar."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Emlak Konut'tan aldığınız daireyi mi satacaksınız?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Gerekli belgeler ve adımlar için Emlak Konut Daire Devir Rehberi’ne göz atın."
+   }
+  }
+ ]
+}
 </script>
 </head>
 <body>
@@ -306,6 +369,22 @@
       <h2>Talebiniz alındı</h2>
       <p>Uzman danışmanımız en kısa sürede sizinle iletişime geçecek.</p>
     </div>
+
+    
+    <section class="info" aria-label="Sık sorulan sorular">
+      <h2>Satılık değerleme nasıl yapılır?</h2>
+      <p>Formda verdiğiniz bilgilerle dairenizi Yeni Fikirtepe ve çevresindeki güncel satış ve ilan emsalleriyle karşılaştırıyoruz. Fiyatı belirleyen başlıca etkenler dairenin bulunduğu site ve etap, kat, oda sayısı, brüt metrekare ve cephe ya da manzara durumudur.</p>
+      <h2>Değerleme ücretli mi?</h2>
+      <p>Hayır, tamamen ücretsizdir. Talep bırakmanız sizi satış yapmaya zorunlu kılmaz.</p>
+      <h2>Sonucu ne zaman öğrenirim?</h2>
+      <p>Aynı gün içinde. Danışmanımız, tercihinize göre telefonla ya da WhatsApp üzerinden size ulaşır.</p>
+      <h2>Hangi sitelerde değerleme yapıyorsunuz?</h2>
+      <p>Emlak Konut Yeni Fikirtepe etaplarının yanı sıra Concord İstanbul, İstanbul 216, Mina Towers, Brooklyn Park, Uplife Kadıköy, The Mandarins ve Fikirtepe çevresindeki diğer sitelerde. Siteniz listede yoksa “Diğer” seçeneğiyle talep bırakabilirsiniz.</p>
+      <h2>Doğru fiyat neden önemli?</h2>
+      <p>Piyasanın üzerinde fiyatlanan daireler uzun süre satılmaz; altında fiyatlananlar ise değer kaybına yol açar. Emsallere dayalı bir fiyat, dairenizin makul sürede ve gerçek değerinden satılmasını sağlar.</p>
+      <h2>Emlak Konut'tan aldığınız daireyi mi satacaksınız?</h2>
+      <p>Gerekli belgeler ve adımlar için <a href="devir-rehberi.html">Emlak Konut Daire Devir Rehberi</a>’ne göz atın.</p>
+    </section>
 
     <p class="note">Bilgileriniz yalnızca değerleme amacıyla kullanılır.</p>
   </div>
