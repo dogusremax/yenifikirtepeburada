@@ -602,9 +602,6 @@ function guvenliJson(r){
   </div>
   <script>
     (function(){
-      var KEY = 'teslimPopupClosed';
-      var d = new Date(), today = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate();
-      try { if (localStorage.getItem(KEY) === today) return; } catch(e){}
       var overlay = document.getElementById('tpOverlay');
       var img = document.getElementById('tpImg');
       var tabs = overlay.querySelectorAll('.tp-tab');
@@ -620,7 +617,6 @@ function guvenliJson(r){
         overlay.classList.remove('show');
         overlay.setAttribute('aria-hidden','true');
         document.removeEventListener('keydown', onKey);
-        try { localStorage.setItem(KEY, today); } catch(e){}
       }
       function onKey(e){ if (e.key === 'Escape') close(); }
       document.getElementById('tpClose').addEventListener('click', close);
