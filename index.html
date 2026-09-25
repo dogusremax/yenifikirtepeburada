@@ -539,7 +539,12 @@ function guvenliJson(r){
       }catch(e){ console.warn('Sessiz hata:', e); }
 
       var card = document.getElementById('dutyCard');
-      setTimeout(function(){ card.classList.add('show'); }, 2600);
+      // Nöbetçi kartı: teslim pop-up'ı bu oturumda gösterildiyse 2,6 sn sonra açılır;
+      // gösterilmediyse pop-up kapanınca açılır (aşağıdaki pop-up betiği çağırır).
+      window.showDutyCard = function(){ card.classList.add('show'); };
+      var tpSeen = false;
+      try { tpSeen = sessionStorage.getItem('tpSeen') === '1'; } catch(e){}
+      if (tpSeen) setTimeout(window.showDutyCard, 2600);
       document.getElementById('dutyClose').addEventListener('click', function(){
         card.classList.remove('show');
       });
@@ -610,26 +615,44 @@ function guvenliJson(r){
       var overlay = document.getElementById('tpOverlay');
       var img = document.getElementById('tpImg');
       var tabs = overlay.querySelectorAll('.tp-tab');
+      // GA4 olayları: teslim_popup_open / _close / _tab / _whatsapp
+      function track(name, params){
+        try { if (typeof gtag === 'function') gtag('event', name, params || {}); } catch(e){}
+      }
       tabs.forEach(function(tab){
         tab.addEventListener('click', function(){
           tabs.forEach(function(t){ t.classList.remove('active'); t.setAttribute('aria-selected','false'); });
           tab.classList.add('active'); tab.setAttribute('aria-selected','true');
           img.src = tab.getAttribute('data-img');
           img.alt = tab.getAttribute('data-alt');
+          track('teslim_popup_tab', { etap: tab.textContent.trim() });
         });
       });
-      function close(){
+      var wa = overlay.querySelector('.tp-wa');
+      if (wa) wa.addEventListener('click', function(){ track('teslim_popup_whatsapp'); });
+      var closed = false;
+      function close(method){
+        if (closed) return; closed = true;
         overlay.classList.remove('show');
         overlay.setAttribute('aria-hidden','true');
         document.removeEventListener('keydown', onKey);
+        track('teslim_popup_close', { method: method || 'x' });
+        if (window.showDutyCard) setTimeout(window.showDutyCard, 700);
       }
-      function onKey(e){ if (e.key === 'Escape') close(); }
-      document.getElementById('tpClose').addEventListener('click', close);
-      overlay.addEventListener('click', function(e){ if (e.target === overlay) close(); });
+      function onKey(e){ if (e.key === 'Escape') close('esc'); }
+      document.getElementById('tpClose').addEventListener('click', function(){ close('x'); });
+      overlay.addEventListener('click', function(e){ if (e.target === overlay) close('arkaplan'); });
+
+      // Oturum başına yalnızca bir kez göster
+      var seen = false;
+      try { seen = sessionStorage.getItem('tpSeen') === '1'; } catch(e){}
+      if (seen) return;
       setTimeout(function(){
         overlay.classList.add('show');
         overlay.setAttribute('aria-hidden','false');
         document.addEventListener('keydown', onKey);
+        try { sessionStorage.setItem('tpSeen', '1'); } catch(e){}
+        track('teslim_popup_open');
       }, 1800);
     })();
   </script>
