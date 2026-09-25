@@ -9,7 +9,7 @@
  * "dogus-gelen-kutusu" Apps Script'ine iletir ve 15 15'ten şablon mesaj gider.
  */
 (function () {
-  var GAS_URL = 'BURAYA_GELEN_KUTUSU_EXEC_ADRESI';
+  var GAS_URL = 'https://script.google.com/macros/s/AKfycbzOv_EaqijVkLwoyxJ9NNG6f2tETYY3Sf9JxQ824CmUgEaNoehFVbCtHk1iGqpvaZpF/exec';
 
   var yol = location.pathname;
   var TALEP =
