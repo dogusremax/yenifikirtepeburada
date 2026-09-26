@@ -498,30 +498,31 @@ function guvenliJson(r){
         name = rota[((days % rota.length) + rota.length) % rota.length];
       }
 
+      // Ofis nöbeti günleri iptal: o gün nöbetçi kartı hiç gösterilmez
+      var ofisGunu = false;
       function render(name){
+        if(name === 'Ofis Nöbeti' || name === 'Ofis'){
+          ofisGunu = true;
+          var c = document.getElementById('dutyCard');
+          if(c){ c.classList.remove('show'); c.style.display = 'none'; }
+          return;
+        }
+        ofisGunu = false;
+        var c2 = document.getElementById('dutyCard');
+        if(c2) c2.style.display = '';
         document.getElementById('dutyName').textContent = name;
         var av = document.getElementById('dutyAvatar');
-        var sub = document.querySelector('#dutyCard .who small');
-        var tag = document.querySelector('#dutyCard .tag');
         var waBtn = document.getElementById('dutyWa');
-        if(name === 'Ofis Nöbeti'){
-          av.textContent = '🏢';
-          if(sub) sub.textContent = 'RE/MAX Doğuş — Ofis';
-          if(tag) tag.textContent = 'Bugün Ofis Nöbeti';
-          waBtn.href = 'https://wa.me/905324724148?text=' +
-            encodeURIComponent('Merhaba, RE/MAX Doğuş ofisi ile görüşmek istiyorum.');
-        } else {
-          var initials = name.split(' ').map(function(p){return p.charAt(0)}).join('').slice(0,2);
-          av.textContent = initials;
-          if(foto[name]){
-            var im = new Image();
-            im.onload = function(){ av.appendChild(im); };
-            im.src = 'https://drive.google.com/thumbnail?id=' + foto[name] + '&sz=w240';
-            im.alt = name;
-          }
-          waBtn.href = 'https://wa.me/905324724148?text=' +
-            encodeURIComponent('Merhaba, nöbetçi danışman ' + name + ' ile görüşmek istiyorum.');
+        var initials = name.split(' ').map(function(p){return p.charAt(0)}).join('').slice(0,2);
+        av.textContent = initials;
+        if(foto[name]){
+          var im = new Image();
+          im.onload = function(){ av.appendChild(im); };
+          im.src = 'https://drive.google.com/thumbnail?id=' + foto[name] + '&sz=w240';
+          im.alt = name;
         }
+        waBtn.href = 'https://wa.me/905324724148?text=' +
+          encodeURIComponent('Merhaba, nöbetçi danışman ' + name + ' ile görüşmek istiyorum.');
       }
       render(name);
 
@@ -541,7 +542,7 @@ function guvenliJson(r){
       var card = document.getElementById('dutyCard');
       // Nöbetçi kartı: teslim pop-up'ı bu oturumda gösterildiyse 2,6 sn sonra açılır;
       // gösterilmediyse pop-up kapanınca açılır (aşağıdaki pop-up betiği çağırır).
-      window.showDutyCard = function(){ card.classList.add('show'); };
+      window.showDutyCard = function(){ if(!ofisGunu) card.classList.add('show'); };
       var tpSeen = false;
       try { tpSeen = sessionStorage.getItem('tpSeen') === '1'; } catch(e){}
       if (tpSeen) setTimeout(window.showDutyCard, 2600);
