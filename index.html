@@ -478,7 +478,7 @@ function guvenliJson(r){
         "2026-09-23":"Evşen Özazman",
         "2026-09-24":"İrem Aleyna Tetik",
         "2026-09-25":"Özlem Varol",
-        "2026-09-26":"Gizem Gök",
+        "2026-09-26":"Ofis Nöbeti",
         "2026-09-27":"İrem Aleyna Tetik",
         "2026-09-28":"Orhan Özazman",
         "2026-09-29":"Gamze Yetkin",
@@ -526,23 +526,29 @@ function guvenliJson(r){
       }
       render(name);
 
-      // Nöbet uygulamasından canlı oku (Google Takvim ile birebir); olmazsa üstteki tablo/formül kalır
-      try{
-        var ctrl = new AbortController(); setTimeout(function(){ ctrl.abort(); }, 4000);
-        fetch('https://script.google.com/macros/s/AKfycbzDMpgNZAhXFZfCbp3iuUxNAJwjq8pB2xt86eluuj2JPNU-J2sfeCHUsG1m0OrJjo7RvA/exec?action=today', {signal: ctrl.signal})
-          .then(guvenliJson)
-          .then(function(j){
-            if(j && j.ok && j.name && j.date === key){
-              var n = (j.name === 'Ofis') ? 'Ofis Nöbeti' : j.name;
-              if(n !== name){ name = n; render(name); }
-            }
-          }).catch(function(){});
-      }catch(e){ console.warn('Sessiz hata:', e); }
+      // Nöbet uygulamasından canlı oku (Google Takvim ile birebir). Kart, takvimin cevabı
+      // gelene kadar açılmaz; 12 sn'de cevap gelmezse üstteki tablo/formül kullanılır.
+      var canli = new Promise(function(bitti){
+        setTimeout(bitti, 12000);
+        try{
+          fetch('https://script.google.com/macros/s/AKfycbzDMpgNZAhXFZfCbp3iuUxNAJwjq8pB2xt86eluuj2JPNU-J2sfeCHUsG1m0OrJjo7RvA/exec?action=today')
+            .then(guvenliJson)
+            .then(function(j){
+              if(j && j.ok && j.date === key){
+                if(!j.name){ ofisGunu = true; render('Ofis'); }   // takvimde kayıt yok: kart gösterme
+                else {
+                  var n = (j.name === 'Ofis') ? 'Ofis Nöbeti' : j.name;
+                  if(n !== name){ name = n; render(name); }
+                }
+              }
+            }).catch(function(){}).then(bitti);
+        }catch(e){ console.warn('Sessiz hata:', e); bitti(); }
+      });
 
       var card = document.getElementById('dutyCard');
       // Nöbetçi kartı: teslim pop-up'ı bu oturumda gösterildiyse 2,6 sn sonra açılır;
       // gösterilmediyse pop-up kapanınca açılır (aşağıdaki pop-up betiği çağırır).
-      window.showDutyCard = function(){ if(!ofisGunu) card.classList.add('show'); };
+      window.showDutyCard = function(){ canli.then(function(){ if(!ofisGunu) card.classList.add('show'); }); };
       var tpSeen = false;
       try { tpSeen = sessionStorage.getItem('tpSeen') === '1'; } catch(e){}
       if (tpSeen) setTimeout(window.showDutyCard, 2600);
