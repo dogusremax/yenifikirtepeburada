@@ -416,9 +416,11 @@
       p.append('tur',    'satilik');
       p.append('kaynak', 'yenifikirtepeburada.com · Satılık Değerleme');
       p.append('waIzin', data.get('wa_izin') ? '1' : '0');
-      p.append('not', [data.get('site'), data.get('etap'), data.get('oda_sayisi'),
-                       data.get('brut_m2') ? data.get('brut_m2') + ' m2' : '',
-                       data.get('cephe')].filter(Boolean).join(' \u00b7 '));
+      p.append('bolge', [data.get('site'), data.get('etap')].filter(Boolean).join(' '));
+      p.append('oda',   data.get('oda_sayisi') || '');
+      p.append('m2',    data.get('brut_m2') || '');
+      p.append('not', [data.get('kat'), data.get('cephe'),
+                       data.get('edinme')].filter(Boolean).join(' \u00b7 '));
       fetch('https://script.google.com/macros/s/AKfycbwqxxXftJ_b1TrF_GFYfus6dtBe6lp4gDWTZVl9QuXAjYxjHfSvl2Ni_X3mJKm6zAss_w/exec', { method:'POST', body:p, mode:'no-cors' }).catch(function(){});
     }catch(err){ console.warn('Servis bildirimi gonderilemedi:', err); }
 
