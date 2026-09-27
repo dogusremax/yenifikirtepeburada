@@ -137,6 +137,9 @@
 .info p{color:var(--gray);font-weight:300;font-size:.96rem;line-height:1.6;margin:0}
 .info a{color:var(--blue);font-weight:500;text-decoration:underline}
 @media(max-width:520px){.info{padding:22px 20px}}
+.waonay{display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:14px;line-height:1.45}
+.waonay input{width:20px;height:20px;flex:none;margin-top:1px;accent-color:#25D366}
+.waonay span{color:#334}
 </style>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZNHG94R2JK"></script>
@@ -357,6 +360,14 @@
         <input type="tel" name="telefon" required placeholder="05XX XXX XX XX">
       </div>
 
+
+      <div class="group">
+        <label class="waonay">
+          <input type="checkbox" name="wa_izin" value="1">
+          <span>Talebimle ilgili <strong>WhatsApp</strong> üzerinden bilgilendirilmek istiyorum.</span>
+        </label>
+      </div>
+
       <button type="submit" class="submit">Kiralık Değer Talebi Gönder</button>
     </form>
 
@@ -390,6 +401,23 @@
     e.preventDefault();
     var form = e.target;
     var data = new FormData(form);
+
+    // Ofis servisine bildir — müşteriye WhatsApp, nöbetçi danışmana e-posta gider.
+    // Hata verirse form yine Formspree'ye gönderilir, akış kesilmez.
+    try{
+      var p = new URLSearchParams();
+      p.append('action', 'talepBildir');
+      p.append('ad',     data.get('ad_soyad') || '');
+      p.append('tel',    data.get('telefon')  || '');
+      p.append('tur',    'kiralik');
+      p.append('kaynak', 'yenifikirtepeburada.com · Kiralık Değerleme');
+      p.append('waIzin', data.get('wa_izin') ? '1' : '0');
+      p.append('not', [data.get('site'), data.get('etap'), data.get('oda_sayisi'),
+                       data.get('brut_m2') ? data.get('brut_m2') + ' m2' : '',
+                       data.get('cephe')].filter(Boolean).join(' \u00b7 '));
+      fetch('https://script.google.com/macros/s/AKfycbwqxxXftJ_b1TrF_GFYfus6dtBe6lp4gDWTZVl9QuXAjYxjHfSvl2Ni_X3mJKm6zAss_w/exec', { method:'POST', body:p, mode:'no-cors' }).catch(function(){});
+    }catch(err){ console.warn('Servis bildirimi gonderilemedi:', err); }
+
     fetch('https://formspree.io/f/mdajqbgo', {method:'POST', headers:{'Accept':'application/json'}, body:data})
       .then(function(){
         document.getElementById('formCard').style.display='none';
