@@ -201,7 +201,9 @@
 
       <div class="group">
         <label class="waonay">
-          <input type="checkbox" name="wa_izin" value="1">
+          <input type="checkbox" name="wa_izin" value="1" required
+                 oninvalid="this.setCustomValidity('Devam etmek için bu kutuyu işaretleyin.')"
+                 oninput="this.setCustomValidity('')">
           <span>Talebimle ilgili <strong>WhatsApp</strong> üzerinden bilgilendirilmek istiyorum.</span>
         </label>
       </div>
