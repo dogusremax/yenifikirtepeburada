@@ -500,6 +500,7 @@ function guvenliJson(r){
 
       // Ofis nöbeti günleri iptal: o gün nöbetçi kartı hiç gösterilmez
       var ofisGunu = false;
+      var cizilen = null;
       function render(name){
         if(name === 'Ofis Nöbeti' || name === 'Ofis'){
           ofisGunu = true;
@@ -508,6 +509,7 @@ function guvenliJson(r){
           return;
         }
         ofisGunu = false;
+        cizilen = name;
         var c2 = document.getElementById('dutyCard');
         if(c2) c2.style.display = '';
         document.getElementById('dutyName').textContent = name;
@@ -517,18 +519,19 @@ function guvenliJson(r){
         av.textContent = initials;
         if(foto[name]){
           var im = new Image();
-          im.onload = function(){ av.appendChild(im); };
+          // geç yüklenen eski fotoğraf, sonradan gelen danışmanın üstüne binmesin
+          im.onload = function(){ if(cizilen === name) av.appendChild(im); };
           im.src = 'https://drive.google.com/thumbnail?id=' + foto[name] + '&sz=w240';
           im.alt = name;
         }
         waBtn.href = 'https://wa.me/902163151515?text=' +
           encodeURIComponent('Merhaba, nöbetçi danışman ' + name + ' ile görüşmek istiyorum.');
       }
-      render(name);
-
       // Nöbet uygulamasından canlı oku (Google Takvim ile birebir). Kart, takvimin cevabı
-      // gelene kadar açılmaz; 12 sn'de cevap gelmezse üstteki tablo/formül kullanılır.
-      var canli = new Promise(function(bitti){
+      // gelene kadar çizilmez ve açılmaz; 12 sn'de cevap gelmezse üstteki tablo/formül kullanılır.
+      // (Önce tablodaki isim çizilip sonra takvimdekine geçilmesin diye tek sefer çizilir.)
+      var canli = new Promise(function(coz){
+        function bitti(){ if(cizilen === null && !ofisGunu) render(name); coz(); }
         setTimeout(bitti, 12000);
         try{
           fetch('https://script.google.com/macros/s/AKfycbzDMpgNZAhXFZfCbp3iuUxNAJwjq8pB2xt86eluuj2JPNU-J2sfeCHUsG1m0OrJjo7RvA/exec?action=today')
@@ -538,7 +541,7 @@ function guvenliJson(r){
                 if(!j.name){ ofisGunu = true; render('Ofis'); }   // takvimde kayıt yok: kart gösterme
                 else {
                   var n = (j.name === 'Ofis') ? 'Ofis Nöbeti' : j.name;
-                  if(n !== name){ name = n; render(name); }
+                  if(n !== cizilen){ name = n; render(name); }
                 }
               }
             }).catch(function(){}).then(bitti);
