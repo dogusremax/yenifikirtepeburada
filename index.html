@@ -578,7 +578,7 @@ function guvenliJson(r){
     .tp-close{position:absolute;top:10px;right:10px;width:42px;height:42px;border:2px solid #0a2a5e;border-radius:50%;background:#fff;color:#0a2a5e;font-size:30px;font-weight:700;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 3px rgba(255,255,255,.35),0 4px 12px rgba(0,0,0,.35);transition:transform .2s,background .2s;z-index:2}
     .tp-close:hover{transform:scale(1.08);background:#f1f4f9}
     .tp-tabs{display:flex;gap:8px;padding:14px 16px 0;background:#fff}
-    .tp-tab{flex:1;padding:10px 12px;border:1.5px solid #0a2a5e;border-radius:10px;background:#fff;color:#0a2a5e;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;transition:background .2s,color .2s}
+    .tp-tab{flex:1 1 auto;white-space:nowrap;padding:10px 12px;border:1.5px solid #0a2a5e;border-radius:10px;background:#fff;color:#0a2a5e;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;transition:background .2s,color .2s}
     .tp-tab.active{background:#0a2a5e;color:#fff}
     .tp-body{padding:14px 16px;overflow:auto;flex:1 1 auto;min-height:0}
     .tp-body img{display:block;width:auto;max-width:100%;height:auto;max-height:52vh;margin:0 auto;border-radius:10px;border:1px solid #e3e8f0}
@@ -595,7 +595,8 @@ function guvenliJson(r){
       .tp-body{padding:12px}
       .tp-body img{max-height:42vh}
       .tp-title{font-size:19px}
-      .tp-tab{font-size:13px;padding:9px 8px}
+      .tp-tabs{gap:6px;padding:12px 12px 0}
+      .tp-tab{font-size:12.5px;padding:9px 7px}
       .tp-wa{font-size:14px}
     }
   </style>
@@ -609,6 +610,7 @@ function guvenliJson(r){
       <div class="tp-tabs" role="tablist">
         <button type="button" class="tp-tab active" role="tab" aria-selected="true" data-img="teslim-2etap.jpg" data-alt="2. Etap blok teslim tarihleri">2. Etap</button>
         <button type="button" class="tp-tab" role="tab" aria-selected="false" data-img="teslim-3etap-2kisim.jpg" data-alt="3. Etap 2. Kısım blok teslim tarihleri">3. Etap 2. Kısım</button>
+        <button type="button" class="tp-tab" role="tab" aria-selected="false" data-img="teslim-11etap.jpg" data-alt="11. Etap blok teslim tarihleri">11. Etap</button>
       </div>
       <div class="tp-body">
         <img id="tpImg" src="teslim-2etap.jpg" alt="2. Etap blok teslim tarihleri">
