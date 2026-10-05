@@ -1,0 +1,55 @@
+name: Günün nöbetçisi
+
+# Her gün Nöbet uygulamasından (Google Takvim) bugünün nöbetçisini okur ve
+# siteye nobet-bugun.json olarak kaydeder. Site önce bu dosyaya bakar,
+# canlı bağlantı yedek olarak kalır. Nöbet uygulamasına yalnızca okuma isteği gider.
+# Saatler UTC: 21:05 = 00:05 TR; gecikme/aksaklığa karşı sabaha kadar 3 tekrar.
+on:
+  schedule:
+    - cron: "5 21 * * *"
+    - cron: "35 21 * * *"
+    - cron: "5 1 * * *"
+    - cron: "5 4 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: nobet
+  cancel-in-progress: false
+
+jobs:
+  guncelle:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Nöbetçiyi oku
+        run: |
+          set -e
+          URL="https://script.google.com/macros/s/AKfycbzDMpgNZAhXFZfCbp3iuUxNAJwjq8pB2xt86eluuj2JPNU-J2sfeCHUsG1m0OrJjo7RvA/exec?action=today"
+          BUGUN=$(TZ=Europe/Istanbul date +%F)
+          for i in 1 2 3 4 5; do
+            if curl -sSL --max-time 60 "$URL" -o yanit.json \
+               && jq -e --arg d "$BUGUN" '.ok == true and .date == $d' yanit.json >/dev/null; then
+              jq '{date, name}' yanit.json > nobet-bugun.json
+              cat nobet-bugun.json
+              rm -f yanit.json
+              exit 0
+            fi
+            echo "Deneme $i başarısız, 30 sn sonra tekrar"; sleep 30
+          done
+          echo "Nöbet uygulamasından geçerli cevap alınamadı"; exit 1
+
+      - name: Kaydet
+        run: |
+          if git diff --quiet -- nobet-bugun.json 2>/dev/null && git ls-files --error-unmatch nobet-bugun.json >/dev/null 2>&1; then
+            echo "Değişiklik yok"; exit 0
+          fi
+          git config user.name "dogusremax"
+          git config user.email "dogusremax@gmail.com"
+          git add nobet-bugun.json
+          git commit -m "Günün nöbetçisi: $(jq -r '.date + " " + (.name // "Ofis/yok")' nobet-bugun.json)"
+          git pull --rebase -q origin main
+          git push

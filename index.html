@@ -558,25 +558,38 @@ function guvenliJson(r){
         waBtn.href = 'https://wa.me/902163151515?text=' +
           encodeURIComponent('Merhaba, nöbetçi danışman ' + name + ' ile görüşmek istiyorum.');
       }
-      // Nöbet uygulamasından canlı oku (Google Takvim ile birebir). Kart, takvimin cevabı
-      // gelene kadar çizilmez ve açılmaz; 12 sn'de cevap gelmezse üstteki tablo/formül kullanılır.
-      // (Önce tablodaki isim çizilip sonra takvimdekine geçilmesin diye tek sefer çizilir.)
+      // Nöbetçi kaynağı sırası:
+      // 1) nobet-bugun.json — her gece GitHub Actions'ın takvimden yazdığı dosya (sitenin kendi içinde, anında açılır)
+      // 2) Nöbet uygulamasından canlı okuma (Google Takvim ile birebir)
+      // 3) İkisi de olmazsa üstteki tablo/formül (12 sn sonra)
+      // Kart tek sefer çizilir; önce tablodaki isim çizilip sonra takvimdekine geçilmez.
       var canli = new Promise(function(coz){
-        function bitti(){ if(cizilen === null && !ofisGunu) render(name); coz(); }
+        var tamam = false;
+        function bitti(){ if(tamam) return; tamam = true; if(cizilen === null && !ofisGunu) render(name); coz(); }
+        function uygula(j){
+          if(!(j && j.date === key)) return false;
+          if(!j.name){ ofisGunu = true; render('Ofis'); }   // takvimde kayıt yok: kart gösterme
+          else {
+            var n = (j.name === 'Ofis') ? 'Ofis Nöbeti' : j.name;
+            if(n !== cizilen){ name = n; render(name); }
+          }
+          return true;
+        }
+        function canliOku(){
+          try{
+            fetch('https://script.google.com/macros/s/AKfycbzDMpgNZAhXFZfCbp3iuUxNAJwjq8pB2xt86eluuj2JPNU-J2sfeCHUsG1m0OrJjo7RvA/exec?action=today')
+              .then(guvenliJson)
+              .then(function(j){ if(j && j.ok) uygula(j); })
+              .catch(function(){}).then(bitti);
+          }catch(e){ console.warn('Sessiz hata:', e); bitti(); }
+        }
         setTimeout(bitti, 12000);
         try{
-          fetch('https://script.google.com/macros/s/AKfycbzDMpgNZAhXFZfCbp3iuUxNAJwjq8pB2xt86eluuj2JPNU-J2sfeCHUsG1m0OrJjo7RvA/exec?action=today')
+          fetch('nobet-bugun.json?t=' + Date.now(), {cache:'no-store'})
             .then(guvenliJson)
-            .then(function(j){
-              if(j && j.ok && j.date === key){
-                if(!j.name){ ofisGunu = true; render('Ofis'); }   // takvimde kayıt yok: kart gösterme
-                else {
-                  var n = (j.name === 'Ofis') ? 'Ofis Nöbeti' : j.name;
-                  if(n !== cizilen){ name = n; render(name); }
-                }
-              }
-            }).catch(function(){}).then(bitti);
-        }catch(e){ console.warn('Sessiz hata:', e); bitti(); }
+            .then(function(j){ if(uygula(j)) bitti(); else canliOku(); })
+            .catch(canliOku);
+        }catch(e){ canliOku(); }
       });
 
       var card = document.getElementById('dutyCard');
