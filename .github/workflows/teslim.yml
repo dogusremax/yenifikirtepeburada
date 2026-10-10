@@ -10,9 +10,6 @@ on:
     - cron: "15 9 * * *"
     - cron: "15 14 * * *"
   workflow_dispatch:
-  push:
-    branches: [claude/etap-teslim-tarihleri-anoaws]
-    paths: [scripts/teslim_guncelle.py, .github/workflows/teslim.yml]
 
 permissions:
   contents: write
