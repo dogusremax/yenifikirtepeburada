@@ -147,14 +147,29 @@
   .res a{color:inherit;font-weight:600}
   .pick{border-top:4px solid var(--red)}
   .pick h2{font-size:1.2rem;color:var(--blue);font-weight:700;margin-bottom:14px}
-  .tabs{display:flex;gap:10px;flex-wrap:wrap}
-  .tab{font:inherit;text-align:left;padding:10px 16px;border:1.5px solid var(--blue);border-radius:10px;background:#fff;color:var(--blue);cursor:pointer;transition:.15s;line-height:1.3}
+  .ph{display:flex;align-items:baseline;justify-content:space-between;gap:8px 18px;flex-wrap:wrap;margin-bottom:14px}
+  .ph h2{margin:0}
+  .leg{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.8rem;color:var(--gray)}
+  .leg span{display:inline-flex;align-items:center;gap:6px}
+  .leg b{color:var(--blue)}
+  .tabs{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:10px}
+  .tab{font:inherit;text-align:left;padding:10px 14px;border:1.5px solid var(--blue);border-radius:10px;background:#fff;color:var(--blue);cursor:pointer;transition:.15s;line-height:1.3}
   .tab:hover{background:var(--soft)}
   .tab b{display:block;font-size:.98rem}
   .tab small{display:block;font-size:.76rem;font-weight:500;opacity:.75}
   .tab.active{background:var(--blue);color:#fff}
   .tab .dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:6px;vertical-align:1px;background:#9aa3b2}
+  .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#9aa3b2;flex:none}
+  .dot.now{background:var(--red)} .dot.done{background:#1b9a4a} .dot.soon{background:#f0a400} .dot.ok{background:#1fb855}
   .tab .dot.now{background:var(--red)} .tab .dot.done{background:#1b9a4a}
+  .tab .dot.soon{background:#f0a400} .tab .dot.ok{background:#1fb855}
+  .tab.y{border:1.5px dashed #b8c1d1}
+  .tab.t{border-color:#cfe9db;background:#f3fbf6}
+  .tab.t:hover{border-color:#1fb855}
+  .tab.t.active{background:#14955a;border-color:#14955a}
+  .tab.y.active{border-style:solid;border-color:var(--blue)}
+  .tab.active .dot{box-shadow:0 0 0 2px rgba(255,255,255,.5)}
+  @media(max-width:720px){.tabs{grid-template-columns:repeat(2,1fr);gap:8px}.tab{padding:9px 12px}.tab b{font-size:.92rem}}
   .pick .more{font-size:.86rem;color:var(--gray);margin-top:14px;font-weight:300}
   .pick .more a{color:var(--blue);font-weight:600}
   .ehead{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:6px 16px;margin:6px 0 16px}
@@ -375,12 +390,8 @@
 
     <section>
       <div class="card pick">
-        <h2>Etap seçin</h2>
+        <div class="ph"><h2>Etap seçin</h2><div class="leg" id="leg"></div></div>
         <div class="tabs" role="tablist" id="tabs"></div>
-        <div class="soon-h"><b>Yakında</b><span>Programı henüz açıklanmayan etaplar</span></div>
-        <div class="soon" id="soon"></div>
-        <div class="soon-h ok"><b>Teslim edildi</b><span>Anahtarları sahiplerine verilen etaplar</span></div>
-        <div class="soon" id="done"></div>
       </div>
     </section>
 
@@ -633,22 +644,11 @@
         '<p>Program açıklandığı gün bu sayfada blok blok ve daire daire yayınlanacak. Son durumu ve detayları öğrenmek için bize ulaşın.</p>')+
         (y[1]?'<div class="num"><span><b>'+esc(y[1].split(' ')[0])+'</b>'+esc(y[1].split(' ')[1])+'</span></div>':'')+
         '<div class="acts"><a class="wa" href="'+wa+'" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="'+WAP+'"/></svg>WhatsApp\'tan yazın</a><a class="tel" href="tel:+902163151515">0216 315 15 15</a></div>';
-      [].forEach.call(document.querySelectorAll('.tab'),function(t){t.classList.remove('active');t.setAttribute('aria-selected',false);});
-      [].forEach.call(document.querySelectorAll('.sc'),function(c){c.classList.toggle('active',+c.getAttribute('data-n')===y[0]);});
+      isaretle('y'+y[0]);
       var a=$('yk').querySelector('.wa');a.addEventListener('click',function(){track('teslim_yakinda_whatsapp',{etap:ad});});
     }
-    function yakinListe(){
-      $('soon').innerHTML=yakinlar().map(function(y){return '<button type="button" class="sc" data-n="'+y[0]+'" aria-label="'+y[0]+'. Etap, yakında"><i></i>'+y[0]+'. Etap</button>';}).join('');
-      $('done').innerHTML=teslimler().map(function(y){return '<button type="button" class="sc ok" data-n="'+y[0]+'" aria-label="'+y[0]+'. Etap, teslim edildi"><i></i>'+y[0]+'. Etap</button>';}).join('');
-    }
-    function chipTik(ev){var c=ev.target.closest('.sc');if(!c)return;var n=+c.getAttribute('data-n');
-      var y=YAKIN.filter(function(x){return x[0]===n;})[0];renderYakin(y);history.replaceState(null,'','#etap-'+n);track(teslimEdildi(n)?'teslim_takvimi_teslim_edildi':'teslim_takvimi_yakinda',{etap:n});
-      if(window.innerWidth<760)$('etap').scrollIntoView({behavior:'smooth',block:'start'});}
-    $('soon').addEventListener('click',chipTik);$('done').addEventListener('click',chipTik);
-
     function render(i){
       cur=i;var e=ETAP[i],o=ozet(e);gorunum(false);
-      [].forEach.call(document.querySelectorAll('.sc'),function(c){c.classList.remove('active');});
       viz(e,o);
       $('src').innerHTML=e.src;
       $('etitle').textContent=e.ad+' Teslim Takvimi';
@@ -660,19 +660,29 @@
       $('lbtn').textContent=e.kapi?'Teslim günümü göster':'Tarihi göster';
       $('blok').innerHTML='<option value="">Seçin</option>'+e.b.map(function(r){return '<option>'+esc(r[0])+'</option>';}).join('');
       $('kapi').value='';res.className='res';res.innerHTML='';
-      [].forEach.call(document.querySelectorAll('.tab'),function(t,j){t.classList.toggle('active',j===i);t.setAttribute('aria-selected',j===i);});
+      isaretle('p'+e.id);
     }
+    function isaretle(k){[].forEach.call(document.querySelectorAll('.tab'),function(t){var a=t.getAttribute('data-k')===k;t.classList.toggle('active',a);t.setAttribute('aria-selected',a);});}
     var tabs=$('tabs');
+    function no(id){var p=String(id).split('-');return +p[0]+(p[1]?p[1]/10:0);}
     function sekmeler(){
       ETAP.sort(function(a,b){var x=ozet(a),y=ozet(b);return SIRA[x.st]-SIRA[y.st]||(x.bas<y.bas?-1:x.bas>y.bas?1:0);});
+      var L=[],say={now:0,next:0,done:0,soon:0,ok:0};
+      ETAP.forEach(function(e){var st=ozet(e).st;say[st]++;L.push({n:no(e.id),k:'p'+e.id,c:'',ad:e.ad,st:st,lab:DURUM[st],e:e});});
+      yakinlar().forEach(function(y){say.soon++;L.push({n:y[0]-.01,k:'y'+y[0],c:' y',ad:y[0]+'. Etap'+(y[0]===3?' (diğer)':''),st:'soon',lab:'Yakında',y:y});});
+      teslimler().forEach(function(y){say.ok++;L.push({n:y[0],k:'y'+y[0],c:' t',ad:y[0]+'. Etap',st:'ok',lab:'Teslim edildi',y:y});});
+      L.sort(function(a,b){return a.n-b.n;});
       tabs.innerHTML='';
-      ETAP.forEach(function(e,i){var o=ozet(e),b=document.createElement('button');b.type='button';b.className='tab';b.setAttribute('role','tab');
-        b.innerHTML='<b>'+esc(e.ad)+'</b><small><span class="dot '+o.st+'"></span>'+DURUM[o.st]+'</small>';
-        b.onclick=function(){render(i);history.replaceState(null,'','#etap-'+e.id);track('teslim_takvimi_tab',{etap:e.ad});
+      L.forEach(function(x){var b=document.createElement('button');b.type='button';b.className='tab'+x.c;b.setAttribute('role','tab');b.setAttribute('data-k',x.k);
+        b.innerHTML='<b>'+esc(x.ad)+'</b><small><span class="dot '+x.st+'"></span>'+x.lab+'</small>';
+        b.onclick=function(){
+          if(x.e){ETAP.forEach(function(e,j){if(e===x.e)render(j);});history.replaceState(null,'','#etap-'+x.e.id);track('teslim_takvimi_tab',{etap:x.e.ad});}
+          else{renderYakin(x.y);history.replaceState(null,'','#etap-'+x.y[0]);track(x.st==='ok'?'teslim_takvimi_teslim_edildi':'teslim_takvimi_yakinda',{etap:x.y[0]});}
           if(window.innerWidth<760)$('etap').scrollIntoView({behavior:'smooth',block:'start'});};
         tabs.appendChild(b);});
-      yakinListe();
-      if(cur<0){var h=/etap-(\d+)/.exec(location.hash);if(h)[].forEach.call(document.querySelectorAll('.sc'),function(c){c.classList.toggle('active',c.getAttribute('data-n')===h[1]);});}
+      var g=[['now','Teslimde'],['next','Yaklaşıyor'],['soon','Yakında'],['ok','Teslim edildi'],['done','Tamamlandı']];
+      $('leg').innerHTML='<span><b>'+L.length+'</b> etap</span>'+g.filter(function(z){return say[z[0]];}).map(function(z){return '<span><i class="dot '+z[0]+'"></i>'+z[1]+' <b>'+say[z[0]]+'</b></span>';}).join('');
+      if(cur>=0&&ETAP[cur])isaretle('p'+ETAP[cur].id);
     }
     function ac(id){var i=0,var_=false;ETAP.forEach(function(e,j){if(e.id===id){i=j;var_=true;}});
       if(!var_){var y=yakinlar().concat(teslimler()).filter(function(x){return String(x[0])===id;})[0];if(y)return renderYakin(y);}
@@ -705,7 +715,7 @@
       // Otomatik listede olmayan etapları (elle girilen) koru
       ETAP.forEach(function(f){if(!yeni.some(function(e){return e.id===f.id;}))yeni.push(f);});
       ETAP=yeni;sekmeler();
-      if(!kullanici)ac(secili||id);else if(cur>=0){ETAP.forEach(function(e,j){if(e.id===id)cur=j;});[].forEach.call(document.querySelectorAll('.tab'),function(t,j){t.classList.toggle('active',j===cur);});}
+      if(!kullanici)ac(secili||id);else if(cur>=0){ETAP.forEach(function(e,j){if(e.id===id)cur=j;});isaretle('p'+id);}else{var h=/etap-(\d+)/.exec(location.hash);if(h)isaretle('y'+h[1]);}
     }).catch(function(){});
   })();
   </script>
