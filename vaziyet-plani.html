@@ -77,7 +77,7 @@
   @media(max-width:640px){.stats{grid-template-columns:repeat(2,1fr)}}
 
   /* Harita kartı */
-  .mapcard{position:relative;border-radius:24px;overflow:hidden;background:#dfe7d2;transition:background 1.6s ease;box-shadow:0 30px 60px -30px rgba(5,10,48,.45),0 0 0 1px rgba(5,10,48,.06)}
+  .mapcard{position:relative;border-radius:24px;overflow:hidden;background:#cfd8c4;transition:background 1.6s ease;box-shadow:0 30px 60px -30px rgba(5,10,48,.45),0 0 0 1px rgba(5,10,48,.06)}
   .mapcard.night{background:#050A30}
   .bar{position:relative;z-index:6;display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:12px 12px 10px;background:linear-gradient(180deg,#bfe0ff 0%,#e7f3ff 100%);transition:color 1.2s}
   .bar::before{content:'';position:absolute;inset:0;background:linear-gradient(180deg,#050A30 0%,#121b5c 100%);opacity:0;transition:opacity 1.6s ease;z-index:-1}
@@ -106,36 +106,21 @@
 
   .map{position:relative;width:100%;overflow:hidden;touch-action:pan-y;-webkit-tap-highlight-color:transparent}
   .world{position:absolute;left:0;top:0;transform-origin:0 0}
-  .world canvas,.world svg,.world .lay{position:absolute;inset:0;width:100%;height:100%}
-  .lay{pointer-events:none}
-  .tint{background:#0a1446;mix-blend-mode:multiply;opacity:0;transition:opacity .9s cubic-bezier(.4,0,.2,1)}
+  .world img,.world svg,.world .lay{position:absolute;inset:0;width:100%;height:100%}
+  .lay{pointer-events:none;display:block;object-fit:fill;user-select:none;-webkit-user-drag:none}
+  .ngt{opacity:0;transition:opacity .9s cubic-bezier(.4,0,.2,1)}
+  .night .ngt{opacity:1;transition:opacity 1.6s cubic-bezier(.4,0,.2,1) .1s}
   .dusk{background:linear-gradient(105deg,rgba(255,138,52,.55),rgba(251,81,96,.38) 45%,rgba(110,60,170,.3));opacity:0}
   .glow{mix-blend-mode:screen;opacity:0;transition:opacity .5s ease}
-  .night .tint{opacity:.9;transition:opacity 1.5s cubic-bezier(.4,0,.2,1) .15s}
-  .night .g1{opacity:1;transition:opacity .7s ease .75s}
-  .night .g2{opacity:1;transition:opacity .6s ease 1.05s}
-  .night .g3{opacity:1;transition:opacity .6s ease 1.35s}
+  .night .g1{opacity:1;transition:opacity .8s ease .8s}
+  .night .g2{opacity:1;transition:opacity .9s ease 1.2s}
   .dusk.run{animation:dusk 2s ease-in-out}
   @keyframes dusk{0%{opacity:0}35%{opacity:1}100%{opacity:0}}
 
   /* Etap alanları (SVG) */
-  .plots .p{fill:var(--c);fill-opacity:.16;stroke:var(--c);stroke-width:2.2;stroke-opacity:.75;stroke-linejoin:round;cursor:pointer;transition:fill-opacity .4s,stroke-width .3s,stroke-opacity .4s,opacity .4s}
-  .plots .p:hover,.plots .p.sel{fill-opacity:.32;stroke-width:4;stroke-opacity:1}
-  .night .plots .p{fill-opacity:.1;stroke-opacity:.95;stroke-width:2.6}
-  .night .plots .p.sel,.night .plots .p:hover{fill-opacity:.26;stroke-width:4.5}
-  .plots .halo{fill:none;stroke:var(--c);stroke-width:12;stroke-opacity:0;stroke-linejoin:round;pointer-events:none;transition:stroke-opacity 1s ease 1s}
-  .night .plots .halo{stroke-opacity:.22}
-  .plots .now .halo{animation:breathe 2.4s ease-in-out infinite}
-  @keyframes breathe{0%,100%{stroke-width:8}50%{stroke-width:18}}
+  .plots .p{fill:var(--c);fill-opacity:0;stroke:#fff;stroke-width:2.5;stroke-opacity:0;stroke-dasharray:none;stroke-linejoin:round;cursor:pointer;transition:fill-opacity .4s,stroke-width .3s,stroke-opacity .4s,opacity .4s}
+  
   .plots g.dim{opacity:.18}
-  .cars path{fill:none;stroke-linecap:round;stroke-width:3.2;transition:stroke 1.2s}
-  .cars .e{stroke:#fff;stroke-dasharray:.1 46;animation:drive 12s linear infinite}
-  .cars .w{stroke:#3c4250;stroke-dasharray:.1 52;animation:drive2 14s linear infinite}
-  .cars .b{stroke-width:2.4;stroke-dasharray:.1 60;animation:drive 18s linear infinite}
-  .night .cars .e{stroke:#fff3cf}
-  .night .cars .w{stroke:#ff4d5e}
-  @keyframes drive{to{stroke-dashoffset:-460}}
-  @keyframes drive2{to{stroke-dashoffset:520}}
 
   /* Etap iğneleri */
   .pins{position:absolute;inset:0;pointer-events:none}
@@ -158,11 +143,9 @@
   .pop{opacity:0;transform:scale(.4)}
   .shown .pop{opacity:1;transform:none;transition:opacity .45s ease var(--d2,0s),transform .6s cubic-bezier(.3,1.5,.5,1) var(--d2,0s)}
 
-  .logo{position:absolute;z-index:5;left:12px;top:10px;width:84px;opacity:.95;pointer-events:none;filter:drop-shadow(0 2px 6px rgba(5,10,48,.4))}
   .hint{position:absolute;z-index:5;left:12px;bottom:10px;font-size:.72rem;font-weight:600;color:var(--navy);background:rgba(255,255,255,.85);padding:5px 10px;border-radius:999px;transition:opacity .6s,background 1.2s,color 1.2s;pointer-events:none}
   .night .hint{background:rgba(5,10,48,.7);color:#fff}
   .hint.off{opacity:0}
-  .rot .logo{left:auto;right:10px;width:58px}
 
   /* Etap listesi */
   .sec{padding:34px 0 8px}
@@ -277,16 +260,14 @@
       </div>
       <div class="map" id="map">
         <div class="world" id="world">
-          <canvas id="cBase"></canvas>
+          <img class="lay" src="assets/vaziyet/gunduz.jpg?v=2" alt="Yeni Fikirtepe vaziyet planı, kuş bakışı" decoding="async">
+          <img class="lay ngt" src="assets/vaziyet/gece.jpg?v=2" alt="" decoding="async">
           <div class="lay dusk" id="dusk"></div>
-          <div class="lay tint"></div>
-          <canvas class="lay glow g1" id="cG1"></canvas>
-          <canvas class="lay glow g2" id="cG2"></canvas>
-          <canvas class="lay glow g3" id="cG3"></canvas>
+          <img class="lay glow g1" src="assets/vaziyet/isik1.jpg?v=2" alt="" decoding="async">
+          <img class="lay glow g2" src="assets/vaziyet/isik2.jpg?v=2" alt="" decoding="async">
           <svg id="svg" preserveAspectRatio="none" aria-hidden="false"></svg>
           <div class="pins" id="pins"></div>
         </div>
-        <img class="logo" src="assets/dogus-logo.png" alt="RE/MAX Doğuş" width="260" height="94">
         <div class="hint" id="hint">Bir etaba dokunun</div>
       </div>
     </div>
@@ -344,7 +325,7 @@
   var DAY=864e5;
 
   /* ---------- Vaziyet planı geometrisi (dünya koordinatları) ---------- */
-  var VB={x:100,y:140,w:1640,h:770};
+  var VB={x:100,y:140,w:1633,h:770};
   var POLY={
     2:[[1542,362],[1690,368],[1698,442],[1545,446]],
     3:[[1340,488],[1528,478],[1530,636],[1340,620]],
@@ -366,179 +347,19 @@
     19:[[1530,478],[1668,466],[1695,520],[1668,610],[1600,640],[1532,638]]
   };
   var LBL={2:[1582,402],3:[1451,560],4:[1262,526],5:[981,492],6:[565,492],7:[222,512],8:[318,630],9:[482,592],10:[729,628],11:[1207,679],12:[1187,799],13:[999,781],14:[853,766],15:[743,766],16:[634,766],17:[259,766],18:[1317,434],19:[1610,487]};
-  var SITE=[[124,560],[150,420],[200,360],[330,352],[480,362],[620,338],[870,318],[1200,332],[1600,334],[1722,360],[1730,560],[1702,642],[1562,792],[1424,886],[1350,888],[1100,846],[130,838],[118,700]];
-  var ROADS=[
-    {w:17,main:1,p:[[110,562],[167,550],[230,548],[350,545],[600,542],[900,545],[1080,556],[1170,586],[1300,626],[1450,640],[1540,650],[1600,640],[1680,600],[1714,540]]},
-    {w:12,p:[[167,550],[176,440],[210,372],[330,366],[480,376],[560,368],[620,350],[700,336],[870,330],[1000,344],[1200,354],[1450,350],[1600,348],[1700,366],[1716,420],[1714,540]]},
-    {w:12,p:[[122,562],[126,700],[132,824],[400,830],[880,834],[1110,838],[1250,862],[1360,888],[1424,882],[1560,790],[1662,690],[1714,540]]},
-    {w:9,p:[[378,545],[382,830]]},{w:9,p:[[548,543],[554,832]]},{w:9,p:[[702,543],[704,834]]},{w:9,p:[[897,545],[898,834]]},
-    {w:9,p:[[1116,566],[1114,838]]},{w:8,p:[[132,690],[1116,700]]},
-    {w:8,p:[[1170,586],[1232,500],[1262,484],[1500,478],[1690,470]]},
-    {w:8,p:[[346,545],[350,432],[480,434],[800,444],[850,418],[880,392]]},
-    {w:7,p:[[1240,484],[1240,386]]},{w:7,p:[[1392,480],[1394,362]]},{w:7,p:[[1532,478],[1536,360]]},
-    {w:7,p:[[1116,712],[1340,716],[1460,780]]},{w:7,p:[[1300,626],[1330,712],[1338,870]]}
-  ];
-  var HWY=[[60,222],[400,204],[900,180],[1300,164],[1760,152]];
-  var HWY2=[[300,214],[190,330],[100,520],[40,720],[0,910]];
-  var CANAL=[[170,320],[400,300],[700,292],[1000,290],[1300,292],[1600,300],[1760,306]];
-  var PARK=[[760,553],[900,553],[900,700],[828,704],[828,822],[774,822],[774,704],[760,700]];
-  var GREENS=[[[345,440],[475,440],[478,528],[348,532]],[[160,676],[372,676],[372,694],[160,698]],[[1132,712],[1336,716],[1450,776],[1440,800],[1336,760]],[[1560,640],[1680,600],[1640,700],[1560,760]],[[493,360],[620,350],[620,432],[493,436]]];
-  var LM=[[200,372,330,486],[128,420,186,540],[620,352,830,432],[553,557,693,687],[900,552,1104,696],[1094,470,1180,548],[1104,392,1222,456],[1396,362,1526,468],[872,342,1240,392],[1346,724,1540,856],[1240,356,1390,384]];
-
-  /* ---------- yardımcılar ---------- */
-  function rng(seed){return function(){seed|=0;seed=seed+0x6D2B79F5|0;var t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
-  function inPoly(x,y,p){var c=false;for(var i=0,j=p.length-1;i<p.length;j=i++){var a=p[i],b=p[j];if((a[1]>y)!==(b[1]>y)&&x<(b[0]-a[0])*(y-a[1])/(b[1]-a[1])+a[0])c=!c;}return c;}
-  function dSeg(x,y,a,b){var dx=b[0]-a[0],dy=b[1]-a[1],l=dx*dx+dy*dy,t=l?((x-a[0])*dx+(y-a[1])*dy)/l:0;t=Math.max(0,Math.min(1,t));var px=a[0]+t*dx-x,py=a[1]+t*dy-y;return Math.sqrt(px*px+py*py);}
-  function dLine(x,y,p){var m=1e9;for(var i=1;i<p.length;i++)m=Math.min(m,dSeg(x,y,p[i-1],p[i]));return m;}
-  function nearRoad(x,y,pad){for(var i=0;i<ROADS.length;i++)if(dLine(x,y,ROADS[i].p)<ROADS[i].w/2+pad)return true;return false;}
-  function stageAt(x,y){for(var k in POLY)if(inPoly(x,y,POLY[k]))return +k;return 0;}
-  function inLM(x,y){for(var i=0;i<LM.length;i++){var r=LM[i];if(x>r[0]&&x<r[2]&&y>r[1]&&y<r[3])return true;}return false;}
-  function path(ctx,p,close){ctx.beginPath();ctx.moveTo(p[0][0],p[0][1]);for(var i=1;i<p.length;i++)ctx.lineTo(p[i][0],p[i][1]);if(close)ctx.closePath();}
-  function smooth(ctx,p){ctx.beginPath();ctx.moveTo(p[0][0],p[0][1]);for(var i=1;i<p.length-1;i++){var mx=(p[i][0]+p[i+1][0])/2,my=(p[i][1]+p[i+1][1])/2;ctx.quadraticCurveTo(p[i][0],p[i][1],mx,my);}var l=p[p.length-1];ctx.lineTo(l[0],l[1]);}
-  function svgSmooth(p){var d='M'+p[0][0]+' '+p[0][1];for(var i=1;i<p.length-1;i++){var mx=(p[i][0]+p[i+1][0])/2,my=(p[i][1]+p[i+1][1])/2;d+=' Q'+p[i][0]+' '+p[i][1]+' '+mx+' '+my;}var l=p[p.length-1];return d+' L'+l[0]+' '+l[1];}
-  function off(p,dx,dy){return p.map(function(q){return [q[0]+dx,q[1]+dy];});}
-
-  /* ---------- sahne üretimi (bir kez) ---------- */
-  var R=rng(1907),B=[],TREES=[],CITY=[];
-  // binalar: etaplar
-  Object.keys(POLY).forEach(function(k){
-    var p=POLY[k],n=+k,xs=p.map(function(q){return q[0];}),ys=p.map(function(q){return q[1];});
-    var x0=Math.min.apply(0,xs),x1=Math.max.apply(0,xs),y0=Math.min.apply(0,ys),y1=Math.max.apply(0,ys);
-    var ofis=n===18,gx=ofis?34:27,gy=ofis?36:31;
-    for(var y=y0+18;y<y1-4;y+=gy){for(var x=x0+5;x<x1-8;x+=gx){
-      var w=ofis?20+R()*10:13+R()*9,d=ofis?16+R()*8:10+R()*7,bx=x+R()*4,by=y+R()*4;
-      if(!(inPoly(bx,by,p)&&inPoly(bx+w,by,p)&&inPoly(bx,by+d,p)&&inPoly(bx+w,by+d,p)))continue;
-      if(nearRoad(bx+w/2,by+d/2,Math.max(w,d)/2+1))continue;
-      if(R()<.12)continue;
-      var h=ofis?22+R()*20:(R()<.15?24+R()*12:9+R()*12);
-      B.push({x:bx,y:by,w:w,d:d,h:h,s:n,t:ofis?2:0});
-    }}
-  });
-  // binalar: sosyal donatı / ticari alanlar
-  LM.forEach(function(r){
-    for(var y=r[1]+10;y<r[3]-6;y+=34){for(var x=r[0]+4;x<r[2]-10;x+=36){
-      if(R()<.45)continue;var w=16+R()*16,d=12+R()*10,bx=x+R()*6,by=y+R()*5;
-      if(bx+w>r[2]||by+d>r[3]||stageAt(bx+w/2,by+d/2)||nearRoad(bx+w/2,by+d/2,Math.max(w,d)/2))continue;
-      B.push({x:bx,y:by,w:w,d:d,h:6+R()*10,s:0,t:1});
-    }}
-  });
-  [[412,704],[456,704],[500,704]].forEach(function(q){B.push({x:q[0],y:q[1],w:13,d:96,h:12,s:0,t:1});});
-  B.sort(function(a,b){return (a.y+a.d)-(b.y+b.d);});
-  // ağaçlar
-  for(var i=0;i<2600&&TREES.length<900;i++){
-    var tx=VB.x+R()*VB.w,ty=VB.y+R()*VB.h;
-    if(!inPoly(tx,ty,SITE)||nearRoad(tx,ty,3))continue;
-    var inPark=inPoly(tx,ty,PARK)||GREENS.some(function(g){return inPoly(tx,ty,g);});
-    if(!inPark&&R()<.55)continue;
-    if(B.some(function(b){return tx>b.x-3&&tx<b.x+b.w+3&&ty>b.y-b.h-3&&ty<b.y+b.d+3;}))continue;
-    TREES.push([tx,ty,2.6+R()*2.6]);
-  }
-  // çevre mahalle çatıları
-  for(var cy=VB.y;cy<VB.y+VB.h;cy+=12){for(var cx=VB.x;cx<VB.x+VB.w;cx+=12){
-    var qx=cx+R()*3,qy=cy+R()*3;
-    if(inPoly(qx,qy,SITE)||dLine(qx,qy,HWY)<30||dLine(qx,qy,HWY2)<26||dLine(qx,qy,CANAL)<16)continue;
-    if(qy<300&&qy>120&&dLine(qx,qy,HWY)<60)continue;
-    if(R()<.22)continue;
-    CITY.push([qx,qy,6+R()*4.5,5+R()*4.5,(R()*6)|0,R()]);
-  }}
-
-  /* ---------- çizim ---------- */
-  var ROOF=['#d99f86','#cf8d72','#e4b8a0','#c7866b','#ded5c6','#c4bbad'];
-  function drawBase(ctx){
-    ctx.fillStyle='#e7e1d2';ctx.fillRect(VB.x,VB.y,VB.w,VB.h);
-    CITY.forEach(function(c){ctx.fillStyle='rgba(60,40,30,.13)';ctx.fillRect(c[0]+1.4,c[1]+1.4,c[2],c[3]);ctx.fillStyle=ROOF[c[4]];ctx.fillRect(c[0],c[1],c[2],c[3]);});
-    // otoyol
-    ctx.lineCap='round';ctx.lineJoin='round';
-    [[HWY,58],[HWY2,44]].forEach(function(h){smooth(ctx,h[0]);ctx.strokeStyle='#c9c6bd';ctx.lineWidth=h[1]+8;ctx.stroke();ctx.strokeStyle='#7d818a';ctx.lineWidth=h[1];ctx.stroke();
-      ctx.setLineDash([10,12]);ctx.strokeStyle='rgba(255,255,255,.55)';ctx.lineWidth=1.4;smooth(ctx,off(h[0],0,-8));ctx.stroke();smooth(ctx,off(h[0],0,8));ctx.stroke();ctx.setLineDash([]);
-      ctx.strokeStyle='#e9e6dc';ctx.lineWidth=2.5;smooth(ctx,h[0]);ctx.stroke();});
-    // dere
-    smooth(ctx,CANAL);ctx.strokeStyle='#cfe3dc';ctx.lineWidth=24;ctx.stroke();ctx.strokeStyle='#6fc0c8';ctx.lineWidth=11;ctx.stroke();ctx.strokeStyle='rgba(255,255,255,.5)';ctx.lineWidth=2;smooth(ctx,off(CANAL,0,-2));ctx.stroke();
-    // proje alanı
-    path(ctx,SITE,1);ctx.fillStyle='#cddfb2';ctx.fill();ctx.strokeStyle='#b7c99a';ctx.lineWidth=3;ctx.stroke();
-    ctx.fillStyle='#e2e6d6';LM.forEach(function(r){ctx.fillRect(r[0],r[1],r[2]-r[0],r[3]-r[1]);});
-    Object.keys(POLY).forEach(function(k){path(ctx,POLY[k],1);ctx.fillStyle='#dbe8c4';ctx.fill();});
-    ctx.fillStyle='#a8d38a';path(ctx,PARK,1);ctx.fill();GREENS.forEach(function(g){path(ctx,g,1);ctx.fill();});
-    // spor sahası, havuzlar, cami, gölet
-    ctx.fillStyle='#7cc06a';ctx.fillRect(640,360,56,40);ctx.strokeStyle='rgba(255,255,255,.8)';ctx.lineWidth=1.2;ctx.strokeRect(643,363,50,34);ctx.beginPath();ctx.moveTo(668,363);ctx.lineTo(668,397);ctx.stroke();
-    ctx.fillStyle='#d9643f';ctx.fillRect(298,622,22,14);ctx.fillStyle='#6a8fd0';ctx.fillRect(330,630,18,12);
-    [[590,620,20,8],[624,628,26,8],[1452,820,12,7],[1500,660,10,10]].forEach(function(q){ctx.fillStyle='#5cc3e6';ctx.fillRect(q[0],q[1],q[2],q[3]);});
-    ctx.beginPath();ctx.arc(845,598,40,0,7);ctx.strokeStyle='#4c5058';ctx.lineWidth=7;ctx.stroke();
-    ctx.fillStyle='#b9bdc4';ctx.fillRect(828,581,34,34);ctx.beginPath();ctx.arc(845,598,11,0,7);ctx.fillStyle='#9ea3ab';ctx.fill();
-    ctx.strokeStyle='#efe9d8';ctx.lineWidth=3;[[800,692,845,640],[800,692,800,820],[800,692,765,700],[800,692,826,704]].forEach(function(q){ctx.beginPath();ctx.moveTo(q[0],q[1]);ctx.lineTo(q[2],q[3]);ctx.stroke();});
-    ctx.beginPath();ctx.arc(800,692,17,0,7);ctx.fillStyle='#efe9d8';ctx.fill();ctx.beginPath();ctx.arc(800,692,12,0,7);ctx.fillStyle='#48b4dc';ctx.fill();
-    // yollar
-    ROADS.forEach(function(r){smooth(ctx,r.p);ctx.strokeStyle='#f1eee6';ctx.lineWidth=r.w+4;ctx.stroke();});
-    ROADS.forEach(function(r){smooth(ctx,r.p);ctx.strokeStyle='#6c717b';ctx.lineWidth=r.w;ctx.stroke();});
-    ctx.setLineDash([6,8]);ctx.strokeStyle='rgba(255,255,255,.7)';ctx.lineWidth=1.1;smooth(ctx,ROADS[0].p);ctx.stroke();ctx.setLineDash([]);
-    [[167,550],[1714,540]].forEach(function(q){ctx.beginPath();ctx.arc(q[0],q[1],16,0,7);ctx.fillStyle='#6c717b';ctx.fill();ctx.beginPath();ctx.arc(q[0],q[1],8,0,7);ctx.fillStyle='#9ccf7e';ctx.fill();});
-    // ağaç gölgeleri + binalar + ağaçlar (arkadan öne)
-    TREES.forEach(function(t){ctx.beginPath();ctx.arc(t[0]+2,t[1]+1.5,t[2],0,7);ctx.fillStyle='rgba(40,70,30,.22)';ctx.fill();});
-    B.forEach(function(b){ctx.fillStyle='rgba(30,40,40,.2)';ctx.beginPath();ctx.moveTo(b.x+b.w,b.y+b.d);ctx.lineTo(b.x+b.w+b.h*.55,b.y+b.d-b.h*.35);ctx.lineTo(b.x+b.w+b.h*.55,b.y-b.h*1.1);ctx.lineTo(b.x+b.w,b.y-b.h);ctx.closePath();ctx.fill();});
-    B.forEach(function(b){
-      var top=b.y-b.h;
-      ctx.fillStyle=b.t===2?'#7f9fbd':b.t===1?'#b4b8be':'#c9c3b8';ctx.fillRect(b.x,b.y+b.d-b.h,b.w,b.h);
-      // pencere sıraları (gündüz)
-      ctx.fillStyle=b.t===2?'rgba(210,235,255,.55)':'rgba(70,85,110,.35)';
-      for(var fy=b.y+b.d-b.h+2.5;fy<b.y+b.d-2;fy+=3.6)for(var fx=b.x+1.6;fx<b.x+b.w-2;fx+=3.4)ctx.fillRect(fx,fy,1.8,1.6);
-      ctx.fillStyle=b.t===2?'#dbe8f2':b.t===1?'#ecedee':['#f4f1ea','#efe9dd','#f7f4ee'][((b.x*7)|0)%3];ctx.fillRect(b.x,top,b.w,b.d);
-      ctx.strokeStyle='rgba(80,70,60,.25)';ctx.lineWidth=.6;ctx.strokeRect(b.x,top,b.w,b.d);
-      if(b.t===0&&b.w>16){ctx.fillStyle='rgba(120,110,95,.18)';ctx.fillRect(b.x+b.w*.3,top+b.d*.3,b.w*.25,b.d*.3);}
-    });
-    TREES.forEach(function(t){ctx.beginPath();ctx.arc(t[0],t[1],t[2],0,7);ctx.fillStyle='#5f9a4c';ctx.fill();ctx.beginPath();ctx.arc(t[0]-t[2]*.3,t[1]-t[2]*.3,t[2]*.55,0,7);ctx.fillStyle='#86bf63';ctx.fill();});
-    // pusula
-    ctx.save();ctx.translate(1690,215);ctx.beginPath();ctx.arc(0,0,22,0,7);ctx.fillStyle='rgba(255,255,255,.85)';ctx.fill();
-    ctx.beginPath();ctx.moveTo(0,-16);ctx.lineTo(7,4);ctx.lineTo(0,0);ctx.lineTo(-7,4);ctx.closePath();ctx.fillStyle='#DC1C2E';ctx.fill();
-    ctx.fillStyle='#050A30';ctx.font='800 11px Plus Jakarta Sans, sans-serif';ctx.textAlign='center';ctx.fillText('K',0,16);ctx.restore();
-  }
-  function glowDot(ctx,x,y,r,col){var g=ctx.createRadialGradient(x,y,0,x,y,r);g.addColorStop(0,col);g.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=g;ctx.fillRect(x-r,y-r,r*2,r*2);}
-  function drawLamps(ctx){
-    // sokak lambaları
-    ROADS.forEach(function(r){var p=r.p,step=r.main?13:17;
-      for(var i=1;i<p.length;i++){var a=p[i-1],b=p[i],L=Math.hypot(b[0]-a[0],b[1]-a[1]),nx=-(b[1]-a[1])/L,ny=(b[0]-a[0])/L,o=r.w/2+2;
-        for(var s=0;s<L;s+=step){var x=a[0]+(b[0]-a[0])*s/L,y=a[1]+(b[1]-a[1])*s/L;
-          glowDot(ctx,x+nx*o,y+ny*o,9,'rgba(255,196,110,.55)');glowDot(ctx,x-nx*o,y-ny*o,9,'rgba(255,196,110,.55)');}}});
-    [HWY,HWY2].forEach(function(h){for(var i=1;i<h.length;i++){var a=h[i-1],b=h[i],L=Math.hypot(b[0]-a[0],b[1]-a[1]);for(var s=0;s<L;s+=26){glowDot(ctx,a[0]+(b[0]-a[0])*s/L,a[1]+(b[1]-a[1])*s/L,16,'rgba(255,170,80,.42)');}}});
-    // park ve gölet
-    glowDot(ctx,800,692,40,'rgba(90,200,255,.55)');glowDot(ctx,845,598,60,'rgba(255,220,150,.35)');
-    for(var i=0;i<26;i++){var a=i/26*Math.PI*2;glowDot(ctx,845+Math.cos(a)*40,598+Math.sin(a)*40,5,'rgba(255,230,170,.9)');}
-    smooth(ctx,CANAL);ctx.strokeStyle='rgba(80,170,255,.25)';ctx.lineWidth=8;ctx.stroke();
-  }
-  var WARM=['#ffd27a','#ffc35c','#ffe3a3','#fff1c9','#ffb547'];
-  function drawWindows(ctx,part){
-    var r=rng(77+part);
-    B.forEach(function(b){
-      for(var fy=b.y+b.d-b.h+2.5;fy<b.y+b.d-2;fy+=3.6)for(var fx=b.x+1.6;fx<b.x+b.w-2;fx+=3.4){
-        var v=r();if(v>(b.t===2?.42:b.t===1?.2:.34))continue;
-        ctx.fillStyle=b.t===2?'#cfe6ff':WARM[(v*100|0)%5];ctx.fillRect(fx-.2,fy-.2,2.2,2);}
-      if(part===1&&b.t===0&&r()<.25)glowDot(ctx,b.x+b.w/2,b.y+b.d+2,8,'rgba(255,200,120,.35)');
-    });
-    CITY.forEach(function(c){if(c[5]*2%1<(part===1?.16:.12)&&((c[5]*10|0)%2===part-1))ctx.fillStyle=WARM[c[4]%5],ctx.fillRect(c[0]+c[2]*.3,c[1]+c[3]*.3,2.2,2.2);});
-  }
-
   /* ---------- yerleşim ---------- */
-  var map=$('map'),world=$('world'),card=$('card'),cvs=[$('cBase'),$('cG1'),$('cG2'),$('cG3')],drawn={w:0,rot:null};
+  var map=$('map'),world=$('world'),card=$('card');
   function layout(){
     var cw=map.clientWidth,rot=cw<640,W,H;
     if(rot){H=cw;W=Math.round(cw*VB.w/VB.h);map.style.height=W+'px';world.style.transform='translate(0,'+W+'px) rotate(-90deg)';}
     else{W=cw;H=Math.round(cw*VB.h/VB.w);map.style.height=H+'px';world.style.transform='none';}
     world.style.width=W+'px';world.style.height=H+'px';map.classList.toggle('rot',rot);
-    if(Math.abs(drawn.w-W)<2&&drawn.rot===rot)return;
-    drawn={w:W,rot:rot};
-    var dpr=Math.min(window.devicePixelRatio||1,2),s=W/VB.w*dpr;
-    cvs.forEach(function(c,i){c.width=Math.round(W*dpr);c.height=Math.round(H*dpr);var x=c.getContext('2d');x.setTransform(s,0,0,s,-VB.x*s,-VB.y*s);
-      if(i===0)drawBase(x);else if(i===1)drawLamps(x);else drawWindows(x,i-1);});
   }
 
   /* ---------- SVG: etap alanları ve trafik ---------- */
   var svg=$('svg'),NS='http://www.w3.org/2000/svg';
   svg.setAttribute('viewBox',VB.x+' '+VB.y+' '+VB.w+' '+VB.h);
   function el(t,a,p){var e=document.createElementNS(NS,t);for(var k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e;}
-  var cars=el('g',{'class':'cars'},svg);
-  el('path',{d:svgSmooth(off(HWY,0,9)),'class':'e'},cars);el('path',{d:svgSmooth(off(HWY,0,-9)),'class':'w'},cars);
-  el('path',{d:svgSmooth(off(HWY,0,20)),'class':'e',style:'animation-duration:15s'},cars);el('path',{d:svgSmooth(off(HWY,0,-20)),'class':'w',style:'animation-duration:17s'},cars);
-  el('path',{d:svgSmooth(off(HWY2,8,0)),'class':'e',style:'animation-duration:10s'},cars);el('path',{d:svgSmooth(off(HWY2,-8,0)),'class':'w',style:'animation-duration:11s'},cars);
-  el('path',{d:svgSmooth(off(ROADS[0].p,0,4)),'class':'e b'},cars);el('path',{d:svgSmooth(off(ROADS[0].p,0,-4)),'class':'w b'},cars);
   var plots=el('g',{'class':'plots'},svg),PL={};
 
   /* ---------- durumlar ---------- */
@@ -564,7 +385,6 @@
     order.forEach(function(n,i){
       var e=E[n],c=ST[e.st][1],pts=POLY[n].map(function(q){return q.join(',');}).join(' ');
       var g=el('g',{'class':e.st,'data-n':n,style:'--c:'+c},plots);
-      el('polygon',{points:pts,'class':'halo'},g);
       var p=el('polygon',{points:pts,'class':'p',tabindex:'-1'},g);
       p.addEventListener('click',function(){open(n);});
       PL[n]=g;
@@ -686,7 +506,6 @@
     setTimeout(function(){if(auto)setNight(true);},RM?0:1300);}
   if('IntersectionObserver' in window){var io=new IntersectionObserver(function(es){es.forEach(function(x){if(x.isIntersecting&&x.intersectionRatio>.3){start();io.disconnect();}});},{threshold:[.3,.5]});io.observe(map);}
   else start();
-  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(function(){drawn.w=0;layout();});
 })();
 </script>
 <!-- WhatsApp sabit buton -->
