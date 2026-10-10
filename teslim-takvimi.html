@@ -128,8 +128,7 @@
 
   /* Teslim takvimi */
   .card{background:rgba(255,255,255,.92);border:1px solid var(--line);border-radius:18px;padding:28px 26px}
-  .look{border-top:4px solid var(--red)}
-  .look h2{font-size:1.35rem;color:var(--blue);font-weight:700;margin-bottom:4px}
+  .look h2{font-size:1.2rem;color:var(--blue);font-weight:700;margin-bottom:4px}
   .look .sub{color:var(--gray);font-weight:300;margin-bottom:18px}
   .lform{display:grid;grid-template-columns:1fr 1fr auto;gap:12px;align-items:end}
   .lform label{display:block;font-size:.82rem;font-weight:600;color:var(--gray);margin-bottom:6px;letter-spacing:.02em}
@@ -146,9 +145,22 @@
   .res .t{font-size:1.15rem}
   .res .n{font-size:.88rem;opacity:.8;margin-top:10px;font-weight:300}
   .res a{color:inherit;font-weight:600}
-  .tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
-  .tab{font:inherit;font-weight:600;font-size:.95rem;padding:10px 16px;border:1.5px solid var(--blue);border-radius:10px;background:#fff;color:var(--blue);cursor:pointer}
+  .pick{border-top:4px solid var(--red)}
+  .pick h2{font-size:1.2rem;color:var(--blue);font-weight:700;margin-bottom:14px}
+  .tabs{display:flex;gap:10px;flex-wrap:wrap}
+  .tab{font:inherit;text-align:left;padding:10px 16px;border:1.5px solid var(--blue);border-radius:10px;background:#fff;color:var(--blue);cursor:pointer;transition:.15s;line-height:1.3}
+  .tab:hover{background:var(--soft)}
+  .tab b{display:block;font-size:.98rem}
+  .tab small{display:block;font-size:.76rem;font-weight:500;opacity:.75}
   .tab.active{background:var(--blue);color:#fff}
+  .tab .dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:6px;vertical-align:1px;background:#9aa3b2}
+  .tab .dot.now{background:var(--red)} .tab .dot.done{background:#1b9a4a}
+  .pick .more{font-size:.86rem;color:var(--gray);margin-top:14px;font-weight:300}
+  .pick .more a{color:var(--blue);font-weight:600}
+  .ehead{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:6px 16px;margin:6px 0 16px}
+  .ehead h2{font-size:1.5rem;color:var(--blue);font-weight:700;line-height:1.2}
+  .ehead .meta{font-size:.92rem;color:var(--gray)}
+  .look{margin-bottom:18px}
   .tl{list-style:none;position:relative}
   .tl li{display:grid;grid-template-columns:96px 1fr auto;gap:14px;align-items:center;padding:14px 4px;border-top:1px solid var(--line)}
   .tl li:first-child{border-top:none}
@@ -215,36 +227,38 @@
 
     <div class="phead">
       <h1>Teslim Takvimi<span class="sq"></span></h1>
-      <p class="lead">Yeni Fikirtepe'de anahtar teslimleri başladı. Bloğunuzu ve kapı numaranızı girin, Emlak Konut'un resmi teslim programındaki randevu gününüzü görün.</p>
+      <p class="lead">Yeni Fikirtepe'de anahtar teslimleri başladı. Etabınızı seçin; blok teslim tarihlerini ve 11. Etap'ta kapı numaranıza göre randevu gününüzü görün.</p>
     </div>
 
     <section>
-      <div class="card look">
-        <h2>11. Etap · Dairenizin teslim günü</h2>
-        <p class="sub">Blok ve kapı numaranızı seçin, randevu gün ve saatinizi gösterelim.</p>
-        <form class="lform" id="lform" autocomplete="off">
-          <div>
-            <label for="blok">Blok</label>
-            <select id="blok" required>
-              <option value="">Seçin</option>
-              <option>A</option><option>B</option><option>C1</option><option>C2</option><option>D</option>
-              <option>E1</option><option>E2</option><option>F1</option><option>F2</option><option>F3</option><option>F4</option><option>F5</option>
-            </select>
-          </div>
-          <div>
-            <label for="kapi">Kapı no</label>
-            <input id="kapi" type="number" inputmode="numeric" min="1" max="200" placeholder="Örn. 24">
-          </div>
-          <button type="submit">Teslim günümü göster</button>
-        </form>
-        <div class="res" id="res" aria-live="polite"></div>
+      <div class="card pick">
+        <h2>Etap seçin</h2>
+        <div class="tabs" role="tablist" id="tabs"></div>
+        <p class="more">Teslim programı açıklanan etaplar listelenir. Diğer etaplar için <a href="https://wa.me/902163151515?text=Merhaba%2C%20etab%C4%B1m%C4%B1n%20teslim%20durumu%20hakk%C4%B1nda%20bilgi%20almak%20istiyorum" target="_blank" rel="noopener">bize yazın</a>, takip edelim.</p>
       </div>
     </section>
 
-    <section>
-      <div class="shead">Blok Teslim Tarihleri</div>
+    <section id="etap">
+      <div class="ehead"><h2 id="etitle"></h2><span class="meta" id="emeta"></span></div>
+
+      <div class="card look">
+        <h2 id="ltitle">Dairenizin teslim günü</h2>
+        <p class="sub" id="lsub"></p>
+        <form class="lform" id="lform" autocomplete="off">
+          <div>
+            <label for="blok">Blok</label>
+            <select id="blok" required></select>
+          </div>
+          <div id="kapiw">
+            <label for="kapi">Kapı no</label>
+            <input id="kapi" type="number" inputmode="numeric" min="1" max="200" placeholder="Örn. 24">
+          </div>
+          <button type="submit" id="lbtn">Teslim günümü göster</button>
+        </form>
+        <div class="res" id="res" aria-live="polite"></div>
+      </div>
+
       <div class="card">
-        <div class="tabs" role="tablist" id="tabs"></div>
         <ul class="tl" id="tl"></ul>
         <p class="src" id="src"></p>
       </div>
@@ -266,12 +280,12 @@
     var DOOR={"E1":[["10-12","09:00",2],["10-12","10:00",2],["10-12","11:00",2],["10-12","13:00",2],["10-12","14:00",2],["10-13","09:00",2],["10-13","10:00",2],["10-13","11:00",2],["10-13","13:00",2],["10-13","14:00",2],["10-14","09:00",2],["10-14","10:00",2],["10-14","11:00",2],["10-14","13:00",2],["10-14","14:00",2],["10-15","09:00",2],["10-15","10:00",2],["10-15","11:00",2],["10-15","13:00",2],["10-15","14:00",2],["10-16","09:00",2],["10-16","10:00",2],["10-16","11:00",2],["10-16","14:00",2],["10-16","15:00",2],["10-19","09:00",4],["10-19","10:00",4],["10-19","11:00",4],["10-19","13:00",4],["10-19","14:00",4],["10-20","09:00",4],["10-20","10:00",4],["10-20","11:00",4],["10-20","13:00",4],["10-20","14:00",4],["10-21","09:00",4],["10-21","10:00",4],["10-21","11:00",2]],"C1":[["10-21","11:00",2],["10-21","13:00",4],["10-21","14:00",4],["10-22","09:00",4],["10-22","10:00",4],["10-22","11:00",4],["10-22","13:00",4],["10-22","14:00",4],["10-23","09:00",4],["10-23","10:00",4],["10-23","11:00",4],["10-23","14:00",4],["10-23","15:00",4],["10-26","09:00",4],["10-26","10:00",4],["10-26","11:00",4],["10-26","13:00",4],["10-26","14:00",4],["10-27","09:00",4],["10-27","10:00",4],["10-27","11:00",4],["10-27","13:00",4],["10-27","14:00",4]],"E2":[["11-02","09:00",4],["11-02","10:00",4],["11-02","11:00",4],["11-02","13:00",4],["11-02","14:00",4],["11-03","09:00",4],["11-03","10:00",4],["11-03","11:00",4],["11-03","13:00",4],["11-03","14:00",4],["11-04","09:00",4],["11-04","10:00",4],["11-04","11:00",4],["11-04","13:00",4],["11-04","14:00",4],["11-05","09:00",4],["11-05","10:00",4],["11-05","11:00",4],["11-05","13:00",4],["11-05","14:00",4],["11-06","09:00",4],["11-06","10:00",4],["11-06","11:00",4],["11-06","14:00",4],["11-06","15:00",2]],"F1":[["11-06","15:00",2],["11-09","09:00",4],["11-09","10:00",4],["11-09","11:00",4],["11-09","13:00",4],["11-09","14:00",4],["11-10","09:00",4],["11-10","10:00",4],["11-10","11:00",4],["11-10","13:00",4],["11-10","14:00",4],["11-11","09:00",4],["11-11","10:00",4],["11-11","11:00",4],["11-11","13:00",4],["11-11","14:00",4],["11-12","09:00",4],["11-12","10:00",4],["11-12","11:00",4],["11-12","13:00",4],["11-12","14:00",4],["11-13","09:00",4],["11-13","10:00",3]],"D":[["11-13","10:00",1],["11-13","11:00",4],["11-13","14:00",4],["11-13","15:00",4],["11-16","09:00",4],["11-16","10:00",4],["11-16","11:00",4],["11-16","13:00",4],["11-16","14:00",4],["11-17","09:00",4],["11-17","10:00",4],["11-17","11:00",4],["11-17","13:00",4],["11-17","14:00",4],["11-18","09:00",4],["11-18","10:00",4],["11-18","11:00",4],["11-18","13:00",4],["11-18","14:00",4],["11-19","09:00",4],["11-19","10:00",4],["11-19","11:00",4],["11-19","13:00",4],["11-19","14:00",4],["11-20","09:00",4],["11-20","10:00",4],["11-20","11:00",4],["11-20","14:00",4],["11-20","15:00",4],["11-23","09:00",4],["11-23","10:00",4],["11-23","11:00",1]]};
     // Blok aralıkları (resmi program ve Emlak Konut duyuruları)
     var ETAP=[
-      {ad:'11. Etap',src:'Kaynak: Emlak Konut 11. Etap resmi teslim programı. <a href="'+PDF+'" target="_blank" rel="noopener">Resmi PDF</a> · Son kontrol: 10 Ekim 2026',
+      {id:'11',ad:'11. Etap',kapi:true,src:'Kaynak: Emlak Konut 11. Etap resmi teslim programı. <a href="'+PDF+'" target="_blank" rel="noopener">Resmi PDF</a> · Son kontrol: 10 Ekim 2026',
        b:[['E1','2026-10-12','2026-10-21',100],['C1','2026-10-21','2026-10-27',90],['E2','2026-11-02','2026-11-06',98],['F1','2026-11-06','2026-11-13',89],['D','2026-11-13','2026-11-24',134],
           ['F2','2026-11-24','2026-11-24'],['C2','2026-11-24','2026-11-24'],['F3','2026-11-24','2026-11-24'],['A','2026-11-24','2026-11-24'],['F4','2026-11-24','2026-11-24'],['F5','2026-11-24','2026-11-25'],['B','2026-11-25','2026-11-25']]},
-      {ad:'2. Etap',src:'Kaynak: Emlak Konut duyurusu · Son kontrol: 10 Ekim 2026',
+      {id:'2',ad:'2. Etap',src:'Kaynak: Emlak Konut duyurusu · Son kontrol: 10 Ekim 2026',
        b:[['C','2026-09-03','2026-10-05'],['B','2026-10-05','2026-10-09'],['A','2026-10-09','2026-10-12']]},
-      {ad:'3. Etap 2. Kısım',src:'Kaynak: Emlak Konut duyurusu · Son kontrol: 10 Ekim 2026',
+      {id:'3-2',ad:'3. Etap 2. Kısım',src:'Kaynak: Emlak Konut duyurusu · Son kontrol: 10 Ekim 2026',
        b:[['D1','2026-09-07','2026-09-08'],['E1','2026-09-08','2026-09-11'],['D2','2026-09-11','2026-09-14'],['E2','2026-09-14','2026-09-16'],['F1','2026-09-16','2026-09-22'],['A3','2026-09-22','2026-10-01'],['G1','2026-10-01','2026-10-09'],['G2','2026-10-09','2026-10-20'],['G3','2026-10-20','2026-10-27']]}
     ];
     var AY=['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
@@ -282,46 +296,71 @@
     function track(n,p){try{if(typeof gtag==='function')gtag('event',n,p||{});}catch(e){}}
     var today=new Date();today.setHours(0,0,0,0);
 
+    function durum(r){var a=P(r[1]),z=P(r[2]);return today>z?'done':today>=a?'now':'next';}
+    var DURUM={done:'Tamamlandı',now:'Teslimde',next:'Yaklaşıyor'};
+    function ozet(e){
+      var bas=e.b[0][1],bit=e.b[0][2],now=[],done=0;
+      e.b.forEach(function(r){if(r[1]<bas)bas=r[1];if(r[2]>bit)bit=r[2];var d=durum(r);if(d==='now')now.push(r[0]);if(d==='done')done++;});
+      var st=done===e.b.length?'done':(now.length||today>=P(bas))?'now':'next';
+      return {bas:bas,bit:bit,now:now,done:done,st:st};
+    }
+    function $(id){return document.getElementById(id);}
+    var cur=0,res=$('res');
+
     function render(i){
-      var e=ETAP[i],h='';
+      cur=i;var e=ETAP[i],o=ozet(e),h='';
       e.b.forEach(function(r){
-        var a=P(r[1]),z=P(r[2]),st,cls,pct;
-        if(today>z){st='Tamamlandı';cls='done';pct=100;}
-        else if(today>=a){st='Teslimde';cls='now';pct=Math.max(8,Math.round((today-a)/(z-a+864e5)*100));}
-        else{st='Yaklaşıyor';cls='next';pct=0;}
-        h+='<li><span class="b">'+r[0]+' Blok</span><span><span class="r">'+rng(r[1],r[2])+'</span>'+(r[3]?'<br><span class="c">'+r[3]+' daire</span>':'')+'</span><span class="st '+cls+'">'+st+'</span>'+(pct?'<span class="bar"><i style="width:'+pct+'%"></i></span>':'')+'</li>';
+        var a=P(r[1]),z=P(r[2]),cls=durum(r),pct=0;
+        if(cls==='done')pct=100;else if(cls==='now')pct=Math.max(8,Math.round((today-a)/(z-a+864e5)*100));
+        h+='<li><span class="b">'+r[0]+' Blok</span><span><span class="r">'+rng(r[1],r[2])+'</span>'+(r[3]?'<br><span class="c">'+r[3]+' daire</span>':'')+'</span><span class="st '+cls+'">'+DURUM[cls]+'</span>'+(pct?'<span class="bar"><i style="width:'+pct+'%"></i></span>':'')+'</li>';
       });
-      document.getElementById('tl').innerHTML=h;
-      document.getElementById('src').innerHTML=e.src;
+      $('tl').innerHTML=h;
+      $('src').innerHTML=e.src;
+      $('etitle').textContent=e.ad+' Teslim Takvimi';
+      $('emeta').textContent=rng(o.bas,o.bit)+' · '+e.b.length+' blok · '+(o.st==='done'?'Teslimler tamamlandı':o.now.length?'Teslimde: '+o.now.join(', ')+' Blok':o.st==='now'?o.done+'/'+e.b.length+' blok teslim edildi':'Teslim başlamadı');
+      // sorgu formu
+      $('ltitle').textContent=e.kapi?'Dairenizin teslim günü':'Bloğunuzun teslim tarihi';
+      $('lsub').textContent=e.kapi?'Blok ve kapı numaranızı girin, resmi programdaki randevu gün ve saatinizi gösterelim.':'Bu etapta daire bazında saat yayımlanmadı; bloğunuzu seçin, teslim aralığını gösterelim.';
+      $('kapiw').style.display=e.kapi?'':'none';
+      $('lbtn').textContent=e.kapi?'Teslim günümü göster':'Tarihi göster';
+      $('blok').innerHTML='<option value="">Seçin</option>'+e.b.map(function(r){return '<option>'+r[0]+'</option>';}).join('');
+      $('kapi').value='';res.className='res';res.innerHTML='';
       [].forEach.call(document.querySelectorAll('.tab'),function(t,j){t.classList.toggle('active',j===i);t.setAttribute('aria-selected',j===i);});
     }
-    var tabs=document.getElementById('tabs');
-    ETAP.forEach(function(e,i){var b=document.createElement('button');b.type='button';b.className='tab';b.setAttribute('role','tab');b.textContent=e.ad;
-      b.onclick=function(){render(i);track('teslim_takvimi_tab',{etap:e.ad});};tabs.appendChild(b);});
-    render(0);
+    var tabs=$('tabs');
+    ETAP.forEach(function(e,i){var o=ozet(e),b=document.createElement('button');b.type='button';b.className='tab';b.setAttribute('role','tab');
+      b.innerHTML='<b>'+e.ad+'</b><small><span class="dot '+o.st+'"></span>'+(o.st==='done'?'Tamamlandı':o.st==='now'?'Teslimde':'Yaklaşıyor')+'</small>';
+      b.onclick=function(){render(i);history.replaceState(null,'','#etap-'+e.id);track('teslim_takvimi_tab',{etap:e.ad});
+        if(window.innerWidth<760)$('etap').scrollIntoView({behavior:'smooth',block:'start'});};
+      tabs.appendChild(b);});
 
     function lookup(blok,kapi){
       var runs=DOOR[blok];
       if(runs){var n=0;for(var k=0;k<runs.length;k++){n+=runs[k][2];if(kapi<=n)return{d:'2026-'+runs[k][0],t:runs[k][1]};}}
       return null;
     }
-    var res=document.getElementById('res');
-    document.getElementById('lform').addEventListener('submit',function(ev){
+    $('lform').addEventListener('submit',function(ev){
       ev.preventDefault();
-      var blok=document.getElementById('blok').value,kapi=parseInt(document.getElementById('kapi').value,10);
+      var e=ETAP[cur],blok=$('blok').value,kapi=e.kapi?parseInt($('kapi').value,10):0;
       if(!blok){res.className='res info show';res.innerHTML='Lütfen bloğunuzu seçin.';return;}
-      var row=ETAP[0].b.filter(function(r){return r[0]===blok;})[0];
+      var row=e.b.filter(function(r){return r[0]===blok;})[0];
       var hit=kapi>0?lookup(blok,kapi):null;
       if(hit){
         res.className='res ok show';
-        res.innerHTML='<div class="k">'+blok+' Blok · Kapı '+kapi+'</div><div class="d">'+fmt(hit.d)+' 2026 '+GUN[P(hit.d).getDay()]+'</div><div class="t">Saat '+hit.t+'</div><div class="n">Resmi programa göredir. Randevu değişiklikleri için Emlak Konut\'tan teyit ediniz.</div>';
-        track('teslim_sorgu',{blok:blok,sonuc:'kapi'});
+        res.innerHTML='<div class="k">'+e.ad+' · '+blok+' Blok · Kapı '+kapi+'</div><div class="d">'+fmt(hit.d)+' 2026 '+GUN[P(hit.d).getDay()]+'</div><div class="t">Saat '+hit.t+'</div><div class="n">Resmi programa göredir. Randevu değişiklikleri için Emlak Konut\'tan teyit ediniz.</div>';
+        track('teslim_sorgu',{etap:e.ad,blok:blok,sonuc:'kapi'});
       }else{
         res.className='res info show';
-        res.innerHTML='<div class="k">'+blok+' Blok</div><div class="d" style="color:var(--blue)">'+rng(row[1],row[2])+'</div><div class="n">'+(kapi>0?'Bu kapı numarası için saat bilgisi resmi programda yer almıyor. ':'Saatinizi görmek için kapı numaranızı girin. ')+'Kesin randevunuz için <a href="'+PDF+'" target="_blank" rel="noopener">resmi PDF</a>\'e bakabilir veya bize WhatsApp\'tan yazabilirsiniz.</div>';
-        track('teslim_sorgu',{blok:blok,sonuc:'blok'});
+        var not=!e.kapi?'Kesin gün ve saatiniz için Emlak Konut\'u (444 36 55) arayabilir veya bize WhatsApp\'tan yazabilirsiniz.'
+          :(kapi>0?'Bu kapı numarası için saat bilgisi resmi programda yer almıyor. ':'Saatinizi görmek için kapı numaranızı girin. ')+'Kesin randevunuz için <a href="'+PDF+'" target="_blank" rel="noopener">resmi PDF</a>\'e bakabilir veya bize WhatsApp\'tan yazabilirsiniz.';
+        res.innerHTML='<div class="k">'+e.ad+' · '+blok+' Blok · '+DURUM[durum(row)]+'</div><div class="d" style="color:var(--blue)">'+rng(row[1],row[2])+'</div><div class="n">'+not+'</div>';
+        track('teslim_sorgu',{etap:e.ad,blok:blok,sonuc:'blok'});
       }
     });
+
+    var m=/etap-([\d-]+)/.exec(location.hash),ilk=0;
+    if(m)ETAP.forEach(function(e,i){if(e.id===m[1])ilk=i;});
+    render(ilk);
   })();
   </script>
   <!-- WhatsApp sabit buton -->
