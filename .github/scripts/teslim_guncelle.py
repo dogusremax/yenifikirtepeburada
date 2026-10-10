@@ -158,16 +158,19 @@ def main():
                 yeni.append(e_eski)
             continue
         bloklar, randevu = etap_verisi(satirlar)
-        e = {"id": eid, "ad": ad, "baslik": baslik, "pdf": url, "daire": len(satirlar),
-             "bloklar": bloklar, "randevu": randevu}
+        # Herkese açık dosyaya kaynak bilgisi (başlık, PDF adresi) yazılmaz
+        e = {"id": eid, "ad": ad, "daire": len(satirlar), "bloklar": bloklar, "randevu": randevu}
         icerik = lambda x: {k: v for k, v in (x or {}).items() if k != "guncelleme"}
         e["guncelleme"] = e_eski.get("guncelleme", simdi) if icerik(e_eski) == icerik(e) else simdi
         yeni.append(e)
     # Sayfadan kalkan etapları silme, olduğu gibi tut
     yeni.extend(eskiler.values())
 
-    cikti = {"kaynak": SAYFA, "etaplar": yeni}
-    if cikti != {k: v for k, v in eski.items() if k in ("kaynak", "etaplar")}:
+    for e in yeni:
+        for k in ("baslik", "pdf"):
+            e.pop(k, None)
+    cikti = {"etaplar": yeni}
+    if cikti != eski:
         with open(DOSYA, "w", encoding="utf-8") as f:
             json.dump(cikti, f, ensure_ascii=False, separators=(",", ":"))
             f.write("\n")

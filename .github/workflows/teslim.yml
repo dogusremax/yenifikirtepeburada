@@ -1,8 +1,7 @@
 name: Teslim takvimi
 
-# Emlak Konut "Teslim İşlemleri" sayfasındaki Yeni Fikirtepe teslim programlarını
-# (PDF) okur, teslim-takvimi.json'u günceller. teslim-takvimi.html bu dosyayı okur.
-# Yeni etap eklenirse ya da program değişirse site kendiliğinden güncellenir.
+# teslim-takvimi.json'u günceller; teslim-takvimi.html bu dosyayı okur.
+# Ayrıntı: .github/scripts/teslim_guncelle.py
 # Saatler UTC: 04:15, 09:15, 14:15 = TR 07:15, 12:15, 17:15.
 on:
   schedule:
@@ -27,11 +26,11 @@ jobs:
       - name: pdftotext kur
         run: command -v pdftotext || (sudo apt-get update -qq && sudo apt-get install -y -qq poppler-utils)
 
-      - name: Emlak Konut programlarını oku
+      - name: Programları oku
         id: oku
         run: |
           set +e
-          python3 scripts/teslim_guncelle.py teslim-takvimi.json
+          python3 .github/scripts/teslim_guncelle.py teslim-takvimi.json
           echo "kod=$?" >> "$GITHUB_OUTPUT"
 
       - name: Kaydet
@@ -43,12 +42,12 @@ jobs:
           git config user.name "dogusremax"
           git config user.email "dogusremax@gmail.com"
           git add teslim-takvimi.json
-          git commit -m "Teslim takvimi: Emlak Konut programı güncellendi ($(TZ=Europe/Istanbul date +%F))"
+          git commit -m "Teslim takvimi güncellendi ($(TZ=Europe/Istanbul date +%F))"
           git pull --rebase -q origin "$GITHUB_REF_NAME"
           git push origin HEAD:"$GITHUB_REF_NAME"
 
       - name: Okunamayan program var mı
         if: steps.oku.outputs.kod != '0'
         run: |
-          echo "::warning::En az bir teslim programı okunamadı; eski veri korunuyor. Ayrıntı 'Emlak Konut programlarını oku' adımında."
+          echo "::warning::En az bir teslim programı okunamadı; eski veri korunuyor. Ayrıntı 'Programları oku' adımında."
           exit 1
