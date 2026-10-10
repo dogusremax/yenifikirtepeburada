@@ -74,7 +74,7 @@ def etap_kimligi(baslik):
 
 
 SATIR = re.compile(
-    r"[İI]STANBUL\s+KADIK[ÖO]Y\s+(\d+)\s+(\d+)\s+(\S+)\s+(\S+)\s+"
+    r"[İI]STANBUL\s+KADIK[ÖO]Y\s+(\d+)\s+([\d/-]+)\s+(\S+)\s+(\S+)\s+"
     r"(\d{1,2})\s+([A-Za-zÇĞİÖŞÜçğıöşü]+)\s+(\d{4})"
     r"(?:\s+[A-Za-zÇĞİÖŞÜçğıöşü]+)?(?:\s+(\d{1,2})[:.](\d{2}))?")
 
