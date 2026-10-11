@@ -41,7 +41,7 @@
       '<div class="hint">Sağa sola sürükleyerek çevirin</div></div>' +
       '<div class="tp"><div class="tbox"><img alt="Kuş bakışı kat planı"><svg viewBox="0 0 1 1" preserveAspectRatio="none"></svg></div><div class="lbls"></div></div>';
     var q = function (s) { return host.querySelector(s); };
-    var sp = q('.sp'), tp = q('.tp'), cv = q('canvas'), cx = cv.getContext('2d'), DPR = Math.min(window.devicePixelRatio || 1, 2);
+    var sp = q('.sp'), tp = q('.tp'), cv = q('canvas'), cx = cv.getContext('2d'), DPR = 1, DPR0 = Math.min(window.devicePixelRatio || 1, 2);
     var V = { pid: null, mode: null, frames: [], n: 0, p: 0, auto: true, drag: null, loaded: 0, hl: null, last: 0, on: false };
 
     function rect(el, iw, ih, z) {
@@ -80,7 +80,7 @@
       var order = []; [8, 4, 2, 1].forEach(function (s) { for (var i = 0; i < D.n; i += s) if (order.indexOf(i) < 0) order.push(i); });
       order.forEach(function (i) {
         var im = new Image(); im.decoding = 'async';
-        im.onload = function () { if (V.D !== D) return; V.frames[i] = soft(im); V.loaded++; q('.ldb').style.width = (V.loaded / D.n * 100) + '%'; if (V.loaded >= D.n) q('.ld').style.display = 'none'; draw(); };
+        im.onload = function () { if (V.D !== D) return; var c = soft(im); V.frames[i] = c; if (window.createImageBitmap) createImageBitmap(c).then(function (bm) { if (V.D === D) V.frames[i] = bm; }, function () {}); V.loaded++; q('.ldb').style.width = (V.loaded / D.n * 100) + '%'; if (V.loaded >= D.n) q('.ld').style.display = 'none'; draw(); };
         im.src = D.dir + 'f' + (i < 10 ? '0' : '') + i + '.webp';
       });
       var ti = tp.querySelector('img'); ti.onload = drawTop; ti.src = D.dir + 'top.webp';
@@ -134,11 +134,13 @@
     function draw() {
       if (!V.on || V.mode !== 'spin' || !V.n) return;
       var W = sp.clientWidth, H = sp.clientHeight; if (!W) return;
-      if (cv.width !== Math.round(W * DPR) || cv.height !== Math.round(H * DPR)) { cv.width = Math.round(W * DPR); cv.height = Math.round(H * DPR); }
       var i0 = Math.floor(V.p) % V.n, i1 = (i0 + 1) % V.n, fr = V.p - Math.floor(V.p), a = near(i0); if (a < 0) return;
       var im = V.frames[a], R = rect(sp, im.width, im.height, 1.32);
+      // tuval çözünürlüğü karenin kendi çözünürlüğünü aşmasın: retina ekranda boşuna 4 kat piksel çizip takılmasın
+      DPR = Math.max(1, Math.min(DPR0, im.width * 1.15 / R.w));
+      if (cv.width !== Math.round(W * DPR) || cv.height !== Math.round(H * DPR)) { cv.width = Math.round(W * DPR); cv.height = Math.round(H * DPR); }
       cx.setTransform(DPR, 0, 0, DPR, 0, 0); cx.clearRect(0, 0, W, H); cx.globalAlpha = 1;
-      var both = a === i0 && ready(i1) && fr > 0.001, b = both ? fr : 0, m = Math.min(1, Math.max(0, (fr - 0.25) / 0.5)); m = m * m * (3 - 2 * m);
+      var both = a === i0 && ready(i1) && fr > 0.001, b = both ? fr : 0, m = fr;
       if (!both) cx.drawImage(im, R.x, R.y, R.w, R.h);
       else {
         // ara kare: iki kareyi zemin düzlemine göre birbirine doğru büker ve doğrusal karıştırır (kare atlamasız akıcı dönüş)
