@@ -9,6 +9,7 @@
     '11-y1': [['sal', 'Salon + Mutfak', 23.82], ['eb', 'Ebeveyn Y. Odası', 14.44], ['o', 'Oda', 9.42], ['ba', 'Banyo', 4.02], ['eba', 'Ebeveyn Banyo', 3.07],
       ['gh', 'Giriş Holü', 3.75], ['kor', 'Koridor', 4.10], ['blk', 'Balkon', 3.64]]
   };
+  function rooms(pid) { return (K[pid] && K[pid].rooms) || ROOMS[pid] || []; }
   var NS = 'http://www.w3.org/2000/svg';
   var css = '.k3d{position:relative;width:100%;height:100%;overflow:hidden;background:linear-gradient(180deg,#f7f8fc,#e9edf6);border-radius:14px;font-family:"Plus Jakarta Sans","Archivo",sans-serif;user-select:none;-webkit-user-select:none}' +
     '.k3d .sp,.k3d .tp{position:absolute;inset:0;display:none}' +
@@ -49,7 +50,7 @@
     }
     function mkLabels(el) {
       el.innerHTML = ''; var o = {};
-      (ROOMS[V.pid] || []).forEach(function (r) {
+      rooms(V.pid).forEach(function (r) {
         var d = document.createElement('div'); d.className = 'lb3'; d.innerHTML = r[1] + '<i>' + fmt(r[2]) + '</i>'; el.appendChild(d); o[r[0]] = { el: d, m: r[2] };
       });
       return o;
@@ -76,7 +77,7 @@
       });
       var ti = tp.querySelector('img'); ti.onload = drawTop; ti.src = D.dir + 'top.webp';
       var svg = tp.querySelector('svg'); svg.innerHTML = '';
-      (ROOMS[pid] || []).forEach(function (r) {
+      rooms(pid).forEach(function (r) {
         var pts = D.top.polys[r[0]]; if (!pts) return;
         var e = document.createElementNS(NS, 'polygon'); e.setAttribute('points', pts.map(function (a) { return a[0] + ',' + a[1]; }).join(' '));
         e.setAttribute('data-r', r[0]); svg.appendChild(e);

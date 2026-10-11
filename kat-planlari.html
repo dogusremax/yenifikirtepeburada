@@ -251,7 +251,7 @@
       <div class="ehead"><h2 id="etitle"></h2><span class="meta" id="emeta"></span></div>
       <div class="hero3d" id="hero3d"><img src="assets/kat3d/11-y1/f00.webp" alt="" width="150" height="112" loading="lazy">
         <div class="t"><b>Yeni: Daireyi fotogerçekçi 3D gezin</b><span>Eşyalı, gerçek ışık ve gölgeyle. 360° çevirin, kuş bakışında odalara dokunun.</span></div>
-        <div class="bt"><button type="button" data-f="2">2+1 · Tip Y1</button><button type="button" data-f="4">3+1 · Tip C1</button></div></div>
+        <div class="bt" id="hero3dbt"></div></div>
       <div class="grid" id="grid"></div>
       <p class="src" id="src"></p>
       <p class="note">Kat planları tanıtım ve bilgi amaçlıdır. Emlak Konut projede değişiklik yapabilir; kesin ölçüler için sözleşmenizdeki plana bakınız. Diğer etapların planları Emlak Konut tarafından henüz yayımlanmadı. 3D görseller temsilidir, eşyalar örnek yerleşimdir. <small>3D bitki modeli: Rico Cilliers (CC0), malzemeler: Eric Chadwick / Darmstadt Graphics Group, CC BY 4.0.</small></p>
@@ -300,7 +300,7 @@
     var cur=4,oda='',list=[],li=0,mode='plan';
     // Fotogerçekçi 3D'si hazırlanan planlar: etap no + dosya no -> 3D kimliği
     var P3={'11-2':'11-y1','11-4':'11-c1'};
-    function p3(e,r){var id=P3[e.n+'-'+r[0]];return id&&window.Kat3D&&Kat3D.has(id)?id:null;}
+    function p3(e,r){if(!window.Kat3D)return null;var id=P3[e.n+'-'+r[0]]||(e.n+'-'+(r[0]<10?'0':'')+r[0]);return Kat3D.has(id)?id:null;}
     var $=function(id){return document.getElementById(id);};
     function track(n,p){try{if(typeof gtag==='function')gtag('event',n,p||{});}catch(e){}}
     function file(e,r,big){return 'kat-planlari/'+(big?'':'k/')+'etap'+e.n+'-'+(r[0]<10?'0':'')+r[0]+'.jpg';}
@@ -322,7 +322,10 @@
         h+='<button type="button" class="plan" data-i="'+i+'"><img class="im" loading="lazy" src="'+file(e,r)+'" alt="'+e.n+'. Etap '+r[2]+' Blok '+r[1]+' kat planı" width="640" height="416"><span class="tx"><span class="oda">'+r[1]+'</span><span class="bl">'+r[2]+' Blok<span class="tp">Tip '+r[3]+'</span></span></span>'+(p3(e,r)?'<span class="b3d">3D · 360°</span>':'')+'</button>';
       });
       $('grid').innerHTML=h;
-      $('hero3d').style.display=e.p.some(function(r){return p3(e,r);})?'flex':'none';
+      var w3=e.p.filter(function(r){return p3(e,r);}).sort(function(a,b){return odaSort(a[1],b[1])||a[0]-b[0];});
+      $('hero3d').style.display=w3.length?'flex':'none';
+      $('hero3dbt').innerHTML=w3.length>3?'<button type="button" data-f="'+w3[0][0]+'">3D turu başlat</button>':w3.map(function(r){return '<button type="button" data-f="'+r[0]+'">'+r[1]+' · Tip '+r[3]+'</button>';}).join('');
+      if(w3.length){var im=$('hero3d').querySelector('img'),d0=Kat3D&&KAT3D[p3(e,w3[0])];if(d0)im.src=d0.dir+'f00.webp';}
       $('src').innerHTML='Kaynak: Emlak Konut GYO, Yeni Fikirtepe projesi '+e.n+'. Etap kat planları. <a href="https://fikirtepe.emlakkonut.com.tr/tr/parcels/'+e.n+'" target="_blank" rel="noopener">Emlak Konut proje sayfası</a>';
     }
 
