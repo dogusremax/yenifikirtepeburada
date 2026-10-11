@@ -319,8 +319,8 @@
   .psel .gl{fill:none;stroke-width:10;stroke-linejoin:round}
   .psel .ln{fill:none;stroke-width:1.6;stroke-linejoin:round;stroke-opacity:.85}
   .pbm{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;opacity:0;transition:opacity .8s;overflow:visible}
-  .pbm.t{mix-blend-mode:color}.pbm.t path{fill-opacity:.62}
-  .pbm.o path{fill-opacity:.06;stroke:#fff;stroke-opacity:.75;stroke-width:1.2;stroke-linejoin:round}
+  .pbm.t path{fill-opacity:.42}
+  .pbm.o path{fill-opacity:0;stroke:#fff;stroke-opacity:.9;stroke-width:1.5;stroke-linejoin:round}
   .photo.ld .ppin,.photo.ld .plink,.photo.ld .psel,.photo.ld .pbm{opacity:0!important;transition:none!important}
   /* etap pini: sabahki haritadaki gibi daire içinde numara, ince sap ve yerde ışık */
   .ppin{width:30px;height:30px;cursor:pointer}
@@ -792,7 +792,7 @@
     return o;}
   function pInit(){if(pv||!window.pannellum)return;
     pv=pannellum.viewer('pano',{default:{firstScene:'s'+pCur,sceneFadeDuration:900,autoLoad:true,showControls:false,keyboardZoom:false,mouseZoom:false,
-      autoRotate:RM?0:-1.4,autoRotateInactivityDelay:7000,friction:.12},scenes:pScenes()});
+      autoRotate:0,friction:.12},scenes:pScenes()});
     pv.on('scenechange',function(id){ph.classList.add('ld');pCur=+id.slice(1);pDots();setTimeout(pSync,60);track('vaziyet_360_sahne',{sahne:pCur});});
     pv.on('load',function(){pReady=true;ph.classList.add('rdy');clearTimeout(pLdT);pLdT=setTimeout(function(){ph.classList.remove('ld');},RM?0:950);pSync();if(pZ)pZoom(pZ);pPre();});
     pv.on('mousedown',function(){hint(false);});pv.on('touchstart',function(){hint(false);});
@@ -815,9 +815,19 @@
     var x=PX[n],dd=function(j){var c=PCAM[j-1];return x?Math.hypot(x[0]-c[0],x[1]-c[1],x[2]-c[2]):1;},best=PORD.slice().sort(function(i,j){return dd(i)-dd(j);})[0];
     var k=PORD.indexOf(pCur)>=0&&dd(pCur)<=dd(best)*1.25?pCur:best,a=pAim(k,n);
     if(BM[n]){k=BM[n].k;a=pbAim(n);}
-    pv.stopAutoRotate();
+    a=pFit(a);pv.stopAutoRotate();
     if(k!==pCur)pv.loadScene('s'+k,a[0],a[1],a[2]);else pv.lookAt(a[0],a[1],a[2],1500);
     setTimeout(pSync,60);}
+  // etap kartının örtmediği alan: hedefi o alanın ortasına al, o alana sığacak kadar uzaklaş
+  function pFit(a){var m=ph.getBoundingClientRect(),sh=$('sheet'),W=m.width,H=m.height;if(!W||!H)return a;
+    var x0=0,x1=W,y0=0,y1=H;
+    if(innerWidth>=900){var L=innerWidth-24-400-16-m.left;x1=clamp(L,W*.45,W);}
+    else{var top=innerHeight-(sh?sh.offsetHeight:0)-8-m.top;y1=clamp(top,H*.45,H);}
+    y0=Math.min(56,H*.12);   // üstteki "Tüm etaplar" düğmesi
+    var vw=x1-x0,vh=y1-y0,h=clamp(a[2]*Math.max(1,W/vw*.8,H/vh*.8),18,mob?95:90),tx=(x0+x1)/2,ty=(y0+y1)/2,cp=a[0],cy=a[1],f=W/2/Math.tan(h*RAD/2);
+    for(var i=0;i<12;i++){var q=pScr([a[0],a[1]],cp*RAD,cy*RAD,f,W,H);if(!q)break;var dx=q[0]-tx,dy=q[1]-ty;if(Math.abs(dx)+Math.abs(dy)<.5)break;
+      cy+=dx/f/RAD/Math.max(.2,Math.cos(cp*RAD));cp-=dy/f/RAD;cp=clamp(cp,-89,89);}
+    return [cp,cy,h];}
   function pUnzoom(){pZ=null;if(!pv)return;var v=V(pCur);pv.lookAt(v[0],v[1],v[2],1400);pSync();}
   /* seçilen etap: 360° görüntüde yükselen ışık perdesi ve çevreyi karartan spot */
   // 360° geometri: 7 kameranın konumu/yönü ve etap noktaları, tüm VR işaretlerinden birlikte çözüldü (dünya = harita koordinatı)
@@ -861,7 +871,7 @@
     pbT=el('svg',{'class':'pbm t'});pbO=el('svg',{'class':'pbm o'});pbT._p=el('path',{},pbT);pbO._p=el('path',{},pbO);
     var cv=rc.querySelector('canvas');rc.insertBefore(pbO,cv?cv.nextSibling:rc.firstChild);rc.insertBefore(pbT,pbO);return true;}
   function pbAim(n){var b=BM[n],p0=1e9,p1=-1e9,y0=1e9,y1=-1e9;b.s.forEach(function(s){s.forEach(function(q){p0=Math.min(p0,q[0]);p1=Math.max(p1,q[0]);y0=Math.min(y0,q[1]);y1=Math.max(y1,q[1]);});});
-    var cp=(p0+p1)/2,ext=Math.max((y1-y0)*Math.cos(cp*RAD),(p1-p0)*Cw/Math.max(1,Ch));return [cp,(y0+y1)/2,clamp(ext/(mob?.56:.62),18,mob?90:80)];}
+    var cp=(p0+p1)/2,ext=Math.max((y1-y0)*Math.cos(cp*RAD),(p1-p0)*Cw/Math.max(1,Ch));return [cp,(y0+y1)/2,clamp(ext/(mob?.66:.72),18,mob?90:80)];}
   function pbDraw(t){requestAnimationFrame(pbDraw);
     var b=sel&&BM[sel],on=b&&photo&&pv&&pReady&&pCur===b.k&&!ph.classList.contains('ld')&&pv.getScene()==='s'+b.k;
     if(!on){if(pbT){pbT.style.opacity=0;pbO.style.opacity=0;}pbN=0;return;}
