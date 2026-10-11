@@ -7,7 +7,7 @@ from PIL import Image
 HERE = os.path.dirname(os.path.abspath(__file__)); REPO = os.path.dirname(os.path.dirname(HERE))
 ASSETS = os.path.join(REPO, 'assets', 'kat3d'); WORK = os.path.join(HERE, '_work')
 ORDER = ['11', '2', '4', '12', '19', '3', '5']
-N, RES, SAMPLES, EL = 36, 960, 30, 62
+N, RES, SAMPLES, EL = 30, 900, 24, 62
 def log(*a): print(time.strftime('%H:%M:%S'), *a, flush=True)
 def sh(*cmd, **kw): return subprocess.run(cmd, cwd=REPO, **kw)
 def short(n): return n.replace('Ebeveyn Yatak Odası', 'Ebeveyn Y. Odası').replace('Ebeveyn Yatak Odasi', 'Ebeveyn Y. Odası')
