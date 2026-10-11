@@ -91,21 +91,26 @@
   .acts .sec2{background:var(--soft);color:var(--navy)}
   .acts .wa{background:#e9f9ef;color:#128c4a}
   .acts svg{width:18px;height:18px;flex:none;fill:currentColor}
-  /* küçük kart: etaplar görünür kalsın */
-  .card{padding:14px 16px calc(14px + env(safe-area-inset-bottom))}
-  .card .x{top:10px;right:10px;width:32px;height:32px}
-  .sh{gap:10px}.sh .n{width:42px;height:42px;border-radius:12px;font-size:1.15rem}
-  .sh h3{font-size:1.1rem}
-  .stl{margin:8px 0 0;font-size:.82rem;line-height:1.35}
-  .tiles{gap:6px;margin:10px 0}
-  .tile{padding:8px 10px;border-radius:12px}
-  .tile b{font-size:1.1rem}.tile.t b{font-size:.85rem}
-  .tile span{font-size:.68rem}
-  .prog{margin:0 0 10px;padding:8px 10px}
-  .prog .top{font-size:.76rem;margin-bottom:6px}
-  .prog .trk{height:8px}
-  .acts{gap:6px}.acts .row{gap:6px}
-  .acts a{padding:10px;font-size:.88rem;border-radius:12px}
+  /* küçük kart: görüntüyü kapatmasın */
+  .card{padding:10px 12px calc(10px + env(safe-area-inset-bottom));border-radius:18px 18px 0 0;max-height:none;overflow:visible}
+  @media (min-width:768px){.card{width:280px;right:16px;border-radius:16px;top:auto;bottom:16px;transform:translateX(calc(100% + 40px))}.card.on{transform:none}}
+  .card .x{top:8px;right:8px;width:28px;height:28px;font-size:1.1rem}
+  .sh{gap:8px;padding-right:34px}.sh .n{width:34px;height:34px;border-radius:10px;font-size:.95rem;box-shadow:inset 0 -3px 0 var(--c)}
+  .sh h3{font-size:.98rem}
+  .badge{font-size:.6rem;padding:2px 7px;margin-top:2px}
+  .stl{margin:6px 0 0;font-size:.74rem;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--gray)}
+  .tiles{gap:5px;margin:7px 0}
+  .tile{padding:5px 7px;border-radius:9px}
+  .tile b{font-size:.92rem}.tile.t b{font-size:.74rem;line-height:1.5}
+  .tile span{font-size:.6rem}
+  .prog{margin:0 0 7px;padding:5px 8px;border-radius:9px}
+  .prog .top{font-size:.66rem;margin-bottom:4px}
+  .prog .trk{height:5px}
+  .acts{grid-template-columns:1fr 1fr auto;gap:5px}
+  .acts a{padding:8px 6px;font-size:.76rem;border-radius:9px;gap:5px}
+  .acts .row{display:contents}
+  .acts .wa{width:40px;padding:8px 0;font-size:0}
+  .acts svg{width:16px;height:16px}
   body.carded .scenes{opacity:0;pointer-events:none}
   .scenes{transition:opacity .3s}
   .hint{position:fixed;z-index:4;left:50%;top:50%;transform:translate(-50%,-50%);background:rgba(5,10,48,.78);padding:10px 16px;border-radius:12px;
@@ -186,7 +191,7 @@
     var f=(W/2)/Math.tan(h*Math.PI/360),cx=W/2,cy=H/2;
     if(card.classList.contains('on')){
       if(mob)cy=(H-card.offsetHeight)*.5;       // kartın üstündeki alanın ortası
-      else cx=(W-card.offsetWidth-20)*.5;        // kartın solundaki alanın ortası
+      else cy=(H-card.offsetHeight-16)*.5;      // kart sağ altta: etap üstteki alanın ortasında
     }
     cx-=20;cy-=25;                               // pin noktanın 20/25 px sağ altında görünüyor
     var dy=Math.atan((cx-W/2)/f)*180/Math.PI,dp=Math.atan((H/2-cy)/f)*180/Math.PI;
@@ -251,9 +256,9 @@
     if(p&&p.top){var pct=Math.round(p.tes/p.top*100);
       h+='<div class="prog"><div class="top">Teslim programı<span><b data-to="'+p.tes+'">0</b> / '+tr(p.top)+' daire</span></div><div class="trk"><div class="val" data-w="'+pct+'"></div></div></div>';}
     var wa='https://wa.me/902163151515?text='+encodeURIComponent('Merhaba, Yeni Fikirtepe '+ad+' hakkında bilgi almak istiyorum.');
-    h+='<div class="acts"><a class="pri" href="teslim-takvimi.html#etap-'+hedef+'">'+(e.st==='ok'?'Etap ayrıntıları':'Teslim takvimini aç')+' →</a><div class="row">'+
-      (KAT.indexOf(n)>=0?'<a class="sec2" href="kat-planlari.html#etap-'+n+'">Kat planları</a>':'<a class="sec2" href="etaplar.html">Etap bilgileri</a>')+
-      '<a class="wa" href="'+wa+'" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="'+WAP+'"/></svg>WhatsApp</a></div></div>';
+    h+='<div class="acts"><a class="pri" href="teslim-takvimi.html#etap-'+hedef+'">'+(e.st==='ok'?'Etap ayrıntıları':'Teslim takvimi')+'</a><div class="row">'+
+      (KAT.indexOf(n)>=0?'<a class="sec2" href="kat-planlari.html#etap-'+n+'">Kat planları</a>':'<a class="sec2" href="etaplar.html">Etap bilgisi</a>')+
+      '<a class="wa" href="'+wa+'" target="_blank" rel="noopener" aria-label="WhatsApp"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="'+WAP+'"/></svg>WhatsApp</a></div></div>';
     card.innerHTML=h;card.classList.add('on');card.scrollTop=0;document.body.classList.add('carded');
     if(yaw!==undefined)zoomTo(yaw,pitch);
     countAll(card,250);
