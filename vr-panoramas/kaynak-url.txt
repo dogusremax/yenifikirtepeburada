@@ -1,0 +1,20 @@
+Fikirtepe Emlak Konut VR sayfası: https://fikirtepe.emlakkonut.com.tr/tr/vr
+Görüntüleyici: Marzipano küp panorama (6 yüz: f b l r u d), 7 sahne. Gece/akşam versiyonu YOK.
+Yüz çözünürlüğü (orijinal): 5750 px. En yüksek karo seviyesi 5 = 8192 px (16x16 karo, 512 px).
+
+Sahne kimlikleri:
+  0-fkr_render_0001 .. 6-fkr_render_0007
+
+Önizleme (küçük, tüm yüzler tek dosya):
+  https://fikirtepe.emlakkonut.com.tr/storage/vr/tiles/<SAHNE>/preview.jpg
+Tam çözünürlük karo deseni:
+  https://fikirtepe.emlakkonut.com.tr/storage/vr/tiles/<SAHNE>/5/<YÜZ>/<SATIR 0-15>/<SÜTUN 0-15>.jpg
+  (seviye 4 = 4096 px, 8x8 karo; seviye 1 = 512 px)
+Sahne verisi (açılar, hotspotlar): https://fikirtepe.emlakkonut.com.tr/js/vr/vr.js?v=1650364625
+
+Dosyalar:
+  panoramalar/sahneN_360_16384x8192.jpg  -> equirectangular 360° (2:1), 7 adet
+  acilar/NN_sahneN_*.jpg                 -> 3840x2160 düz perspektif görüntü, 10 adet
+     baslangic  = sitedeki o sahnenin açılış açısı
+     tepeden    = sahne 7, dik aşağı bakış
+     genis-ufuk = daha geniş, ufku da gösteren açı
