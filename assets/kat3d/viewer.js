@@ -140,14 +140,13 @@
       DPR = Math.max(1, Math.min(DPR0, im.width * 1.15 / R.w));
       if (cv.width !== Math.round(W * DPR) || cv.height !== Math.round(H * DPR)) { cv.width = Math.round(W * DPR); cv.height = Math.round(H * DPR); }
       cx.setTransform(DPR, 0, 0, DPR, 0, 0); cx.clearRect(0, 0, W, H); cx.globalAlpha = 1;
-      var both = a === i0 && ready(i1) && fr > 0.001, b = both ? fr : 0, m = fr;
+      var both = a === i0 && ready(i1) && fr > 0.001, b = both ? fr : 0;
       if (!both) cx.drawImage(im, R.x, R.y, R.w, R.h);
       else {
-        // ara kare: iki kareyi zemin düzlemine göre birbirine doğru büker ve doğrusal karıştırır (kare atlamasız akıcı dönüş)
-        cx.globalCompositeOperation = 'lighter';
-        warp(V.frames[i0], aff(i0, i1), fr, 1 - m, R);
-        warp(V.frames[i1], aff(i1, i0), 1 - fr, m, R);
-        cx.globalCompositeOperation = 'source-over';
+        // ara kare: iki kareyi üst üste karıştırmak duvarları çift gösteriyordu (şaşı görüntü).
+        // Bunun yerine her an tek kare çizilir: yakın kare zemin düzlemine göre komşusuna doğru hafifçe bükülür, yarı yolda diğerine geçilir.
+        if (fr < 0.5) warp(V.frames[i0], aff(i0, i1), fr, 1, R);
+        else warp(V.frames[i1], aff(i1, i0), 1 - fr, 1, R);
       }
       setLbl(V.L, b ? mix(V.D.labels[i0], V.D.labels[i1], b) : V.D.labels[a], R);
     }

@@ -1,0 +1,154 @@
+/* Fotogerçekçi 3D kat planı görüntüleyici: önceden render edilmiş 360° kareler ve kuş bakışı.
+   Kullanım: var v = Kat3D.create(kutu); v.show('11-c1', 'spin' | 'top'); v.hide();  */
+(function () {
+  var K = window.KAT3D || {};
+  // Oda adları ve net alanlar (resmi satış planlarından)
+  var ROOMS = {
+    '11-c1': [['sal', 'Salon', 28.42], ['mut', 'Mutfak', 9.94], ['eb', 'Ebeveyn Y. Odası', 13.84], ['o1', 'Oda 1', 10.10], ['o2', 'Oda 2', 10.29],
+      ['eba', 'Ebeveyn Banyo', 4.29], ['ba', 'Banyo', 4.46], ['gh', 'Giriş Holü', 6.28], ['kor', 'Koridor', 5.35], ['cn', 'Çamaşır Nişi', 1.65], ['blk', 'Balkon', 7.45]],
+    '11-y1': [['sal', 'Salon + Mutfak', 23.82], ['eb', 'Ebeveyn Y. Odası', 14.44], ['o', 'Oda', 9.42], ['ba', 'Banyo', 4.02], ['eba', 'Ebeveyn Banyo', 3.07],
+      ['gh', 'Giriş Holü', 3.75], ['kor', 'Koridor', 4.10], ['blk', 'Balkon', 3.64]]
+  };
+  function rooms(pid) { return (K[pid] && K[pid].rooms) || ROOMS[pid] || []; }
+  var NS = 'http://www.w3.org/2000/svg';
+  var css = '.k3d{position:relative;width:100%;height:100%;overflow:hidden;background:linear-gradient(180deg,#f7f8fc,#e9edf6);border-radius:14px;font-family:"Plus Jakarta Sans","Archivo",sans-serif;user-select:none;-webkit-user-select:none}' +
+    '.k3d .sp,.k3d .tp{position:absolute;inset:0;display:none}' +
+    '.k3d .sp{cursor:grab;touch-action:pan-y}.k3d .sp:active{cursor:grabbing}' +
+    '.k3d canvas{position:absolute;inset:0;width:100%;height:100%;display:block}' +
+    '.k3d .lbls{position:absolute;inset:0;pointer-events:none;overflow:hidden}' +
+    '.k3d .lb3{position:absolute;transform:translate(-50%,-50%);text-align:center;white-space:nowrap;font-size:.72rem;font-weight:700;color:#050A30;background:rgba(255,255,255,.9);border-radius:8px;padding:3px 8px;line-height:1.25;box-shadow:0 2px 10px rgba(5,10,48,.14);transition:opacity .25s,background .2s}' +
+    '.k3d .lb3 i{display:block;font-style:normal;font-weight:600;color:#DC1C2E;font-size:.68rem}' +
+    '.k3d .lb3.hl{background:#050A30;color:#fff}.k3d .lb3.hl i{color:#ffb3b9}' +
+    '.k3d .tbox{position:absolute}.k3d .tbox img{position:absolute;inset:0;width:100%;height:100%;display:block}' +
+    '.k3d .tbox svg{position:absolute;inset:0;width:100%;height:100%}' +
+    '.k3d polygon{fill:transparent;cursor:pointer;transition:fill .2s}.k3d polygon:hover{fill:rgba(251,81,96,.12)}.k3d polygon.on{fill:rgba(251,81,96,.3)}' +
+    '.k3d .ld{position:absolute;inset:0;display:none;align-items:center;justify-content:center;pointer-events:none}' +
+    '.k3d .ld>div{background:rgba(255,255,255,.94);border-radius:12px;padding:10px 14px;font-size:.8rem;font-weight:600;color:#050A30;box-shadow:0 4px 18px rgba(5,10,48,.1);text-align:center}' +
+    '.k3d .ldt{height:4px;width:180px;background:#e4e7f1;border-radius:4px;margin-top:8px;overflow:hidden}.k3d .ldb{height:100%;width:0;background:#DC1C2E;transition:width .2s}' +
+    '.k3d .hint{position:absolute;left:50%;transform:translateX(-50%);bottom:14px;white-space:nowrap;font-size:.75rem;color:#59607d;background:rgba(255,255,255,.85);padding:5px 10px;border-radius:8px;transition:opacity .4s;pointer-events:none}' +
+    '@media(max-width:600px){.k3d .lb3{font-size:.62rem;padding:2px 6px;border-radius:6px}.k3d .lb3 i{font-size:.6rem}.k3d .hint{font-size:.72rem}}';
+  var injected = false;
+  function fmt(n) { return n.toFixed(2).replace('.', ',') + ' m²'; }
+  function track(n, p) { try { if (typeof gtag === 'function') gtag('event', n, p || {}); } catch (e) {} }
+
+  function create(host) {
+    if (!injected) { var s = document.createElement('style'); s.textContent = css; document.head.appendChild(s); injected = true; }
+    host.classList.add('k3d');
+    host.innerHTML = '<div class="sp"><canvas></canvas><div class="lbls"></div><div class="ld"><div><span>Fotogerçekçi görüntü yükleniyor</span><div class="ldt"><div class="ldb"></div></div></div></div>' +
+      '<div class="hint">↔ Sağa sola sürükleyerek çevirin</div></div>' +
+      '<div class="tp"><div class="tbox"><img alt="Kuş bakışı kat planı"><svg viewBox="0 0 1 1" preserveAspectRatio="none"></svg></div><div class="lbls"></div></div>';
+    var q = function (s) { return host.querySelector(s); };
+    var sp = q('.sp'), tp = q('.tp'), cv = q('canvas'), cx = cv.getContext('2d'), DPR = 1, DPR0 = Math.min(window.devicePixelRatio || 1, 2);
+    var V = { pid: null, mode: null, frames: [], n: 0, p: 0, auto: false, drag: null, loaded: 0, hl: null, last: 0, on: false };
+
+    function rect(el, iw, ih, z) {
+      var W = el.clientWidth, H = el.clientHeight, s = Math.min(W / iw, H / ih) * (z && W < 600 ? z : 1), w = iw * s, h = ih * s;
+      return { x: (W - w) / 2, y: (H - h) / 2, w: w, h: h, W: W };
+    }
+    function mkLabels(el) {
+      el.innerHTML = ''; var o = {};
+      rooms(V.pid).forEach(function (r) {
+        var d = document.createElement('div'); d.className = 'lb3'; d.innerHTML = r[1] + '<i>' + fmt(r[2]) + '</i>'; el.appendChild(d); o[r[0]] = { el: d, m: r[2] };
+      });
+      return o;
+    }
+    function setLbl(L, pos, R) {
+      var mob = R.W < 600;
+      for (var k in L) {
+        var p = pos && pos[k], l = L[k];
+        if (!p || (mob && l.m < 5 && k !== V.hl)) { l.el.style.opacity = 0; continue; }
+        l.el.style.left = (R.x + p[0] * R.w) + 'px'; l.el.style.top = (R.y + p[1] * R.h) + 'px'; l.el.classList.toggle('hl', k === V.hl);
+        l.x = R.x + p[0] * R.w; l.y = R.y + p[1] * R.h; l.w = l.w || l.el.offsetWidth; l.h = l.h || l.el.offsetHeight; l.v = 1;
+      }
+      // üst üste binen etiketlerde küçük odanınkini gizle (seçili oda her zaman görünür)
+      var ks = Object.keys(L).filter(function (k) { return L[k].v; }).sort(function (a, b) { return (b === V.hl) - (a === V.hl) || L[b].m - L[a].m; }), shown = [];
+      ks.forEach(function (k) {
+        var l = L[k], hit = shown.some(function (o) { return Math.abs(o.x - l.x) < (o.w + l.w) / 2 + 2 && Math.abs(o.y - l.y) < (o.h + l.h) / 2 + 2; });
+        l.el.style.opacity = hit ? 0 : 1; if (!hit) shown.push(l);
+      });
+      for (var k2 in L) L[k2].v = 0;
+    }
+    function load(pid) {
+      var D = K[pid]; if (!D) return false; if (V.pid === pid) return true;
+      V.pid = pid; V.D = D; V.A = {}; V.n = D.n; V.p = 0; V.loaded = 0; V.frames = []; V.hl = null; q('.hint').style.opacity = 1;
+      V.L = mkLabels(sp.querySelector('.lbls')); V.TL = mkLabels(tp.querySelector('.lbls'));
+      q('.ld').style.display = 'flex'; q('.ldb').style.width = '0%';
+      // önce seyrek kareler: dönüş hemen başlayabilsin
+      var order = []; [8, 4, 2, 1].forEach(function (s) { for (var i = 0; i < D.n; i += s) if (order.indexOf(i) < 0) order.push(i); });
+      order.forEach(function (i) {
+        var im = new Image(); im.decoding = 'async';
+        im.onload = function () { if (V.D !== D) return; var c = soft(im); V.frames[i] = c; if (window.createImageBitmap) createImageBitmap(c).then(function (bm) { if (V.D === D) V.frames[i] = bm; }, function () {}); V.loaded++; q('.ldb').style.width = (V.loaded / D.n * 100) + '%'; if (V.loaded >= D.n) q('.ld').style.display = 'none'; draw(); };
+        im.src = D.dir + 'f' + (i < 10 ? '0' : '') + i + '.webp';
+      });
+      var ti = tp.querySelector('img'); ti.onload = drawTop; ti.src = D.dir + 'top.webp';
+      var svg = tp.querySelector('svg'); svg.innerHTML = '';
+      rooms(pid).forEach(function (r) {
+        var pts = D.top.polys[r[0]]; if (!pts) return;
+        var e = document.createElementNS(NS, 'polygon'); e.setAttribute('points', pts.map(function (a) { return a[0] + ',' + a[1]; }).join(' '));
+        e.setAttribute('data-r', r[0]); svg.appendChild(e);
+      });
+      return true;
+    }
+    // karenin kenarlarını görüntünün kendisinde yumuşat: bükülen karenin sınırı ve kesilen gölge görünmesin
+    function soft(im) {
+      var w = im.naturalWidth, h = im.naturalHeight, c = document.createElement('canvas'); c.width = w; c.height = h;
+      var g = c.getContext('2d'); g.drawImage(im, 0, 0); g.globalCompositeOperation = 'destination-out';
+      [[0, 0, w * 0.1, 0], [w, 0, w * 0.9, 0], [0, 0, 0, h * 0.1], [0, h, 0, h * 0.9]].forEach(function (a) {
+        var gr = g.createLinearGradient(a[0], a[1], a[2], a[3]); gr.addColorStop(0, 'rgba(0,0,0,1)'); gr.addColorStop(1, 'rgba(0,0,0,0)'); g.fillStyle = gr; g.fillRect(0, 0, w, h);
+      });
+      return c;
+    }
+    function ready(i) { return !!V.frames[i]; }
+    function near(i) { if (ready(i)) return i; for (var d = 1; d < V.n; d++) { var a = (i + d) % V.n, b = (i - d + V.n) % V.n; if (ready(a)) return a; if (ready(b)) return b; } return -1; }
+    function draw() {
+      if (!V.on || V.mode !== 'spin' || !V.n) return;
+      var W = sp.clientWidth, H = sp.clientHeight; if (!W) return;
+      var a = near(Math.round(V.p) % V.n); if (a < 0) return;
+      var im = V.frames[a], R = rect(sp, im.width, im.height, 1.32);
+      // masaüstünde kareyi kendi boyutundan büyütme: büyütülen fotoğraf bulanıklaşır
+      if (R.W >= 600 && R.w > im.width) { var k = im.width / R.w; R.x += R.w * (1 - k) / 2; R.y += R.h * (1 - k) / 2; R.w *= k; R.h *= k; }
+      DPR = DPR0;
+      if (cv.width !== Math.round(W * DPR) || cv.height !== Math.round(H * DPR)) { cv.width = Math.round(W * DPR); cv.height = Math.round(H * DPR); }
+      cx.setTransform(DPR, 0, 0, DPR, 0, 0); cx.clearRect(0, 0, W, H); cx.globalAlpha = 1;
+      cx.imageSmoothingEnabled = true; cx.imageSmoothingQuality = 'high';
+      // ara kare üretilmez: her zaman gerçek fotoğraf karelerinden biri gösterilir (net görüntü, çift görüntü yok)
+      cx.drawImage(im, R.x, R.y, R.w, R.h);
+      setLbl(V.L, V.D.labels[a], R);
+    }
+    function drawTop() {
+      if (!V.on || V.mode !== 'top' || !V.D) return;
+      var D = V.D.top, W = tp.clientWidth, H = tp.clientHeight - 16, s = Math.min(W / D.w, H / D.h), w = D.w * s, h = D.h * s;
+      var R = { x: (W - w) / 2, y: 8 + (H - h) / 2, w: w, h: h, W: W }, box = tp.querySelector('.tbox');
+      box.style.left = R.x + 'px'; box.style.top = R.y + 'px'; box.style.width = R.w + 'px'; box.style.height = R.h + 'px';
+      setLbl(V.TL, D.labels, R);
+      [].forEach.call(tp.querySelectorAll('polygon'), function (e) { e.classList.toggle('on', e.getAttribute('data-r') === V.hl); });
+    }
+    sp.addEventListener('pointerdown', function (e) {
+      V.drag = { x: e.clientX, p: V.p };
+      try { sp.setPointerCapture(e.pointerId); } catch (_) {} q('.hint').style.opacity = 0;
+    });
+    sp.addEventListener('pointermove', function (e) {
+      if (!V.drag) return; var step = Math.max(8, sp.clientWidth / 70);
+      var p = V.drag.p - (e.clientX - V.drag.x) / step; V.p = ((p % V.n) + V.n) % V.n; draw();
+    });
+    function up() { if (V.drag) { V.drag = null; track('kat_plani3d_cevir', { plan: V.pid }); } }
+    sp.addEventListener('pointerup', up); sp.addEventListener('pointercancel', up);
+    tp.querySelector('svg').addEventListener('click', function (e) {
+      var p = e.target.closest('polygon'); if (!p) return; var r = p.getAttribute('data-r'); V.hl = V.hl === r ? null : r; drawTop();
+      track('kat_plani3d_oda', { plan: V.pid, oda: r });
+    });
+    window.addEventListener('resize', function () { draw(); drawTop(); });
+
+    return {
+      show: function (pid, mode) {
+        if (!load(pid)) return false;
+        V.on = true; V.mode = mode; host.style.display = 'block';
+        sp.style.display = mode === 'spin' ? 'block' : 'none'; tp.style.display = mode === 'top' ? 'block' : 'none';
+        draw(); drawTop(); track('kat_plani3d_mod', { plan: pid, mod: mode });
+        return true;
+      },
+      hide: function () { V.on = false; host.style.display = 'none'; }
+    };
+  }
+  window.Kat3D = { has: function (pid) { return !!K[pid]; }, create: create };
+})();
