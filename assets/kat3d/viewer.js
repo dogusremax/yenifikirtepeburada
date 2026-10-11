@@ -65,7 +65,7 @@
     }
     function load(pid) {
       var D = K[pid]; if (!D) return false; if (V.pid === pid) return true;
-      V.pid = pid; V.D = D; V.n = D.n; V.p = 0; V.auto = true; V.loaded = 0; V.frames = []; V.hl = null; q('.play').classList.add('on');
+      V.pid = pid; V.D = D; V.A = {}; V.n = D.n; V.p = 0; V.auto = true; V.loaded = 0; V.frames = []; V.hl = null; q('.play').classList.add('on');
       V.L = mkLabels(sp.querySelector('.lbls')); V.TL = mkLabels(tp.querySelector('.lbls'));
       q('.ld').style.display = 'flex'; q('.ldb').style.width = '0%';
       // önce seyrek kareler: dönüş hemen başlayabilsin
@@ -86,15 +86,50 @@
     }
     function ready(i) { var f = V.frames[i]; return f && f.complete && f.naturalWidth; }
     function near(i) { if (ready(i)) return i; for (var d = 1; d < V.n; d++) { var a = (i + d) % V.n, b = (i - d + V.n) % V.n; if (ready(a)) return a; if (ready(b)) return b; } return -1; }
+    // kare i'deki etiket noktalarını kare j'dekilere taşıyan 2B afin dönüşüm (en küçük kareler); zemin düzleminde neredeyse tam oturur
+    function aff(i, j) {
+      var key = i + '>' + j; V.A = V.A || {}; if (V.A[key] !== undefined) return V.A[key];
+      var P = V.D.labels[i], Q = V.D.labels[j], S = [0, 0, 0, 0, 0, 0, 0, 0, 0], X = [0, 0, 0], Y = [0, 0, 0], c = 0;
+      for (var k in P) { var p = P[k], q = Q[k]; if (!q) continue; c++;
+        var r = [p[0], p[1], 1]; for (var m = 0; m < 3; m++) { X[m] += r[m] * q[0]; Y[m] += r[m] * q[1]; for (var l = 0; l < 3; l++) S[m * 3 + l] += r[m] * r[l]; } }
+      var M = null;
+      if (c >= 3) {
+        var d = S[0] * (S[4] * S[8] - S[5] * S[7]) - S[1] * (S[3] * S[8] - S[5] * S[6]) + S[2] * (S[3] * S[7] - S[4] * S[6]);
+        if (Math.abs(d) > 1e-12) {
+          var inv = [S[4] * S[8] - S[5] * S[7], S[2] * S[7] - S[1] * S[8], S[1] * S[5] - S[2] * S[4], S[5] * S[6] - S[3] * S[8], S[0] * S[8] - S[2] * S[6], S[2] * S[3] - S[0] * S[5], S[3] * S[7] - S[4] * S[6], S[1] * S[6] - S[0] * S[7], S[0] * S[4] - S[1] * S[3]].map(function (v) { return v / d; });
+          var sol = function (B) { return [0, 1, 2].map(function (m) { return inv[m * 3] * B[0] + inv[m * 3 + 1] * B[1] + inv[m * 3 + 2] * B[2]; }); };
+          var u = sol(X), v = sol(Y); M = [u[0], u[1], u[2], v[0], v[1], v[2]];
+        }
+      }
+      return (V.A[key] = M);
+    }
+    // kareyi t oranında hedef konuma doğru bükerek alfa ile çiz (normalize koordinatlar R içinde)
+    function warp(im, M, t, al, R) {
+      if (al <= 0) return;
+      var a = 1, b = 0, c = 0, d = 0, e = 1, f = 0;
+      if (M) { a = 1 + t * (M[0] - 1); b = t * M[1]; c = t * M[2]; d = t * M[3]; e = 1 + t * (M[4] - 1); f = t * M[5]; }
+      // ekran = R.xy + R.wh * (A * uv); uv = (piksel - R.xy) / R.wh
+      cx.setTransform(DPR * a, DPR * d * R.h / R.w, DPR * b * R.w / R.h, DPR * e, DPR * (R.x + R.w * c - a * R.x - b * R.w / R.h * R.y), DPR * (R.y + R.h * f - d * R.h / R.w * R.x - e * R.y));
+      cx.globalAlpha = al; cx.drawImage(im, R.x, R.y, R.w, R.h);
+      cx.setTransform(DPR, 0, 0, DPR, 0, 0); cx.globalAlpha = 1;
+    }
+    function mix(A, B, t) { var o = {}; for (var k in A) { var p = A[k], q = B[k]; o[k] = q ? [p[0] + (q[0] - p[0]) * t, p[1] + (q[1] - p[1]) * t] : (t < 0.5 ? p : null); } for (var k2 in B) if (!A[k2] && t >= 0.5) o[k2] = B[k2]; return o; }
     function draw() {
       if (!V.on || V.mode !== 'spin' || !V.n) return;
       var W = sp.clientWidth, H = sp.clientHeight; if (!W) return;
       if (cv.width !== Math.round(W * DPR) || cv.height !== Math.round(H * DPR)) { cv.width = Math.round(W * DPR); cv.height = Math.round(H * DPR); }
       var i0 = Math.floor(V.p) % V.n, i1 = (i0 + 1) % V.n, fr = V.p - Math.floor(V.p), a = near(i0); if (a < 0) return;
       var im = V.frames[a], R = rect(sp, im.naturalWidth, im.naturalHeight, 1.32);
-      cx.setTransform(DPR, 0, 0, DPR, 0, 0); cx.clearRect(0, 0, W, H); cx.globalAlpha = 1; cx.drawImage(im, R.x, R.y, R.w, R.h);
-      var b = V.auto ? Math.max(0, (fr - 0.8) / 0.2) : 0; b = b * b * (3 - 2 * b);
-      if (b > 0 && ready(i1)) { cx.globalAlpha = b; cx.drawImage(V.frames[i1], R.x, R.y, R.w, R.h); cx.globalAlpha = 1; }
+      cx.setTransform(DPR, 0, 0, DPR, 0, 0); cx.clearRect(0, 0, W, H); cx.globalAlpha = 1;
+      var both = a === i0 && ready(i1) && fr > 0.001, b = both ? fr : 0;
+      if (!both) cx.drawImage(im, R.x, R.y, R.w, R.h);
+      else {
+        // ara kare: iki kareyi zemin düzlemine göre birbirine doğru büker ve doğrusal karıştırır (kare atlamasız akıcı dönüş)
+        cx.globalCompositeOperation = 'lighter';
+        warp(V.frames[i0], aff(i0, i1), fr, 1 - fr, R);
+        warp(V.frames[i1], aff(i1, i0), 1 - fr, fr, R);
+        cx.globalCompositeOperation = 'source-over';
+      }
       // karenin kenarında kesilen gölgeyi yumuşakça söndür
       cx.globalCompositeOperation = 'destination-out';
       [[R.x, 0, R.x + R.w * 0.07, 0], [R.x + R.w, 0, R.x + R.w * 0.93, 0], [0, R.y, 0, R.y + R.h * 0.08], [0, R.y + R.h, 0, R.y + R.h * 0.92]].forEach(function (g) {
@@ -102,7 +137,7 @@
         cx.fillStyle = gr; cx.fillRect(R.x, R.y, R.w, R.h);
       });
       cx.globalCompositeOperation = 'source-over';
-      setLbl(V.L, V.D.labels[b > 0.5 && ready(i1) ? i1 : a], R);
+      setLbl(V.L, b ? mix(V.D.labels[i0], V.D.labels[i1], b) : V.D.labels[a], R);
     }
     function drawTop() {
       if (!V.on || V.mode !== 'top' || !V.D) return;
@@ -114,18 +149,18 @@
     }
     function tick(t) {
       var dt = Math.min(64, t - (V.last || t)); V.last = t;
-      if (V.on && V.mode === 'spin' && V.n && V.auto && V.loaded >= V.n && !document.hidden) { V.p = (V.p + dt / (V.n > 30 ? 220 : 380)) % V.n; draw(); }
+      if (V.on && V.mode === 'spin' && V.n && V.auto && V.loaded >= V.n && !document.hidden) { V.p = (V.p + dt * V.n / 26000) % V.n; draw(); }
       requestAnimationFrame(tick);
     }
     requestAnimationFrame(tick);
     sp.addEventListener('pointerdown', function (e) {
       if (e.target.closest('.play')) return;
-      V.drag = { x: e.clientX, p: V.p }; V.auto = false; q('.play').classList.remove('on'); V.p = Math.round(V.p) % V.n;
+      V.drag = { x: e.clientX, p: V.p }; V.auto = false; q('.play').classList.remove('on');
       try { sp.setPointerCapture(e.pointerId); } catch (_) {} q('.hint').style.opacity = 0;
     });
     sp.addEventListener('pointermove', function (e) {
       if (!V.drag) return; var step = Math.max(8, sp.clientWidth / 70);
-      var p = Math.round(V.drag.p - (e.clientX - V.drag.x) / step); V.p = ((p % V.n) + V.n) % V.n; draw();
+      var p = V.drag.p - (e.clientX - V.drag.x) / step; V.p = ((p % V.n) + V.n) % V.n; draw();
     });
     function up() { if (V.drag) { V.drag = null; track('kat_plani3d_cevir', { plan: V.pid }); } }
     sp.addEventListener('pointerup', up); sp.addEventListener('pointercancel', up);
