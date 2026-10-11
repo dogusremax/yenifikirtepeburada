@@ -337,7 +337,7 @@
 
     <div class="mapcard" id="card">
       <div class="bar">
-        <div class="clock" aria-hidden="true"><span class="orb"></span><span id="clk">15:30</span></div>
+        <div class="clock" aria-hidden="true"><span class="orb"></span><span id="clk"></span></div>
         <button class="tgl" id="tgl" type="button" aria-label="Gündüz ve gece görünümü arasında geçiş yap">
           <span class="d"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="4.5"/><path d="M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3M4.6 4.6l2.1 2.1M17.3 17.3l2.1 2.1M4.6 19.4l2.1-2.1M17.3 6.7l2.1-2.1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Gündüz</span>
           <span class="m"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 14.6A8.5 8.5 0 0 1 9.4 3.5a8.5 8.5 0 1 0 11.1 11.1z"/></svg>Gece</span>
@@ -751,10 +751,13 @@
     (function f(t){if(t0===null)t0=t;var k=Math.min(1,(t-t0)/dur),e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2,m=Math.round(from+(to-from)*e);
       clk.textContent=('0'+((m/60|0)%24)).slice(-2)+':'+('0'+m%60).slice(-2);if(k<1)clkRaf=requestAnimationFrame(f);})(performance.now());
     requestAnimationFrame(function(t){});}
+  // saat: İstanbul'un gerçek saati
+  var IST=null;try{IST=new Intl.DateTimeFormat('tr-TR',{timeZone:'Europe/Istanbul',hour:'2-digit',minute:'2-digit',hour12:false});}catch(e){}
+  function tick(){var d=new Date();clk.textContent=IST?IST.format(d):('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2);}
+  tick();setInterval(tick,10000);
   function setNight(v,user){
     if(v===night)return;night=v;card.classList.toggle('night',v);
     var d=$('dusk');d.classList.remove('run');void d.offsetWidth;if(!RM)d.classList.add('run');
-    if(RM)clk.textContent=v?'21:30':'15:30';else clockTo(v?15*60+30:21*60+30,v?21*60+30:15*60+30+24*60,v?1900:1500);
     $('tgl').setAttribute('aria-pressed',v);
     if(user)track('vaziyet_gece',{gece:v?1:0});
   }
