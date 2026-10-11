@@ -1,6 +1,6 @@
 """Render kuyruğu: plans/*.json içinde "ready": true olan ve henüz yayımlanmamış planları sırayla
 render eder, assets/kat3d/<id>/ altına webp + meta.json yazar, data.js'i yeniler, commit edip main'e iter.
-Çalıştırma: setsid nohup python3 tools/kat3d/queue.py > tools/kat3d/queue.log 2>&1 &
+Çalıştırma: setsid nohup python3 tools/kat3d/render_queue.py > tools/kat3d/render_queue.log 2>&1 &
 Durdurmak için: touch tools/kat3d/STOP"""
 import json, os, glob, subprocess, sys, time, shutil
 from PIL import Image

@@ -4,3 +4,4 @@ chk_*.png
 queue.log
 STOP
 chk_*.json
+render_queue.log
