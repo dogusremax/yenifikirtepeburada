@@ -794,12 +794,12 @@
     pv=pannellum.viewer('pano',{default:{firstScene:'s'+pCur,sceneFadeDuration:900,autoLoad:true,showControls:false,keyboardZoom:false,mouseZoom:false,
       autoRotate:RM?0:-1.4,autoRotateInactivityDelay:7000,friction:.12},scenes:pScenes()});
     pv.on('scenechange',function(id){ph.classList.add('ld');pCur=+id.slice(1);pDots();setTimeout(pSync,60);track('vaziyet_360_sahne',{sahne:pCur});});
-    pv.on('load',function(){pReady=true;ph.classList.add('rdy');ph.classList.remove('ld');pSync();if(pZ)pZoom(pZ);pPre();});
+    pv.on('load',function(){pReady=true;ph.classList.add('rdy');clearTimeout(pLdT);pLdT=setTimeout(function(){ph.classList.remove('ld');},RM?0:950);pSync();if(pZ)pZoom(pZ);pPre();});
     pv.on('mousedown',function(){hint(false);});pv.on('touchstart',function(){hint(false);});
     if(window.ResizeObserver)new ResizeObserver(function(){if(pv)pv.resize();}).observe($('pano'));
     pDots();}
   // komşu açıların görüntülerini önceden indir: geçişte eski fotoğrafın üstünde yeni numaralar görünmesin
-  var PRE={};function pPre(){var i=PORD.indexOf(pCur);[PORD[(i+1)%PORD.length],PORD[(i-1+PORD.length)%PORD.length]].concat(SC[pCur-1].L.map(function(l){return l[2];})).forEach(function(k){
+  var pLdT=0,PRE={};function pPre(){var i=PORD.indexOf(pCur);[PORD[(i+1)%PORD.length],PORD[(i-1+PORD.length)%PORD.length]].concat(SC[pCur-1].L.map(function(l){return l[2];})).forEach(function(k){
     if(PRE[k]||PORD.indexOf(k)<0)return;PRE[k]=1;['f','r','b','l','u','d'].forEach(function(f){var im=new Image();im.src='assets/vaziyet/360/s'+k+'_'+f+'.jpg?v=1';});});}
   function pDots(){var c=$('cmp');if(c.children.length!==PORD.length)c.innerHTML=PORD.map(function(){return '<i></i>';}).join('');
     [].forEach.call(c.children,function(x,i){x.classList.toggle('on',PORD[i]===pCur);});}
@@ -863,7 +863,7 @@
   function pbAim(n){var b=BM[n],p0=1e9,p1=-1e9,y0=1e9,y1=-1e9;b.s.forEach(function(s){s.forEach(function(q){p0=Math.min(p0,q[0]);p1=Math.max(p1,q[0]);y0=Math.min(y0,q[1]);y1=Math.max(y1,q[1]);});});
     var cp=(p0+p1)/2,ext=Math.max((y1-y0)*Math.cos(cp*RAD),(p1-p0)*Cw/Math.max(1,Ch));return [cp,(y0+y1)/2,clamp(ext/(mob?.56:.62),18,mob?90:80)];}
   function pbDraw(t){requestAnimationFrame(pbDraw);
-    var b=sel&&BM[sel],on=b&&photo&&pv&&pReady&&pCur===b.k;
+    var b=sel&&BM[sel],on=b&&photo&&pv&&pReady&&pCur===b.k&&!ph.classList.contains('ld')&&pv.getScene()==='s'+b.k;
     if(!on){if(pbT){pbT.style.opacity=0;pbO.style.opacity=0;}pbN=0;return;}
     if((!pbT||!pbT.isConnected)&&!pbMake())return;
     if(pbN!==sel){pbN=sel;var c=ST[E[sel].st][1];pbT._p.setAttribute('fill',c);pbO._p.setAttribute('fill',c);}
