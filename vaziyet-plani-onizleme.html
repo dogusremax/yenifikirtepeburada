@@ -321,22 +321,25 @@
   .pbm{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;opacity:0;transition:opacity .8s;overflow:visible}
   .pbm.t{mix-blend-mode:color}.pbm.t path{fill-opacity:.62}
   .pbm.o path{fill-opacity:.06;stroke:#fff;stroke-opacity:.75;stroke-width:1.2;stroke-linejoin:round}
-  .photo.ld .ppin,.photo.ld .plink,.photo.ld .psel,.photo.ld .pbm,opacity:0!important;transition:none!important}
-  .ppin{width:34px;height:34px;cursor:pointer}
-  .ppin .n{position:absolute;inset:0;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:.9rem;color:#fff;background:var(--navy);box-shadow:0 0 0 3px var(--c,#fff),0 8px 18px -4px rgba(5,10,48,.65);transition:transform .3s cubic-bezier(.3,1.6,.5,1),background .3s,filter .3s,opacity .3s}
-  .ppin.now .n::after{content:'';position:absolute;inset:-3px;border-radius:50%;border:3px solid var(--c);animation:ping 2s cubic-bezier(0,0,.2,1) infinite}
-  .ppin .c{position:absolute;bottom:100%;left:50%;margin-bottom:7px;white-space:nowrap;font-size:.68rem;font-weight:700;color:var(--navy);background:rgba(255,255,255,.94);padding:2px 8px;border-radius:999px;box-shadow:0 3px 10px -3px rgba(5,10,48,.35);opacity:0;transform:translate(-50%,4px);transition:opacity .3s,transform .3s;pointer-events:none}
-  .ppin:hover .c,.ppin.sel .c{opacity:1;transform:translate(-50%,0)}
+  .photo.ld .ppin,.photo.ld .plink,.photo.ld .psel,.photo.ld .pbm{opacity:0!important;transition:none!important}
+  /* etap pini: sabahki haritadaki gibi daire içinde numara, ince sap ve yerde ışık */
+  .ppin{width:30px;height:30px;cursor:pointer}
+  .ppin .bx{position:absolute;left:50%;bottom:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;transition:opacity .3s}
+  .ppin .n{position:relative;width:34px;height:34px;flex:none;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:.9rem;color:#fff;background:var(--navy);box-shadow:0 0 0 3px var(--c,#fff),0 8px 18px -4px rgba(5,10,48,.65);transition:transform .3s cubic-bezier(.3,1.6,.5,1),background .3s}
+  .ppin .n::after{content:'';position:absolute;inset:-3px;border-radius:50%;border:3px solid var(--c);opacity:0}
+  .ppin.now .n::after,.ppin.sel .n::after{animation:ping 2s cubic-bezier(0,0,.2,1) infinite}
+  .ppin .c{margin-bottom:4px;white-space:nowrap;font-size:.68rem;font-weight:700;color:var(--navy);background:rgba(255,255,255,.94);padding:2px 8px;border-radius:999px;box-shadow:0 3px 10px -3px rgba(5,10,48,.35);font-variant-numeric:tabular-nums}
+  .ppin .st{width:2px;height:var(--h,16px);background:linear-gradient(180deg,#fff,var(--c));border-radius:2px;transition:height .4s cubic-bezier(.3,1.3,.5,1)}
+  .ppin .g{position:absolute;left:50%;top:50%;width:14px;height:6px;margin:-3px 0 0 -7px;border-radius:50%;background:var(--c);box-shadow:0 0 10px 3px color-mix(in srgb,var(--c) 60%,transparent)}
   .ppin:hover .n{transform:scale(1.15)}
-  .ppin.sel{z-index:5}.ppin.sel .n{background:var(--c);transform:scale(1.35);box-shadow:0 0 0 3px #fff,0 0 22px 6px var(--c),0 10px 22px -6px rgba(5,10,48,.7)}
-  .ppin.sel .n::after{content:'';position:absolute;inset:-3px;border-radius:50%;border:3px solid var(--c);animation:ping 2s cubic-bezier(0,0,.2,1) infinite}
-  .zoomed .ppin:not(.sel) .n{filter:grayscale(.6) brightness(.85);opacity:.8}
-  .ppin.dim .n{filter:grayscale(1);opacity:.45}
+  .ppin.sel{z-index:5}.ppin.sel .n{background:var(--c);transform:scale(1.18)}
+  .zoomed .ppin:not(.sel) .bx{opacity:.6}
+  .ppin.dim .bx,.ppin.dim .g{opacity:.25}
   .plink{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.18);border:2px solid rgba(255,255,255,.85);color:#fff;display:grid;place-items:center;cursor:pointer;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);box-shadow:0 4px 14px -4px rgba(0,0,0,.5);transition:transform .25s,background .25s}
   .plink svg{width:18px;height:18px}
   .plink:hover{transform:scale(1.15);background:rgba(5,10,48,.6)}
   .zoomed .plink{opacity:0;pointer-events:none}
-  @media(max-width:640px){.map.ph{height:clamp(360px,50svh,460px)}.ppin{width:26px;height:26px}.ppin .n{font-size:.72rem;box-shadow:0 0 0 2.5px var(--c,#fff),0 6px 14px -4px rgba(5,10,48,.65)}.plink{width:26px;height:26px}}
+  @media(max-width:640px){.map.ph{height:clamp(360px,50svh,460px)}.ppin{width:22px;height:22px}.ppin .n{width:24px;height:24px;font-size:.68rem;box-shadow:0 0 0 2px var(--c,#fff),0 5px 12px -4px rgba(5,10,48,.65)}.ppin .c{display:none;font-size:.6rem;padding:1px 6px}.ppin.sel .c{display:block}.ppin .g{width:10px;height:4px;margin:-2px 0 0 -5px}.plink{width:26px;height:26px}}
   .rot{position:absolute;z-index:6;top:50%;margin-top:-22px;width:44px;height:44px;border:0;border-radius:50%;cursor:pointer;background:rgba(5,10,48,.72);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);color:#fff;display:none;place-items:center;box-shadow:0 8px 20px -8px rgba(5,10,48,.6)}
   .rot svg{width:22px;height:22px}
   .rot.l{left:12px}.rot.r{right:12px}
@@ -764,7 +767,7 @@
   function pinTip(div,n){n=+n;div.setAttribute('data-n',n);
     var e=E[n];if(!e){div.innerHTML='<span class="n">'+n+'</span>';return;}
     var lab=n===18?' ofis':' konut';div.style.setProperty('--c',ST[e.st][1]);
-    div.innerHTML='<span class="c">'+tr(e.info[0])+lab+'</span><span class="n">'+n+'</span>';
+    div.innerHTML='<span class="bx"><span class="c">'+tr(e.info[0])+lab+'</span><span class="n">'+n+'</span><span class="st"></span></span><span class="g"></span>';
     div.setAttribute('role','button');div.setAttribute('tabindex','0');div.setAttribute('aria-label',n+'. Etap, '+ST[e.st][0]);
     div.addEventListener('keydown',function(ev){if(ev.key==='Enter'||ev.key===' '){ev.preventDefault();open(n);}});
     pSync1(div);}
@@ -869,6 +872,15 @@
       if(q)d+='M'+pts(q).replace(/ /g,'L')+'Z';}
     [pbT,pbO].forEach(function(v){v.setAttribute('viewBox','0 0 '+W+' '+H);v._p.setAttribute('d',d);v.style.opacity=1;});}
   requestAnimationFrame(pbDraw);
+  // etiketler üst üste binmesin: öndeki (ekranda alttaki) pin kısa çizgide kalır, arkadakinin etiketi yukarı kalkar
+  var pdT=0;function pDecl(t){requestAnimationFrame(pDecl);if(!photo||!pv||t-pdT<120)return;pdT=t;
+    var b0=mob?8:16,st=mob?16:26,mx=mob?2:3,a=[].slice.call(ph.querySelectorAll('.ppin')).map(function(d){var r=d.getBoundingClientRect(),c=d.querySelector('.bx');
+      var cc=d.querySelector('.c'),nn=d.querySelector('.n');return {d:d,x:r.left+r.width/2,y:r.top+r.height/2,w:c?c.offsetWidth:40,hh:(cc?cc.offsetHeight+4:0)+(nn?nn.offsetHeight:30),v:r.width>0&&d.style.visibility!=='hidden'};}).filter(function(o){return o.v;});
+    a.sort(function(p,q){return (q.d.classList.contains('sel')-p.d.classList.contains('sel'))||q.y-p.y;});var box=[];
+    a.forEach(function(o){var h=b0;for(var k=0;k<mx;k++){var B=[o.x-o.w/2-3,o.y-h-o.hh-3,o.x+o.w/2+3,o.y-h+3];if(B[1]-st<ph.getBoundingClientRect().top+4)break;
+        if(!box.some(function(q){return B[0]<q[2]&&B[2]>q[0]&&B[1]<q[3]&&B[3]>q[1];}))break;h+=st;}
+      box.push([o.x-o.w/2,o.y-h-o.hh,o.x+o.w/2,o.y-h]);o.d.style.setProperty('--h',h+'px');});}
+  requestAnimationFrame(pDecl);
   function pShow(){pInit();}
   function pLayout(){if(pv)pv.resize();}
   (function(){var l=document.createElement('link');l.rel='stylesheet';l.href='assets/vendor/pannellum/pannellum.css?v=1';document.head.appendChild(l);
