@@ -111,6 +111,22 @@
   .acts .row{display:contents}
   .acts .wa{width:40px;padding:8px 0;font-size:0}
   .acts svg{width:16px;height:16px}
+  /* en küçük kart: tek satır bilgi, ince butonlar */
+  .card{padding:8px 10px calc(8px + env(safe-area-inset-bottom))}
+  @media (min-width:768px){.card{width:250px}}
+  .card .x{top:6px;right:6px;width:24px;height:24px;font-size:1rem}
+  .sh{gap:7px;padding-right:28px}.sh .n{width:28px;height:28px;border-radius:8px;font-size:.82rem}
+  .sh>div{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+  .sh h3{font-size:.88rem}
+  .badge{margin-top:0}
+  .stl,.prog{display:none}
+  .tiles{display:flex;gap:10px;margin:5px 0 6px;align-items:baseline}
+  .tile{background:none;padding:0;display:flex;align-items:baseline;gap:3px}
+  .tile b{font-size:.85rem;display:inline}.tile.t b{font-size:.72rem}
+  .tile span{font-size:.62rem}
+  .acts a{padding:6px 5px;font-size:.7rem;border-radius:8px}
+  .acts .wa{width:34px;padding:6px 0}
+  .acts svg{width:14px;height:14px}
   body.carded .scenes{opacity:0;pointer-events:none}
   .scenes{transition:opacity .3s}
   .hint{position:fixed;z-index:4;left:50%;top:50%;transform:translate(-50%,-50%);background:rgba(5,10,48,.78);padding:10px 16px;border-radius:12px;

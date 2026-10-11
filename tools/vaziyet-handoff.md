@@ -13,7 +13,7 @@
     Pinler resmi sitedeki görünür konumla piksel piksel aynı: Pannellum öğeyi ortalar, `.pin` `margin:25px 0 0 20px` ile resmi görünüme kaydırılır.
   - Etaba dokununca `zoomTo()` yakınlaşır. Etap kartın dışındaki boş alanın ortasına gelir, kart kapanınca `home()` ile geri döner.
   - Kart, canlı `vaziyet-plani.html` kartıyla aynı mantıkta: `teslim-takvimi.json` (yedek: `YEDEK`), sayaçlar, ilerleme çubuğu, butonlar. Pinler teslim durumuna göre renkli.
-  - Son istek üzerine kart çok küçültüldü: telefonda yaklaşık 175 px yükseklikte, bilgisayarda sağ altta 280 px genişlikte.
+  - Kart iki kez küçültüldü ("daha da küçült"). Şimdi telefonda yaklaşık 98 px yükseklikte, bilgisayarda sağ altta 250 px genişlikte. Açıklama ve ilerleme çubuğu gizli, sayılar tek satırda.
   - WebGL olmayan tarayıcılar için `assets/vr/sN/fb3k/` (3072 px küp yüzleri) eklendi. Eski `fallback/` ve `vr-tur-onizleme.html` değişmedi.
 - Ekran görüntüleri Umut'un bilgisayarında: `remax-dogus-crm/ekran-goruntuleri/vaziyet-vr-onizleme/`.
 
