@@ -128,9 +128,9 @@
   SC.forEach(function(s,i){
     var k=i+1,hs=[];
     s.l.forEach(function(l){hs.push({yaw:l[0],pitch:l[1],type:'scene',sceneId:'s'+l[2],cssClass:'gohs',createTooltipFunc:goEl,createTooltipArgs:[l[2]]});});
-    s.e.forEach(function(e){hs.push({yaw:e[0],pitch:e[1],cssClass:'etaphs',createTooltipFunc:pinEl,createTooltipArgs:[e[2]],clickHandlerFunc:function(){open(e[2]);}});});
-    scenes['s'+k]={type:'multires',multiRes:{basePath:'assets/vr/s'+k,path:'/%l/%s%y_%x',fallbackPath:'/fallback/%s',extension:'jpg',tileResolution:512,maxLevel:4,cubeResolution:4096},
-      yaw:s.y,pitch:s.p,hfov:hfov(s.f),minHfov:30,maxHfov:120,hotSpots:hs};
+    s.e.forEach(function(e){hs.push({yaw:e[0],pitch:e[1],cssClass:'etaphs',createTooltipFunc:pinEl,createTooltipArgs:[e[2]],clickHandlerFunc:function(){open(e[2],e[0],e[1]);}});});
+    scenes['s'+k]={type:'multires',multiRes:{basePath:'assets/vr/s'+k,path:'/%l/%s%y_%x',fallbackPath:'/fb3k/%s',extension:'jpg',tileResolution:512,maxLevel:4,cubeResolution:4096},
+      yaw:s.y,pitch:s.p,hfov:hfov(s.f),minHfov:20,maxHfov:120,hotSpots:hs};
   });
 
   var v=pannellum.viewer('pano',{default:{firstScene:'s1',sceneFadeDuration:600,autoLoad:true,showControls:false,compass:false,mouseZoom:true,keyboardZoom:true},scenes:scenes});
@@ -150,8 +150,16 @@
 
   function mark(n){[].forEach.call(document.querySelectorAll('.pin'),function(p){p.classList.toggle('sel',+p.dataset.n===n);});}
 
-  function open(n){
+  // etaba yakınlaş: telefonda etap kartın üstünde, geniş ekranda kartın solunda kalır
+  function zoomTo(yaw,pitch){
+    var mob=innerWidth<768,h=mob?28:32,vf=2*Math.atan(Math.tan(h*Math.PI/360)*innerHeight/innerWidth)*180/Math.PI;
+    v.lookAt(pitch-(mob?vf*.17:0),yaw+(mob?0:h*.18),h,900);
+  }
+  function home(){var s=SC[cur];v.lookAt(s.p,s.y,hfov(s.f),900);}
+
+  function open(n,yaw,pitch){
     sel=n;mark(n);$('hint').classList.add('off');
+    if(yaw!==undefined)zoomTo(yaw,pitch);
     var inf=INFO[n],ofis=n===18,ok=TESLIM.indexOf(n)>=0,ad=n+'. Etap';
     var wa='https://wa.me/902163151515?text='+encodeURIComponent('Merhaba, Yeni Fikirtepe '+ad+' hakkında bilgi almak istiyorum.');
     var h='<div class="ch"><span class="n">'+n+'</span><div><h3 id="ct">'+ad+(ofis?' · Ofis':'')+'</h3>'+
@@ -167,7 +175,7 @@
     card.innerHTML=h;card.classList.add('on');
     $('cx').onclick=close;
   }
-  function close(){card.classList.remove('on');sel=null;mark(0);}
+  function close(){card.classList.remove('on');if(sel)home();sel=null;mark(0);}
   addEventListener('keydown',function(e){if(e.key==='Escape')close();});
 })();
 </script>
