@@ -34,7 +34,7 @@
   .pin{width:30px;height:30px;margin:25px 0 0 20px;border-radius:50%;background:var(--navy);color:#fff;
     border:2px solid #fff;box-shadow:0 2px 10px rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;
     font-weight:800;font-size:13px;cursor:pointer;transition:background .15s,box-shadow .15s}
-  .pin.ok{border-color:var(--ok)}
+  .pin{border-color:var(--c,#fff)}
   .pin:hover,.pin.sel{box-shadow:0 0 0 4px rgba(220,28,46,.35),0 2px 10px rgba(0,0,0,.45);background:var(--red)}
   .pin span{pointer-events:none}
   /* sahne geçişi */
@@ -55,29 +55,42 @@
   .sc.on span{opacity:1}
   @media (min-width:768px){.scenes{justify-content:center}}
 
-  /* etap kartı */
-  .card{position:fixed;z-index:10;left:0;right:0;bottom:0;background:#fff;color:var(--ink);border-radius:20px 20px 0 0;
-    padding:18px 16px calc(16px + env(safe-area-inset-bottom));box-shadow:0 -10px 40px rgba(0,0,0,.35);
-    transform:translateY(105%);transition:transform .3s ease}
-  .card.on{transform:none}
-  @media (min-width:768px){.card{left:auto;right:16px;bottom:auto;top:76px;width:340px;border-radius:18px;transform:translateX(120%)}.card.on{transform:none}}
-  .ch{display:flex;align-items:center;gap:12px}
-  .ch .n{width:44px;height:44px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;flex:0 0 auto}
-  .ch h3{margin:0;font-size:18px}
-  .badge{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;letter-spacing:.3px;margin-top:3px;color:var(--gray)}
-  .badge i{width:8px;height:8px;border-radius:50%;background:#9aa3b2}
-  .badge.ok{color:var(--ok)}.badge.ok i{background:var(--ok)}
-  .x{margin-left:auto;width:36px;height:36px;border-radius:50%;border:0;background:#f1f3f7;font-size:20px;cursor:pointer;color:var(--ink)}
+  /* etap kartı: canlı vaziyet planındaki kartla aynı (sayaçlı) */
+  :root{--soft:#f5f7fb}
+  .card{position:fixed;z-index:10;left:50%;bottom:0;width:min(560px,100%);transform:translate(-50%,105%);background:#fff;color:var(--ink);
+    border-radius:24px 24px 0 0;padding:18px 20px calc(20px + env(safe-area-inset-bottom));box-shadow:0 -20px 50px -20px rgba(5,10,48,.5);
+    transition:transform .45s cubic-bezier(.2,.9,.25,1);max-height:62vh;overflow-y:auto}
+  .card.on{transform:translate(-50%,0)}
+  @media (min-width:768px){.card{left:auto;right:24px;bottom:auto;top:50%;width:400px;border-radius:24px;max-height:88vh;transform:translate(calc(100% + 40px),-50%)}.card.on{transform:translate(0,-50%)}}
+  .card h3{margin:0}
+  .sh{display:flex;align-items:center;gap:14px;padding-right:40px}
+  .sh .n{flex:none;width:54px;height:54px;border-radius:16px;display:grid;place-items:center;font-size:1.4rem;font-weight:800;color:#fff;background:var(--navy);box-shadow:inset 0 -4px 0 var(--c)}
+  .sh h3{font-size:1.3rem;font-weight:800;color:var(--navy);letter-spacing:-.02em;line-height:1.2}
+  .badge{display:inline-flex;align-items:center;gap:6px;margin-top:4px;font-size:.72rem;font-weight:800;letter-spacing:.06em;color:var(--c);background:color-mix(in srgb,var(--c) 14%,#fff);padding:3px 9px;border-radius:999px}
+  .badge i{width:7px;height:7px;border-radius:50%;background:var(--c)}
+  .badge.now i{animation:blink 1.2s infinite}
+  @keyframes blink{50%{opacity:.25}}
+  .x{position:absolute;right:14px;top:14px;width:36px;height:36px;border-radius:50%;border:0;background:var(--soft);cursor:pointer;font-size:1.3rem;line-height:1;color:var(--navy)}
+  .stl{margin:14px 0 4px;font-size:.95rem;color:#2c3543}
+  .stl b{color:var(--navy)}
   .tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0}
-  .tile{background:#f5f7fb;border-radius:12px;padding:10px 8px;text-align:center}
-  .tile b{display:block;font-size:16px}
-  .tile span{font-size:11px;color:var(--gray)}
-  .acts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-  .acts a{display:flex;align-items:center;justify-content:center;gap:6px;height:44px;border-radius:12px;font-weight:700;font-size:14px;text-decoration:none}
-  .acts .p{background:var(--navy);color:#fff}
-  .acts .s{background:#f1f3f7;color:var(--ink)}
-  .acts .wa{grid-column:1/-1;background:#25D366;color:#fff}
-  .acts .wa svg{width:18px;height:18px;fill:#fff}
+  .tile{background:var(--soft);border-radius:14px;padding:12px}
+  .tile b{display:block;font-size:1.35rem;font-weight:800;color:var(--navy);letter-spacing:-.02em;line-height:1.15;font-variant-numeric:tabular-nums}
+  .tile.t b{font-size:1rem;line-height:1.5}
+  .tile span{font-size:.74rem;color:var(--gray);font-weight:600}
+  .prog{margin:6px 0 14px;background:var(--soft);border-radius:14px;padding:12px 14px}
+  .prog .top{display:flex;justify-content:space-between;font-size:.82rem;font-weight:700;color:var(--navy);margin-bottom:8px}
+  .prog .top span{color:var(--gray);font-weight:600}
+  .prog .trk{height:10px;border-radius:9px;background:#e3e7ef;overflow:hidden}
+  .prog .val{height:100%;width:0;border-radius:9px;background:linear-gradient(90deg,var(--red),var(--coral));transition:width 1.2s cubic-bezier(.2,.8,.2,1) .15s}
+  .acts{display:grid;gap:8px}
+  .acts a{display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;font-weight:700;font-size:.95rem;padding:14px;border-radius:14px;transition:transform .15s}
+  .acts a:active{transform:scale(.98)}
+  .acts .pri{background:var(--red);color:#fff;box-shadow:0 10px 20px -10px rgba(220,28,46,.7)}
+  .acts .row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .acts .sec2{background:var(--soft);color:var(--navy)}
+  .acts .wa{background:#e9f9ef;color:#128c4a}
+  .acts svg{width:18px;height:18px;flex:none;fill:currentColor}
   .hint{position:fixed;z-index:4;left:50%;top:50%;transform:translate(-50%,-50%);background:rgba(5,10,48,.78);padding:10px 16px;border-radius:12px;
     font-size:13px;font-weight:600;pointer-events:none;transition:opacity .5s}
   .hint.off{opacity:0}
@@ -116,12 +129,12 @@
   var EYE='<svg viewBox="0 0 24 24"><path d="M12 5C6.5 5 2.7 9.2 1.5 12c1.2 2.8 5 7 10.5 7s9.3-4.2 10.5-7C21.3 9.2 17.5 5 12 5zm0 11a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm0-2.2a1.8 1.8 0 1 0 0-3.6 1.8 1.8 0 0 0 0 3.6z"/></svg>';
   var $=function(id){return document.getElementById(id);};
   var card=$('card'),sel=null,cur=0;
-  function tr(n){return n.toLocaleString('tr-TR');}
+  function tr(n){return Number(n).toLocaleString('tr-TR');}
 
   // Marzipano dikey görüş açısını Pannellum yatay görüş açısına çevir
   function hfov(v){var a=innerWidth/innerHeight,h=2*Math.atan(Math.tan(v*Math.PI/360)*a)*180/Math.PI;return Math.max(40,Math.min(120,h));}
 
-  function pinEl(div,a){var n=a[0];div.classList.add('pin');if(TESLIM.indexOf(n)>=0)div.classList.add('ok');div.dataset.n=n;div.innerHTML='<span>'+n+'</span>';}
+  function pinEl(div,a){var n=a[0];div.classList.add('pin');if(window.__E&&__E[n])div.style.setProperty('--c',__ST[__E[n].st][1]);div.dataset.n=n;div.innerHTML='<span>'+n+'</span>';}
   function goEl(div,a){div.classList.add('go');div.title=NAMES[a[0]-1];div.innerHTML=EYE;}
 
   var scenes={};
@@ -157,22 +170,70 @@
   }
   function home(){var s=SC[cur];v.lookAt(s.p,s.y,hfov(s.f),900);}
 
+  // teslim durumu: canlı sayfayla aynı kaynak (teslim-takvimi.json), yüklenemezse yedek özet
+  var ST={now:['Teslimde','#FB5160'],next:['Yaklaşıyor','#4d8dff'],soon:['Yakında','#f0a400'],ok:['Teslim edildi','#1fb855']};
+  var AY=['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
+  var today=new Date();today.setHours(0,0,0,0);var DAY=864e5;
+  function P(s){var a=s.split('-');return new Date(+a[0],+a[1]-1,+a[2]);}
+  function fmt(d){return d.getDate()+' '+AY[d.getMonth()];}
+  function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  var YEDEK={etaplar:[
+    {id:'2',ad:'2. Etap',bloklar:[{b:'C',bas:'2026-09-03',bit:'2026-10-05',daire:119},{b:'B',bas:'2026-10-05',bit:'2026-10-09',daire:40},{b:'A',bas:'2026-10-09',bit:'2026-10-12',daire:10}]},
+    {id:'3-2',ad:'3. Etap 2. Kısım',bloklar:[{b:'D1',bas:'2026-09-07',bit:'2026-09-08',daire:16},{b:'E1',bas:'2026-09-08',bit:'2026-09-11',daire:27},{b:'D2',bas:'2026-09-11',bit:'2026-09-14',daire:16},{b:'E2',bas:'2026-09-14',bit:'2026-09-16',daire:27},{b:'F1',bas:'2026-09-16',bit:'2026-09-22',daire:75},{b:'A3',bas:'2026-09-22',bit:'2026-10-01',daire:137},{b:'G1',bas:'2026-10-01',bit:'2026-10-09',daire:126},{b:'G2',bas:'2026-10-09',bit:'2026-10-20',daire:132},{b:'G3',bas:'2026-10-20',bit:'2026-10-27',daire:104}]},
+    {id:'11',ad:'11. Etap',bloklar:[{b:'E1',bas:'2026-10-12',bit:'2026-10-21',daire:100},{b:'C1',bas:'2026-10-21',bit:'2026-10-27',daire:90},{b:'E2',bas:'2026-11-02',bit:'2026-11-06',daire:98},{b:'F1',bas:'2026-11-06',bit:'2026-11-13',daire:89},{b:'D',bas:'2026-11-13',bit:'2026-11-24',daire:134},{b:'A',bas:'2026-11-24',bit:'2026-11-24',daire:6},{b:'C2',bas:'2026-11-24',bit:'2026-11-24',daire:4},{b:'F2',bas:'2026-11-24',bit:'2026-11-24',daire:3},{b:'F3',bas:'2026-11-24',bit:'2026-11-24',daire:2},{b:'F4',bas:'2026-11-24',bit:'2026-11-24',daire:2},{b:'F5',bas:'2026-11-24',bit:'2026-11-25',daire:4},{b:'B',bas:'2026-11-25',bit:'2026-11-25',daire:9}]}]};
+  var E={};window.__E=E;window.__ST=ST;
+  function program(j){
+    var bas=null,bit=null,top=0,tes=0,now=[],sir=null;
+    j.bloklar.forEach(function(b){var a=P(b.bas),z=P(b.bit);if(!bas||a<bas)bas=a;if(!bit||z>bit)bit=z;top+=b.daire||0;
+      if(today>z)tes+=b.daire||0;else if(today>=a)now.push(b.b);else if(!sir||a<P(sir.bas))sir=b;});
+    return {id:j.id,ad:j.ad,bas:bas,bit:bit,top:top,tes:tes,now:now,sir:sir,st:today>bit?'ok':today>=bas?'now':'next'};
+  }
+  function build(json){
+    var prg={};(json&&json.etaplar||[]).forEach(function(j){var n=parseInt(j.id,10);if(INFO[n]&&j.bloklar&&j.bloklar.length)prg[n]=program(j);});
+    Object.keys(INFO).forEach(function(k){var n=+k,p=prg[n];E[n]={n:n,info:INFO[n],prog:p||null,st:p?p.st:TESLIM.indexOf(n)>=0?'ok':'soon'};});
+    paint();
+  }
+  function paint(){[].forEach.call(document.querySelectorAll('.pin'),function(p){var e=E[+p.dataset.n];if(e)p.style.setProperty('--c',ST[e.st][1]);});}
+  build(YEDEK);
+  fetch('teslim-takvimi.json?cb='+Date.now(),{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.json();}).then(build).catch(function(){});
+  v.on('load',paint);
+
+  // sayaçlar
+  var RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function count(elm,delay){
+    var to=+elm.getAttribute('data-to')||0;
+    if(RM){elm.textContent=tr(to);return;}
+    var dur=1300+Math.min(900,to/2),t0=null;
+    setTimeout(function(){requestAnimationFrame(function f(t){if(t0===null)t0=t;var k=Math.min(1,(t-t0)/dur),e=1-Math.pow(1-k,4);
+      elm.textContent=tr(Math.round(to*e));if(k<1)requestAnimationFrame(f);});},delay||0);
+  }
+  function countAll(root,base){[].forEach.call(root.querySelectorAll('[data-to]'),function(b,i){count(b,(base||0)+i*70);});}
+
   function open(n,yaw,pitch){
     sel=n;mark(n);$('hint').classList.add('off');
     if(yaw!==undefined)zoomTo(yaw,pitch);
-    var inf=INFO[n],ofis=n===18,ok=TESLIM.indexOf(n)>=0,ad=n+'. Etap';
+    var e=E[n],c=ST[e.st][1],p=e.prog,inf=e.info,ofis=n===18,h='';
+    var ad=n+'. Etap',hedef=p?p.id:String(n);
+    h+='<button class="x" type="button" aria-label="Kapat" id="cx">&times;</button>';
+    h+='<div class="sh" style="--c:'+c+'"><span class="n">'+n+'</span><div><h3 id="ct">'+ad+(ofis?' · Ofis Etabı':'')+'</h3><span class="badge '+e.st+'" style="--c:'+c+'"><i></i>'+ST[e.st][0].toLocaleUpperCase('tr-TR')+'</span></div></div>';
+    var s='';
+    if(e.st==='now'&&p)s=(p.now.length?'Şu an <b>'+esc(p.now.join(', '))+' Blok</b> teslim ediliyor. ':'')+(p.sir?'Sırada <b>'+esc(p.sir.b)+' Blok</b> ('+fmt(P(p.sir.bas))+').':'Programın son günü '+fmt(p.bit)+'.')+(p.id!==String(n)?' Program: '+esc(p.ad)+'.':'');
+    else if(e.st==='next'&&p){var g=Math.round((p.bas-today)/DAY);s='Anahtar teslimleri <b>'+fmt(p.bas)+'</b> tarihinde başlıyor'+(g>0?', <b>'+g+' gün</b> kaldı':'')+'. İlk blok: <b>'+esc(p.sir?p.sir.b:'')+'</b>.';}
+    else if(e.st==='ok')s='Bu etapta anahtarlar sahiplerine teslim edildi. Satılık ya da kiralık daire için bize ulaşın.';
+    else s=(n===3?'3. Etap 2. Kısım dışındaki bölümlerin':'Bu etabın')+' teslim programı henüz açıklanmadı. Açıklandığı gün teslim takviminde yayınlanır.';
+    h+='<p class="stl">'+s+'</p>';
+    h+='<div class="tiles"><div class="tile"><b data-to="'+inf[0]+'">0</b><span>'+(ofis?'ofis':'konut')+'</span></div>'+
+      (ofis?'<div class="tile t"><b>Ticari</b><span>etap türü</span></div>':'<div class="tile"><b data-to="'+inf[1]+'">0</b><span>ticari ünite</span></div>')+
+      '<div class="tile t"><b>'+esc(ofis?'—':inf[2])+'</b><span>daire tipleri</span></div></div>';
+    if(p&&p.top){var pct=Math.round(p.tes/p.top*100);
+      h+='<div class="prog"><div class="top">Teslim programı<span><b data-to="'+p.tes+'">0</b> / '+tr(p.top)+' daire</span></div><div class="trk"><div class="val" data-w="'+pct+'"></div></div></div>';}
     var wa='https://wa.me/902163151515?text='+encodeURIComponent('Merhaba, Yeni Fikirtepe '+ad+' hakkında bilgi almak istiyorum.');
-    var h='<div class="ch"><span class="n">'+n+'</span><div><h3 id="ct">'+ad+(ofis?' · Ofis':'')+'</h3>'+
-      '<span class="badge'+(ok?' ok':'')+'"><i></i>'+(ok?'ANAHTAR TESLİMİ TAMAMLANDI':'TESLİM PROGRAMI TAKVİMDE')+'</span></div>'+
-      '<button class="x" type="button" aria-label="Kapat" id="cx">×</button></div>';
-    h+='<div class="tiles"><div class="tile"><b>'+tr(inf[0])+'</b><span>'+(ofis?'ofis':'konut')+'</span></div>'+
-      '<div class="tile"><b>'+tr(inf[1])+'</b><span>ticari ünite</span></div>'+
-      '<div class="tile"><b>'+inf[2]+'</b><span>'+(ofis?'tür':'daire tipi')+'</span></div></div>';
-    h+='<div class="acts">'+
-      (KAT.indexOf(n)>=0?'<a class="p" href="kat-planlari.html#etap-'+n+'">Kat planları</a>':'<a class="p" href="etaplar.html">Etap bilgisi</a>')+
-      '<a class="s" href="teslim-takvimi.html#etap-'+n+'">Teslim takvimi</a>'+
-      '<a class="wa" href="'+wa+'" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="'+WAP+'"/></svg>WhatsApp ile bilgi al</a></div>';
-    card.innerHTML=h;card.classList.add('on');
+    h+='<div class="acts"><a class="pri" href="teslim-takvimi.html#etap-'+hedef+'">'+(e.st==='ok'?'Etap ayrıntıları':'Teslim takvimini aç')+' →</a><div class="row">'+
+      (KAT.indexOf(n)>=0?'<a class="sec2" href="kat-planlari.html#etap-'+n+'">Kat planları</a>':'<a class="sec2" href="etaplar.html">Etap bilgileri</a>')+
+      '<a class="wa" href="'+wa+'" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="'+WAP+'"/></svg>WhatsApp</a></div></div>';
+    card.innerHTML=h;card.classList.add('on');card.scrollTop=0;
+    countAll(card,250);
+    var vl=card.querySelector('.val');if(vl)setTimeout(function(){vl.style.width=vl.getAttribute('data-w')+'%';},60);
     $('cx').onclick=close;
   }
   function close(){card.classList.remove('on');if(sel)home();sel=null;mark(0);}
