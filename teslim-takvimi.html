@@ -366,9 +366,9 @@
   .kn-p.n{stroke:rgba(255,255,255,.55)}
   .kn-sel{fill:var(--kc);fill-opacity:.16;stroke:var(--kc);stroke-width:3;vector-effect:non-scaling-stroke;stroke-linejoin:round;
     stroke-dasharray:1;stroke-dashoffset:1;animation:knDraw 1.4s .9s cubic-bezier(.6,0,.2,1) forwards}
-  .kn-glow{fill:none;stroke:var(--kc);stroke-width:12;opacity:0;vector-effect:non-scaling-stroke;filter:blur(6px);animation:knGlow 2.8s 2s ease-in-out infinite}
+  .kn-glow{fill:none;stroke:var(--kc);stroke-width:10;stroke-opacity:.28;stroke-linejoin:round;vector-effect:non-scaling-stroke;opacity:0;animation:knFade .8s 2.1s ease-out forwards}
   @keyframes knDraw{to{stroke-dashoffset:0}}
-  @keyframes knGlow{0%,100%{opacity:.15}50%{opacity:.55}}
+  @keyframes knFade{to{opacity:1}}
   .kn-lb{font:700 15px Archivo,sans-serif;fill:#fff;text-anchor:middle;dominant-baseline:central;opacity:.75;paint-order:stroke;stroke:rgba(5,10,40,.7);stroke-width:4px}
   .kn-pin{position:absolute;left:0;top:0;width:0;height:0;transform-style:preserve-3d;transition:transform 1.6s cubic-bezier(.65,0,.2,1);pointer-events:none}
   .kn-pin .st{position:absolute;left:-1px;bottom:0;width:2px;height:64px;background:linear-gradient(var(--kc),transparent);transform-origin:bottom;animation:knRise .7s 1.5s cubic-bezier(.2,.8,.2,1) both}
@@ -471,7 +471,7 @@
       <div class="kn-card" id="knCard">
         <div class="kn-map" id="knMap">
           <div class="kn-cam" id="knCam">
-            <img src="assets/vaziyet/gunduz.jpg" alt="" decoding="async">
+            <img id="knImg" alt="" decoding="async">
             <svg viewBox="100 140 1633 770" aria-hidden="true"><defs><mask id="knMask"><rect x="0" y="0" width="2000" height="1200" fill="#fff"/><polygon id="knHole" fill="#000"/></mask></defs>
               <rect class="kn-dim" x="0" y="0" width="2000" height="1200" mask="url(#knMask)"/><g id="knAll"></g><polygon class="kn-glow" id="knGlow"/><polygon class="kn-sel" id="knSel" pathLength="1"/></svg>
             <div class="kn-pin" id="knPin"><div class="rg"></div><div class="st"></div><div class="hd" id="knNo"></div></div>
@@ -779,7 +779,11 @@
         '<div class="kn-nb"><span>Komşulara geç</span>'+kom.map(function(m){return '<button type="button" data-n="'+m+'">'+m+'. Etap</button>';}).join('')+'</div>'+
         '<div class="kn-go"><a class="a1" href="vaziyet-plani.html#etap-'+n+'">3D haritada gör</a>'+(KKAT.indexOf(n)>=0?'<a class="a2" href="kat-planlari.html#etap-'+n+'">Kat planları</a>':'<a class="a2" href="etaplar.html">Etap bilgileri</a>')+'</div>';
       [].forEach.call($('knInfo').querySelectorAll('[data-k]'),function(b){kSay(b,+b.getAttribute('data-k'));});
-      kKamera(n,true);knSon=n;
+      var im=$('knImg');knSon=n;
+      if(!im.getAttribute('src')){im.src='assets/vaziyet/'+(window.innerWidth<700?'gunduz-kucuk.jpg':'gunduz-orta.jpg');
+        var bitti=false,git=function(){if(bitti)return;bitti=true;kKamera(knSon,true);};
+        (im.decode?im.decode():Promise.reject()).then(git,git);setTimeout(git,1500);}
+      else kKamera(n,true);
     }
     $('knInfo').addEventListener('click',function(ev){var b=ev.target.closest('button[data-n]');if(!b)return;var n=b.getAttribute('data-n');
       var t=document.querySelector('.tab[data-k="p'+n+'"]')||document.querySelector('.tab[data-k="y'+n+'"]')||(n==='3'&&document.querySelector('.tab[data-k="p3-2"]'));if(t)t.click();});
