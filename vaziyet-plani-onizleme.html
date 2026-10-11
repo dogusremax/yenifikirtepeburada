@@ -123,6 +123,18 @@
   .night .stars{opacity:.9}
   .sun{position:absolute;right:14%;top:560px;width:64px;height:64px;border-radius:50%;background:radial-gradient(circle,#fffdf0 0 34%,rgba(255,240,190,.7) 46%,transparent 70%);box-shadow:0 0 140px 70px rgba(255,240,200,.35);transition:transform 2.2s cubic-bezier(.5,0,.3,1),opacity 1.6s}
   .night .sun{transform:translateY(240px);opacity:0}
+  .sea{position:absolute;left:0;right:0;top:776px;height:26px;background:linear-gradient(180deg,#93aab9,#c0ccd0)}
+  .sea::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,#070c26,#141a40);opacity:0;transition:opacity 1.8s}
+  .night .sea::after{opacity:1}
+  .hills{position:absolute;left:0;width:100%;top:742px;height:40px;fill:#95a3b0;transition:fill 1.8s}
+  .night .hills{fill:#10163a}
+  .twr{position:absolute;left:63.6%;top:690px;width:3px;height:58px;background:linear-gradient(#8a96a2,#7a8794);transition:background 1.8s}
+  .twr::before{content:'';position:absolute;left:-3px;top:22px;width:9px;height:7px;border-radius:2px;background:inherit}
+  .twr::after{content:'';position:absolute;left:0;top:-3px;width:3px;height:3px;border-radius:50%;background:#ff4a4a;opacity:0;box-shadow:0 0 6px 2px rgba(255,60,60,.7)}
+  .night .twr{background:#151b44}
+  .night .twr::after{opacity:1;animation:blink 1.6s infinite}
+  .outer{position:absolute;left:-726px;top:-547.5px;width:3900px;height:2250px;pointer-events:none;
+    -webkit-mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 84%,transparent 100%);mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 84%,transparent 100%)}
   .moon{position:absolute;left:12%;top:540px;width:40px;height:40px;border-radius:50%;background:radial-gradient(circle at 38% 36%,#fffef6,#e9ecff 55%,#b9c2e8);box-shadow:0 0 40px 10px rgba(190,205,255,.35),0 0 120px 40px rgba(120,140,255,.18);opacity:0;transform:translateY(160px);transition:transform 2.4s cubic-bezier(.3,0,.2,1) .4s,opacity 1.6s ease .4s}
   .night .moon{opacity:1;transform:none}
   /* ufuk sisi */
@@ -134,7 +146,8 @@
   .night .hz::after{opacity:1}
   /* 3D sahne */
   .stage{position:absolute;inset:0;perspective-origin:50% 50%;z-index:0}
-  .world{position:absolute;left:50%;top:50%;transform-origin:0 0;will-change:transform;
+  .world{position:absolute;left:50%;top:50%;transform-origin:0 0;will-change:transform}
+  .maplay{position:absolute;inset:0;
     -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 2%,#000 98%,transparent 100%),linear-gradient(180deg,transparent 0,#000 6%,#000 94%,transparent 100%);-webkit-mask-composite:source-in;
     mask-image:linear-gradient(90deg,transparent 0,#000 2%,#000 98%,transparent 100%),linear-gradient(180deg,transparent 0,#000 6%,#000 94%,transparent 100%);mask-composite:intersect}
   .clouds{overflow:hidden;opacity:.55;transition:opacity 1.2s;mix-blend-mode:multiply}
@@ -345,15 +358,18 @@
         <div class="filters" id="filters" role="toolbar" aria-label="Duruma göre filtrele"></div>
       </div>
       <div class="map" id="map">
-        <div class="sky" id="sky" aria-hidden="true"><b class="d"></b><b class="n"></b><i class="stars"></i><i class="stars s2"></i><i class="sun"></i><i class="moon"></i></div>
+        <div class="sky" id="sky" aria-hidden="true"><b class="d"></b><b class="n"></b><i class="stars"></i><i class="stars s2"></i><i class="sun"></i><i class="moon"></i><svg class="hills" viewBox="0 0 1000 40" preserveAspectRatio="none"><path d="M0 40V30Q60 18 140 26T300 22Q380 12 460 24T600 12Q636 5 652 9Q690 16 720 20T860 24Q930 18 1000 26V40Z"/></svg><i class="twr"></i><i class="sea"></i></div>
         <div class="stage" id="stage">
           <div class="world" id="world">
+            <div class="outer" aria-hidden="true"><img class="lay" src="assets/vaziyet/cevre.jpg?v=2" alt=""><img class="lay ngt" src="assets/vaziyet/cevre-gece.jpg?v=2" alt=""></div>
+            <div class="maplay">
             <img class="lay" src="assets/vaziyet/gunduz.jpg?v=4" alt="Yeni Fikirtepe vaziyet planı, kuş bakışı" decoding="async">
             <img class="lay ngt" src="assets/vaziyet/gece.jpg?v=2" alt="" decoding="async">
             <div class="lay dusk" id="dusk"></div>
             <img class="lay glow g1" src="assets/vaziyet/isik1.jpg?v=2" alt="" decoding="async">
             <img class="lay glow g2" src="assets/vaziyet/isik2.jpg?v=2" alt="" decoding="async">
             <div class="lay clouds" aria-hidden="true"><i></i></div>
+            </div>
             <svg id="svg" preserveAspectRatio="none"></svg>
           </div>
         </div>
@@ -495,7 +511,8 @@
     var f=D/(D-z3);
     return [Cw/2+(x2+cam.ox)*f,Ch/2+(y3+cam.oy)*f,f];
   }
-  var CORN=[[VB.x,VB.y],[VB.x+VB.w,VB.y],[VB.x+VB.w,VB.y+VB.h],[VB.x,VB.y+VB.h]];
+  var OX0=VB.x-420,OY0=VB.y-320,OX1=VB.x-484+2600-64,OY1=VB.y-365+1500-45;
+  var CORN=[[OX0,OY0],[OX1,OY0],[OX1,OY1],[OX0,OY1]];
   function apply(t){
     var ph=cam.ph+sw;
     cph=Math.cos(ph*RAD);sph=Math.sin(ph*RAD);cth=Math.cos(cam.th*RAD);sth=Math.sin(cam.th*RAD);
@@ -569,6 +586,16 @@
   /* ---------- 3D binalar ---------- */
   // Bina tabanları katalog görselindeki çatılardan çıkarıldı: [etap, kat, x1,y1,x2,y2,...] (dünya koordinatı). Kat sayıları temsilidir.
   var BLD=[[2,21,1566,436,1548,436,1548,412,1566,412],[2,19,1586,445,1579,432,1590,427,1596,440],[18,7,1334,477,1328,391,1382,387,1388,474],[6,12,496,452,534,454,541,462,540,469,525,472,505,468,496,458],[5,11,1002,482,999,466,1019,462,1022,478],[5,15,984,524,963,518,979,463,1000,469],[5,13,1048,526,1026,519,1043,463,1065,469],[19,19,1616,614,1610,607,1632,590,1637,597],[19,5,1588,524,1575,489,1657,460,1669,495],[19,21,1585,499,1581,476,1598,473,1603,496],[6,20,556,522,555,485,581,484,582,521],[6,20,538,493,544,502,544,511,521,515,518,510,520,504,532,493],[6,8,885,509,839,508,840,472,886,473],[6,14,603,490,589,487,592,474,606,478],[6,15,691,527,657,526,658,491,693,493],[19,10,1529,494,1527,479,1560,474,1562,489],[3,18,1486,512,1481,480,1509,476,1513,508],[6,17,523,484,524,488,513,516,500,518,498,486,510,480],[6,11,776,514,772,487,807,482,812,509],[3,24,1440,486,1457,486,1468,506,1466,515,1449,514,1439,498],[3,21,1398,525,1389,492,1417,484,1426,517],[3,15,1353,530,1347,497,1374,492,1380,525],[7,12,228,502,224,507,200,517,188,507,196,498,225,498],[7,17,252,525,229,523,231,505,254,507],[7,14,270,543,246,538,249,521,273,526],[7,20,270,522,261,512,270,504,279,513],[7,15,317,524,291,524,291,498,317,498],[7,19,328,540,310,536,313,521,331,525],[6,14,751,524,697,524,697,498,751,498],[5,12,997,525,994,500,1011,498,1014,523],[5,15,1066,521,1058,518,1064,501,1071,503],[4,19,1307,557,1285,555,1290,504,1312,506],[19,21,1536,534,1532,509,1564,504,1568,529],[4,10,1241,536,1232,533,1239,511,1249,514],[6,18,842,522,832,526,820,526,817,522,825,515],[7,17,210,542,187,542,187,524,210,524],[3,22,1516,575,1508,552,1529,544,1538,568],[3,17,1451,575,1444,551,1466,546,1472,569],[3,15,1482,579,1469,566,1482,554,1494,566],[3,24,1377,572,1342,572,1342,547,1377,547],[3,15,1409,572,1391,566,1397,545,1415,551],[19,20,1671,562,1685,566,1683,576,1674,577,1670,564],[4,18,1228,577,1215,577,1215,563,1228,563],[4,13,1289,590,1287,576,1305,573,1307,587],[10,12,738,574,744,580,743,595,730,617,726,619,712,589,718,578],[4,13,1258,595,1255,582,1274,577,1277,590],[9,14,514,618,497,609,512,580,529,588],[9,14,500,673,497,635,541,632,544,670],[8,8,194,661,151,651,166,587,209,597],[8,14,159,597,158,585,176,584,177,595],[8,14,239,599,227,588,234,580,246,591],[9,13,457,613,437,608,443,582,463,587],[3,25,1366,621,1338,617,1342,585,1370,588],[9,11,404,630,381,618,395,591,418,602],[9,11,414,615,422,606,439,622,432,627,415,620],[8,19,264,616,281,618,286,622,288,628,280,652,274,652,260,633,259,622],[8,20,234,659,216,657,220,614,238,616],[8,16,347,648,318,641,325,613,354,621],[19,14,1547,638,1545,629,1568,624,1570,633],[10,20,748,675,721,675,721,648,748,648],[11,17,1154,668,1125,668,1125,654,1154,654],[11,9,1124,672,1128,670,1174,684,1195,694,1197,698,1194,702,1178,708,1126,706],[11,24,1236,708,1212,708,1212,696,1236,696],[11,14,1203,692,1199,662,1253,655,1257,685],[11,16,1307,693,1265,686,1270,655,1312,662],[11,22,1184,687,1178,670,1188,667,1194,684],[11,17,1464,692,1462,671,1503,665,1506,687],[11,17,1510,672,1528,671,1534,674,1540,688,1536,700,1530,700,1508,679],[11,24,1326,704,1319,687,1353,674,1360,690],[11,16,1422,706,1371,706,1371,676,1422,676],[11,16,1446,702,1437,694,1448,681,1457,688],[11,16,1259,694,1257,706,1244,706,1254,694],[17,16,334,698,366,696,368,733,361,746,337,732],[11,16,1270,710,1269,699,1289,696,1291,706],[17,16,303,712,310,718,316,734,311,741,302,739,298,734,298,720],[16,15,624,725,636,720,643,723,652,750,650,755,639,755,622,739,621,730],[15,16,758,756,719,756,719,724,758,724],[14,16,870,756,830,756,830,724,870,724],[16,19,572,758,570,725,595,724,597,757],[16,17,669,757,669,724,693,724,694,756],[13,15,920,756,900,756,900,724,920,724],[17,21,202,734,206,729,220,730,222,733,212,740,204,738],[13,25,960,766,934,766,934,730,960,730],[17,14,160,745,148,741,151,730,163,734],[13,18,985,758,982,736,1010,732,1012,754],[12,22,1319,750,1303,738,1308,731,1324,742],[13,15,1053,772,1026,772,1026,738,1053,738],[13,22,1098,774,1074,772,1076,740,1100,741],[12,17,1147,772,1121,765,1126,743,1153,750],[12,25,1171,786,1160,762,1194,747,1205,771],[12,18,1353,770,1334,765,1338,750,1357,756],[12,25,1247,784,1207,779,1211,753,1250,757],[17,18,153,777,140,773,144,761,157,765],[17,17,350,764,365,764,370,766,371,796,368,801,358,802,344,778,344,774],[12,24,1282,806,1255,795,1268,762,1295,773],[12,16,1393,787,1372,770,1379,762,1399,779],[17,11,320,810,224,808,225,769,321,772],[15,8,722,818,721,776,758,776,759,818],[17,23,215,792,193,791,193,776,216,777],[12,18,1204,779,1214,792,1216,798,1214,802,1192,795,1196,782],[14,14,834,800,833,781,862,779,863,798],[13,23,925,807,898,805,901,778,927,781],[16,10,699,816,661,814,663,783,700,785],[17,15,186,793,182,797,168,794,165,790,167,788,176,786],[12,21,1321,825,1293,803,1308,785,1335,807],[16,18,624,788,637,792,642,802,638,813,630,818,624,818,622,814,619,794],[16,21,595,806,578,806,578,789,595,789],[13,15,960,809,958,793,982,790,984,807],[12,15,1151,830,1114,818,1122,792,1159,804],[13,16,1016,818,1012,799,1036,795,1039,814],[17,24,337,813,335,804,351,799,353,808],[13,14,1096,824,1061,824,1061,800,1096,800],[12,19,1180,824,1166,820,1170,805,1184,809],[12,19,1195,838,1182,835,1185,823,1198,826],[12,24,1242,842,1215,838,1221,803,1248,807],[13,14,951,818,962,812,973,820,970,823,959,822],[12,20,1338,836,1326,825,1338,813,1350,825],[12,14,1377,869,1349,848,1360,833,1388,855],[12,14,1263,839,1278,820,1320,852,1317,856,1298,861,1271,851],[2,23,1604,386,1601,365,1615,363,1618,384],[2,14,1614,404,1547,387,1552,366,1619,384],[18,22,1334,386,1326,392,1310,390,1320,382,1328,382],[18,20,1277,386,1255,400,1239,397,1241,388,1274,384],[2,23,1672,414,1664,401,1675,393,1684,406],[2,21,1584,414,1572,408,1578,397,1589,403],[2,19,1648,414,1636,408,1642,397,1653,403],[2,17,1606,415,1600,400,1608,397,1614,412],[18,21,1316,409,1306,409,1306,400,1316,400],[2,14,1601,433,1585,412,1596,404,1612,424],[2,21,1652,419,1651,407,1667,405,1668,418],[18,13,1259,425,1258,414,1277,413,1278,423],[2,16,1655,440,1654,422,1667,422,1668,440],[18,18,1294,455,1292,424,1302,423,1304,454],[2,24,1648,444,1646,446,1620,443,1614,440,1629,434,1642,435,1646,438],[18,16,1259,469,1258,438,1268,437,1270,469],[18,23,1309,473,1308,459,1319,458,1320,473],[19,17,1580,480,1575,470,1588,464,1592,474],[19,18,1592,470,1600,466,1612,470,1604,477,1598,477],[19,22,1677,470,1668,477,1660,475,1660,470,1664,466],[5,21,937,486,936,470,948,469,949,485],[5,19,930,484,916,476,915,474,930,472],[7,21,205,479,207,481,205,503,202,506,194,502],[5,20,920,497,904,496,905,481,922,483],[6,20,636,508,629,507,630,493,637,493],[19,14,1668,503,1674,510,1664,530,1652,508],[6,19,607,520,600,520,600,508,607,508],[6,20,805,522,790,526,786,524,788,522,800,516],[19,18,1639,536,1636,527,1656,521,1659,530],[4,23,1233,524,1236,530,1230,536,1223,529],[19,17,1608,547,1602,530,1622,523,1628,540],[19,21,1643,538,1644,544,1633,552,1633,544],[19,10,1678,572,1670,582,1658,582,1656,580,1656,576,1666,567],[4,16,1279,591,1274,582,1283,577,1288,586],[19,14,1623,629,1613,617,1653,585,1663,597],[3,19,1398,615,1391,614,1392,599,1400,600],[3,21,1533,616,1528,605,1540,601,1544,612],[3,25,1492,619,1480,617,1482,606,1494,607],[3,23,1445,620,1433,619,1434,607,1446,608],[3,25,1420,621,1411,621,1411,610,1420,610],[3,16,1468,626,1456,626,1456,615,1468,615],[3,15,1515,629,1510,618,1517,614,1523,625],[11,21,1382,700,1385,698,1416,700,1418,702,1406,718,1394,726,1388,721],[11,21,1238,706,1234,718,1220,718,1214,716,1218,702],[11,18,1388,720,1378,714,1383,704,1393,710],[17,26,271,732,258,732,259,715,271,716]];
+  // çevredeki uzak kuleler (temsili)
+  (function(){var R=11;function rr(){R=(R*16807)%2147483647;return R/2147483647;}
+    var T=[];for(var i=0;i<900&&T.length<78;i++){var x,y,z=rr();
+      if(z<.55){x=VB.x-380+rr()*(VB.w+760);y=VB.y-230+rr()*190;}
+      else if(z<.78){x=VB.x-330+rr()*300;y=VB.y-150+rr()*(VB.h+250);}
+      else{x=VB.x+VB.w+40+rr()*290;y=VB.y-150+rr()*(VB.h+200);}
+      if(x>VB.x-25&&x<VB.x+VB.w+25&&y>VB.y-25&&y<VB.y+VB.h+25)continue;
+      if(T.some(function(t){return Math.hypot(t[0]-x,t[1]-y)<34;}))continue;T.push([x,y]);}
+    T.forEach(function(t){var s=8+rr()*7,s2=s*(.8+rr()*.6),a=rr()*1.2,c=Math.cos(a),si=Math.sin(a),r=[0,(18+rr()*24)|0];
+      [[-s,-s2],[s,-s2],[s,s2],[-s,s2]].forEach(function(q){r.push(Math.round(t[0]+q[0]*c-q[1]*si),Math.round(t[1]+q[0]*si+q[1]*c));});BLD.push(r);});})();
   var bc=$('bld'),bx=bc.getContext('2d'),dpr=1,riseT0=-1,nightK=0,FLOOR=2.3;
   var SUN=[-.62,-.78];
   BLD=BLD.map(function(r){var p=[];for(var i=2;i<r.length;i+=2)p.push([r[i],r[i+1]]);
@@ -577,18 +604,25 @@
     var h=(Math.sin(cx*12.9898+cy*78.233)*43758.5453)%1;h=h<0?-h:h;
     var sh=p.map(function(q,i){var o=p[(i+1)%p.length],dx=o[0]-q[0],dy=o[1]-q[1],l=Math.hypot(dx,dy)||1,nx=dy/l*(a>0?-1:1),ny=-dx/l*(a>0?-1:1);
       return [l,clamp(.62+.38*(nx*SUN[0]+ny*SUN[1]),.28,1)];});
-    return {n:r[0],fl:r[1],p:p,c:[cx,cy],h:h,sh:sh,v:(h*3)|0};});
-  function tile(night,seed){
-    var c=document.createElement('canvas'),W=72,H=80;c.width=W;c.height=H;var g=c.getContext('2d'),R=seed;
+    return {n:r[0],fl:r[1],p:p,c:[cx,cy],h:h,sh:sh,v:r[0]?(h*3)|0:3};});
+  // cephe desenleri: proje görsellerindeki krem/bej/bronz kuleler; v=3 uzak cam kuleler
+  function tile(night,v){
+    var c=document.createElement('canvas'),W=72,H=80;c.width=W;c.height=H;var g=c.getContext('2d'),R=7+v*13+(night?5:0);
     function rnd(){R=(R*16807)%2147483647;return R/2147483647;}
-    g.fillStyle=night?'#151a33':['#ecebe6','#e4e1d8','#dfe3e6'][seed%3];g.fillRect(0,0,W,H);
-    for(var y=0;y<8;y++)for(var x=0;x<6;x++){var X=x*12+2,Y=y*10+2;
-      if(night){var k=rnd();g.fillStyle=k<.38?'#ffcf7a':k<.5?'#ffe7b8':k<.62?'#7d8fd6':'#232a4d';}
-      else{var gr=g.createLinearGradient(X,Y,X+8,Y+6);gr.addColorStop(0,'#7f97ad');gr.addColorStop(.55,'#9fb4c6');gr.addColorStop(1,'#5f748a');g.fillStyle=gr;}
-      g.fillRect(X,Y,8,6);}
-    if(!night){g.fillStyle='rgba(0,0,0,.08)';for(y=0;y<8;y++)g.fillRect(0,y*10+9,W,1);}
+    var P=[['#e9e0d0','#8d6b4d'],['#d3bf9f','#55402f'],['#efebe4','#9a9b9f'],['#93a8b8','#d2dce3']][v];
+    if(v===3&&!night){var gl=g.createLinearGradient(0,0,0,H);gl.addColorStop(0,'#a9bccb');gl.addColorStop(1,'#7d93a5');g.fillStyle=gl;g.fillRect(0,0,W,H);
+      g.fillStyle='rgba(225,233,240,.75)';for(var x=0;x<W;x+=12)g.fillRect(x,0,1,H);g.fillStyle='rgba(60,80,100,.25)';for(var y=0;y<H;y+=10)g.fillRect(0,y,W,2);
+      return bx.createPattern(c,'repeat');}
+    g.fillStyle=night?(v===3?'#0f1533':'#1b1b28'):P[0];g.fillRect(0,0,W,H);
+    for(y=0;y<8;y++)for(x=0;x<6;x++){var X=x*12+3,Y=y*10+2;
+      if(night){var k=rnd();g.fillStyle=k<.4?'#ffcb78':k<.52?'#ffe6b5':k<.6?'#8fa0dc':'#262a3e';if(v===3&&k<.3)g.fillStyle='#9fb6ff';}
+      else{var gr=g.createLinearGradient(X,Y,X+7,Y+7);gr.addColorStop(0,'#3d4751');gr.addColorStop(.6,'#64727e');gr.addColorStop(1,'#34404a');g.fillStyle=gr;}
+      g.fillRect(X,Y,7,7);
+      if(!night){g.fillStyle='rgba(255,255,255,.85)';g.fillRect(X-1,Y+7,9,1);}}
+    if(!night){g.fillStyle=P[1];g.fillRect(0,0,2,H);g.fillRect(36,0,2,H);g.fillStyle='rgba(0,0,0,.06)';for(y=0;y<8;y++)g.fillRect(0,y*10+9,W,1);}
     return bx.createPattern(c,'repeat');}
-  var PD=[tile(0,1),tile(0,2),tile(0,3)],PN2=[tile(1,7),tile(1,11),tile(1,23)];
+  var PD=[tile(0,0),tile(0,1),tile(0,2),tile(0,3)],PN2=[tile(1,0),tile(1,1),tile(1,2),tile(1,3)];
+  function lerp(a,b,t){return [a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t];}
   function bsize(){dpr=Math.min(window.devicePixelRatio||1,mob?1.75:2);bc.width=Math.round(Cw*dpr);bc.height=Math.round(Ch*dpr);}
   function quad(a){bx.beginPath();bx.moveTo(a[0][0],a[0][1]);for(var i=1;i<a.length;i++)bx.lineTo(a[i][0],a[i][1]);bx.closePath();}
   var MX=new DOMMatrix();
@@ -597,7 +631,7 @@
   function drawB(t){
     bx.setTransform(dpr,0,0,dpr,0,0);bx.clearRect(0,0,Cw,Ch);
     var bA=clamp((cam.th-6)/22,0,1);if(bA<=.01||riseT0<0)return;
-    nightK+=((night?1:0)-nightK)*.04;
+    var dt=clamp(t-(drawB.lt||t),0,200);drawB.lt=t;nightK+=((night?1:0)-nightK)*(1-Math.exp(-dt/450));
     var L=[],U=S*cam.k*FLOOR;
     for(var i=0;i<BLD.length;i++){var b=BLD[i],r;
       if(sel&&b.n===sel&&selT0)r=RM?1:ease(clamp((t-selT0-250-b.h*600)/1200,0,1));
@@ -613,7 +647,8 @@
     L.forEach(function(o){
       var g=o.g,tp=o.tp,b=o.b,n=g.length,sa=0,k,j;
       for(k=0;k<n;k++){j=(k+1)%n;sa+=g[k][0]*g[j][1]-g[j][0]*g[k][1];}
-      var foc=1,fade=sel&&b.n!==sel?(night?.42:.3):0;
+      var foc=1,fade=b.n&&sel&&b.n!==sel?(night?.42:.3):0,FC='rgba(6,10,36,';
+      if(!b.n){var dd=Math.max(Math.abs(b.c[0]-VB.x-VB.w/2)-VB.w/2,Math.abs(b.c[1]-VB.y-VB.h/2)-VB.h/2,0);fade=clamp(.12+dd/700,.12,.55)*(1-nightK*.4);FC=nightK>.5?'rgba(18,20,46,':'rgba(226,228,224,';}
       for(k=0;k<n;k++){j=(k+1)%n;
         var q=[g[k],g[j],tp[j],tp[k]],sq=0;
         for(var m=0;m<4;m++){var mm=(m+1)%4;sq+=q[m][0]*q[mm][1]-q[mm][0]*q[m][1];}
@@ -628,11 +663,16 @@
         // zemine yakın hafif gölgelenme
         var gr=bx.createLinearGradient(tp[k][0],tp[k][1],g[k][0],g[k][1]);gr.addColorStop(0,'rgba(255,255,255,'+(.10*(1-nightK))+')');gr.addColorStop(1,'rgba(10,14,30,'+(.28+.2*nightK)+')');
         bx.fillStyle=gr;bx.fill();
-        if(fade){bx.fillStyle='rgba(6,10,36,'+fade+')';bx.fill();}}
+        if(fade){bx.fillStyle=FC+fade.toFixed(3)+')';bx.fill();}
+        if(b.v<3){var cf=Math.min(.14,1.3/Math.max(1,o.fl));quad([tp[k],tp[j],lerp(tp[j],g[j],cf),lerp(tp[k],g[k],cf)]);
+          bx.fillStyle=nightK>.5?'rgba(14,14,24,.92)':'rgba(72,54,40,'+(fade?.55:.9)+')';bx.fill();}}
       quad(tp);bx.globalAlpha=foc;
-      bx.fillStyle=nightK>.5?'#262b4a':['#d6d4ce','#cfcbc2','#cdd2d6'][b.v];bx.fill();
-      if(fade){bx.fillStyle='rgba(6,10,36,'+fade+')';bx.fill();}
-      bx.strokeStyle=nightK>.5?'rgba(150,170,255,.35)':'rgba(255,255,255,'+(fade?.3:.75)+')';bx.lineWidth=1;bx.stroke();
+      bx.fillStyle=nightK>.5?'#20223a':['#7c6a58','#6a5646','#8f8d88','#a7b6c2'][b.v];bx.fill();
+      if(fade){bx.fillStyle=FC+fade.toFixed(3)+')';bx.fill();}
+      bx.strokeStyle=nightK>.5?'rgba(150,170,255,.3)':'rgba(255,255,255,'+(fade?.25:.55)+')';bx.lineWidth=1;bx.stroke();
+      if(b.n&&o.fl>4){var cc=[0,0];tp.forEach(function(q){cc[0]+=q[0];cc[1]+=q[1];});cc[0]/=n;cc[1]/=n;
+        var rs=Math.max(1.2,Math.hypot(tp[0][0]-tp[1][0],tp[0][1]-tp[1][1])*.12);bx.fillStyle=nightK>.5?'#141c18':(fade?'#4d6339':'#62803f');
+        for(k=0;k<3;k++){var pp=lerp(cc,tp[(k*2+(b.h*7|0))%n],.45);bx.beginPath();bx.ellipse(pp[0],pp[1]-rs*.3,rs,rs*.7,0,0,6.3);bx.fill();}}
       bx.globalAlpha=1;});
   }
 
