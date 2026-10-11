@@ -318,9 +318,9 @@
   .psel .gr{stroke:none}
   .psel .gl{fill:none;stroke-width:10;stroke-linejoin:round}
   .psel .ln{fill:none;stroke-width:1.6;stroke-linejoin:round;stroke-opacity:.85}
-  .pbm{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;opacity:0;transition:opacity .8s;overflow:visible}
-  .pbm.t path{fill-opacity:.42}
-  .pbm.o path{fill-opacity:0;stroke:#fff;stroke-opacity:.9;stroke-width:1.5;stroke-linejoin:round}
+  .pbm{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;opacity:0;transition:opacity .8s;overflow:visible}
+  .pbm.t path{fill-opacity:.55}
+  .pbm.o path{fill-opacity:0;stroke:#fff;stroke-opacity:.95;stroke-width:2;stroke-linejoin:round}
   .photo.ld .ppin,.photo.ld .plink,.photo.ld .psel,.photo.ld .pbm{opacity:0!important;transition:none!important}
   /* etap pini: sabahki haritadaki gibi daire içinde numara, ince sap ve yerde ışık */
   .ppin{width:30px;height:30px;cursor:pointer}
@@ -803,7 +803,7 @@
     if(PRE[k]||PORD.indexOf(k)<0)return;PRE[k]=1;['f','r','b','l','u','d'].forEach(function(f){var im=new Image();im.src='assets/vaziyet/360/s'+k+'_'+f+'.jpg?v=1';});});}
   function pDots(){var c=$('cmp');if(c.children.length!==PORD.length)c.innerHTML=PORD.map(function(){return '<i></i>';}).join('');
     [].forEach.call(c.children,function(x,i){x.classList.toggle('on',PORD[i]===pCur);});}
-  function pRot(d){if(!pv||sel)return;var i=PORD.indexOf(pCur),k=PORD[(i+d+PORD.length)%PORD.length],v=V(k);pv.loadScene('s'+k,v[0],v[1],v[2]);hint(false);track('vaziyet_cevir',{mod:'360'});}
+  function pRot(d){if(!pv||sel)return;var i=PORD.indexOf(pCur),k=PORD[(i+d+PORD.length)%PORD.length],v=V(k),tk=++pGo;pFaces(k,function(){if(tk===pGo)pv.loadScene('s'+k,v[0],v[1],v[2]);});hint(false);track('vaziyet_cevir',{mod:'360'});}
   $('rotL').onclick=function(){pRot(-1);};$('rotR').onclick=function(){pRot(1);};
   function pAim(k,n){var P=PW[n],o=pOff(k,n),q=SC[k-1].P[n];if(!P)return [q[0],q[1],mob?24:40];
     var cx=0,cy=0,i,d=[];P.forEach(function(a){cx+=a[0]/P.length;cy+=a[1]/P.length;});
@@ -816,8 +816,11 @@
     var k=PORD.indexOf(pCur)>=0&&dd(pCur)<=dd(best)*1.25?pCur:best,a=pAim(k,n);
     if(BM[n]){k=BM[n].k;a=pbAim(n);}
     a=pFit(a,BM[n]?[].concat.apply([],BM[n].s):null);pv.stopAutoRotate();
-    if(k!==pCur)pv.loadScene('s'+k,a[0],a[1],a[2]);else pv.lookAt(a[0],a[1],a[2],1500);
+    if(k!==pCur){var tk=++pGo;pFaces(k,function(){if(tk===pGo&&pZ===n)pv.loadScene('s'+k,a[0],a[1],a[2]);});}else pv.lookAt(a[0],a[1],a[2],1500);
     setTimeout(pSync,60);}
+  // açının 6 yüzünü önceden indir, bitince (en çok 8 sn) çağır; böylece geçişte gri yükleme deseni görünmez
+  var pGo=0,FC={};function pFaces(k,cb){if(FC[k]===2)return cb();var left=6,done=false,fin=function(){if(!done){done=true;FC[k]=2;cb();}};setTimeout(fin,8000);
+    ['f','r','b','l','u','d'].forEach(function(f){var im=new Image();im.onload=im.onerror=function(){if(--left===0)fin();};im.src='assets/vaziyet/360/s'+k+'_'+f+'.jpg?v=1';});}
   // etap kartının örtmediği alan: hedefi o alanın ortasına al, o alana sığacak kadar uzaklaş
   function pFit(a,pts){var m=ph.getBoundingClientRect(),sh=$('sheet'),W=m.width,H=m.height;if(!W||!H)return a;
     var x0=0,x1=W,y0=Math.min(56,H*.12),y1=H;
@@ -888,7 +891,7 @@
     var W=ph.clientWidth,H=ph.clientHeight,cp=pv.getPitch()*RAD,cy=pv.getYaw()*RAD,f=W/2/Math.tan(pv.getHfov()*RAD/2),d='';
     for(var i=0;i<b.s.length;i++){var s=b.s[i],q=[];for(var j=0;j<s.length;j++){var a=pScr(s[j],cp,cy,f,W,H);if(!a){q=null;break;}q.push(a);}
       if(q)d+='M'+pts(q).replace(/ /g,'L')+'Z';}
-    [pbT,pbO].forEach(function(v){v.setAttribute('viewBox','0 0 '+W+' '+H);v._p.setAttribute('d',d);v.style.opacity=1;});}
+    [pbT,pbO].forEach(function(v){v.setAttribute('viewBox','0 0 '+W+' '+H);v.setAttribute('width',W);v.setAttribute('height',H);v._p.setAttribute('d',d);v.style.opacity=1;});}
   requestAnimationFrame(pbDraw);
   // etiketler üst üste binmesin: öndeki (ekranda alttaki) pin kısa çizgide kalır, arkadakinin etiketi yukarı kalkar
   var pdT=0;function pDecl(t){requestAnimationFrame(pDecl);if(!photo||!pv||t-pdT<120)return;pdT=t;
