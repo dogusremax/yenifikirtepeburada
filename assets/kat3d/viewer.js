@@ -60,8 +60,16 @@
       for (var k in L) {
         var p = pos && pos[k], l = L[k];
         if (!p || (mob && l.m < 5 && k !== V.hl)) { l.el.style.opacity = 0; continue; }
-        l.el.style.opacity = 1; l.el.style.left = (R.x + p[0] * R.w) + 'px'; l.el.style.top = (R.y + p[1] * R.h) + 'px'; l.el.classList.toggle('hl', k === V.hl);
+        l.el.style.left = (R.x + p[0] * R.w) + 'px'; l.el.style.top = (R.y + p[1] * R.h) + 'px'; l.el.classList.toggle('hl', k === V.hl);
+        l.x = R.x + p[0] * R.w; l.y = R.y + p[1] * R.h; l.w = l.w || l.el.offsetWidth; l.h = l.h || l.el.offsetHeight; l.v = 1;
       }
+      // üst üste binen etiketlerde küçük odanınkini gizle (seçili oda her zaman görünür)
+      var ks = Object.keys(L).filter(function (k) { return L[k].v; }).sort(function (a, b) { return (b === V.hl) - (a === V.hl) || L[b].m - L[a].m; }), shown = [];
+      ks.forEach(function (k) {
+        var l = L[k], hit = shown.some(function (o) { return Math.abs(o.x - l.x) < (o.w + l.w) / 2 + 2 && Math.abs(o.y - l.y) < (o.h + l.h) / 2 + 2; });
+        l.el.style.opacity = hit ? 0 : 1; if (!hit) shown.push(l);
+      });
+      for (var k2 in L) L[k2].v = 0;
     }
     function load(pid) {
       var D = K[pid]; if (!D) return false; if (V.pid === pid) return true;
@@ -72,8 +80,8 @@
       var order = []; [8, 4, 2, 1].forEach(function (s) { for (var i = 0; i < D.n; i += s) if (order.indexOf(i) < 0) order.push(i); });
       order.forEach(function (i) {
         var im = new Image(); im.decoding = 'async';
-        im.onload = function () { V.loaded++; q('.ldb').style.width = (V.loaded / D.n * 100) + '%'; if (V.loaded >= D.n) q('.ld').style.display = 'none'; draw(); };
-        im.src = D.dir + 'f' + (i < 10 ? '0' : '') + i + '.webp'; V.frames[i] = im;
+        im.onload = function () { if (V.D !== D) return; V.frames[i] = soft(im); V.loaded++; q('.ldb').style.width = (V.loaded / D.n * 100) + '%'; if (V.loaded >= D.n) q('.ld').style.display = 'none'; draw(); };
+        im.src = D.dir + 'f' + (i < 10 ? '0' : '') + i + '.webp';
       });
       var ti = tp.querySelector('img'); ti.onload = drawTop; ti.src = D.dir + 'top.webp';
       var svg = tp.querySelector('svg'); svg.innerHTML = '';
@@ -84,7 +92,16 @@
       });
       return true;
     }
-    function ready(i) { var f = V.frames[i]; return f && f.complete && f.naturalWidth; }
+    // karenin kenarlarını görüntünün kendisinde yumuşat: bükülen karenin sınırı ve kesilen gölge görünmesin
+    function soft(im) {
+      var w = im.naturalWidth, h = im.naturalHeight, c = document.createElement('canvas'); c.width = w; c.height = h;
+      var g = c.getContext('2d'); g.drawImage(im, 0, 0); g.globalCompositeOperation = 'destination-out';
+      [[0, 0, w * 0.1, 0], [w, 0, w * 0.9, 0], [0, 0, 0, h * 0.1], [0, h, 0, h * 0.9]].forEach(function (a) {
+        var gr = g.createLinearGradient(a[0], a[1], a[2], a[3]); gr.addColorStop(0, 'rgba(0,0,0,1)'); gr.addColorStop(1, 'rgba(0,0,0,0)'); g.fillStyle = gr; g.fillRect(0, 0, w, h);
+      });
+      return c;
+    }
+    function ready(i) { return !!V.frames[i]; }
     function near(i) { if (ready(i)) return i; for (var d = 1; d < V.n; d++) { var a = (i + d) % V.n, b = (i - d + V.n) % V.n; if (ready(a)) return a; if (ready(b)) return b; } return -1; }
     // kare i'deki etiket noktalarını kare j'dekilere taşıyan 2B afin dönüşüm (en küçük kareler); zemin düzleminde neredeyse tam oturur
     function aff(i, j) {
@@ -119,24 +136,17 @@
       var W = sp.clientWidth, H = sp.clientHeight; if (!W) return;
       if (cv.width !== Math.round(W * DPR) || cv.height !== Math.round(H * DPR)) { cv.width = Math.round(W * DPR); cv.height = Math.round(H * DPR); }
       var i0 = Math.floor(V.p) % V.n, i1 = (i0 + 1) % V.n, fr = V.p - Math.floor(V.p), a = near(i0); if (a < 0) return;
-      var im = V.frames[a], R = rect(sp, im.naturalWidth, im.naturalHeight, 1.32);
+      var im = V.frames[a], R = rect(sp, im.width, im.height, 1.32);
       cx.setTransform(DPR, 0, 0, DPR, 0, 0); cx.clearRect(0, 0, W, H); cx.globalAlpha = 1;
-      var both = a === i0 && ready(i1) && fr > 0.001, b = both ? fr : 0;
+      var both = a === i0 && ready(i1) && fr > 0.001, b = both ? fr : 0, m = Math.min(1, Math.max(0, (fr - 0.25) / 0.5)); m = m * m * (3 - 2 * m);
       if (!both) cx.drawImage(im, R.x, R.y, R.w, R.h);
       else {
         // ara kare: iki kareyi zemin düzlemine göre birbirine doğru büker ve doğrusal karıştırır (kare atlamasız akıcı dönüş)
         cx.globalCompositeOperation = 'lighter';
-        warp(V.frames[i0], aff(i0, i1), fr, 1 - fr, R);
-        warp(V.frames[i1], aff(i1, i0), 1 - fr, fr, R);
+        warp(V.frames[i0], aff(i0, i1), fr, 1 - m, R);
+        warp(V.frames[i1], aff(i1, i0), 1 - fr, m, R);
         cx.globalCompositeOperation = 'source-over';
       }
-      // karenin kenarında kesilen gölgeyi yumuşakça söndür
-      cx.globalCompositeOperation = 'destination-out';
-      [[R.x, 0, R.x + R.w * 0.07, 0], [R.x + R.w, 0, R.x + R.w * 0.93, 0], [0, R.y, 0, R.y + R.h * 0.08], [0, R.y + R.h, 0, R.y + R.h * 0.92]].forEach(function (g) {
-        var gr = cx.createLinearGradient(g[0], g[1], g[2], g[3]); gr.addColorStop(0, 'rgba(0,0,0,1)'); gr.addColorStop(1, 'rgba(0,0,0,0)');
-        cx.fillStyle = gr; cx.fillRect(R.x, R.y, R.w, R.h);
-      });
-      cx.globalCompositeOperation = 'source-over';
       setLbl(V.L, b ? mix(V.D.labels[i0], V.D.labels[i1], b) : V.D.labels[a], R);
     }
     function drawTop() {
