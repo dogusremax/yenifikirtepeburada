@@ -227,7 +227,8 @@ def _sky(res, eq, mask, dst):
     h, w = 2048, 4096; ms = cv2.resize(mask, (w, h), interpolation=cv2.INTER_AREA); ns = cv2.resize(res, (w, h), interpolation=cv2.INTER_AREA).astype(np.float32)
     sk = (ms > .5).sum(0)                                                     # her sütunda siluet satırı
     med = np.median(np.lib.stride_tricks.sliding_window_view(np.concatenate([sk[-75:], sk, sk[:75]]), 151), 1)
-    sk = np.maximum(sk, med).astype(int)                  # kuleler yok sayılır: genel ufuk çizgisi
+    sk = np.maximum(sk, med)                                                  # kuleler yok sayılır: genel ufuk çizgisi
+    sk = np.convolve(np.concatenate([sk[-200:], sk, sk[:200]]), np.ones(401) / 401, 'same')[200:-200].astype(int)  # yumuşak: gökte dikey bant olmaz
     rows = np.arange(h)[:, None]; below = (rows >= sk[None] + 3) & (rows < sk[None] + 25)
     C = np.stack([(ns[..., c] * below).sum(0) / np.maximum(below.sum(0), 1) for c in range(3)], -1)
     C = np.stack([np.convolve(np.tile(C[:, c], 3), np.ones(301) / 301, 'same')[w:2 * w] for c in range(3)], -1)
