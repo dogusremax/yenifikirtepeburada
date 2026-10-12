@@ -192,7 +192,7 @@ def merge(src, out, dst, W=16384):
     if eq.shape[1] != W: eq = cv2.resize(eq, (W, H), interpolation=cv2.INTER_AREA)
     mask = sky_mask(eq)
     if os.environ.get('SKYONLY') and os.path.exists(f'{out}/_res.npy'):
-        res = np.load(f'{out}/_res.npy'); return _sky(res, eq, mask, dst)
+        res = np.load(f'{out}/_res.npy'); return _sky(_detail(res, eq), eq, mask, dst)
     nights = {f: align(cv2.imread(f'{out}/yuz_{f}.jpg'), cv2.imread(f'{out}/gece_{f}.png')) for f in FACES if os.path.exists(f'{out}/gece_{f}.png')}
     gains = _gains(nights, n, cv2.resize(mask, (1024, 512)) < .5)
     # iki bantlı birleştirme: renk (alçak frekans) geniş geçişle, ayrıntı dar geçişle -> renk farkı dikiş yapmaz
@@ -219,7 +219,20 @@ def merge(src, out, dst, W=16384):
         res[r0:r1] = np.clip(nn, 0, 255).astype(np.uint8)
     del bands
     np.save(f'{out}/_res.npy', res)                                           # gök ayarı denemeleri için ara sonuç
-    _sky(res, eq, mask, dst)
+    _sky(_detail(res, eq), eq, mask, dst)
+
+def _detail(res, eq, s=6.0, mixn=.3, B=512):
+    """Gece görüntüsünün orta frekansını gündüzün yapısıyla değiştir: gece parçaları ~5 kat düşük çözünürlüklü geldiği için
+    bulanık ve kaymış kenarlar (hayalet) oluşur. Geceyi s ölçeğinde yumuşatıp gündüz parlaklığının yerel oranıyla çarpınca
+    binalar gündüz kadar keskin, renk ve ışık geceden kalır."""
+    H, W = res.shape[:2]; m = int(s * 4); out = np.empty_like(res)
+    for r0 in range(0, H, B):
+        r1 = min(H, r0 + B); a, b = max(0, r0 - m), min(H, r1 + m)
+        n = res[a:b].astype(np.float32); L = eq[a:b].astype(np.float32).mean(2) + 10
+        base = _blurw(n, s) * (1 - mixn) + n * mixn
+        rat = np.clip(L / _blurw(L, s), .3, 3)
+        out[r0:r1] = np.clip(base * rat[..., None], 0, 255)[r0 - a:r0 - a + (r1 - r0)].astype(np.uint8)
+    return out
 
 def _sky(res, eq, mask, dst):
     H, W = res.shape[:2]
