@@ -1,7 +1,7 @@
-/* Çerez onayı: alt şerit (Kabul et / Reddet). Ölçüm çerezleri (Google Analytics)
-   yalnızca "Kabul et" seçilirse yüklenir. Seçim 12 ay hatırlanır.
-   Kullanım: <script src="cerez.js" data-ga="G-XXXX" data-politika="cerez-politikasi.html" defer></script>
-   data-ga yoksa sayfada ölçüm çerezi yoktur; şerit yalnızca bilgilendirir. */
+/* Çerez onayı: küçük alt şerit (Kabul et / Reddet) + Google Consent Mode v2.
+   Onay yokken Analytics çerez bırakmaz, yalnızca çerezsiz sinyal gönderir; "Kabul et" ile çerezler açılır.
+   Seçim 12 ay hatırlanır. gtag config'inden ÖNCE, defer'sız yüklenmeli:
+   <script src="cerez.js" data-ga="G-XXXX"></script> */
 (function(){
   if (window.__cerez) return; window.__cerez = 1;
   var me = document.currentScript || {getAttribute:function(){return null;}};
@@ -10,10 +10,10 @@
   var KEY = 'cerezOnay', YIL = 365*864e5;
 
   var M = {
-    tr:{ga:'Ziyaret sayısını ve hangi sayfaların ilgi gördüğünü ölçmek için Google Analytics çerezleri kullanıyoruz. Bu çerezler yalnızca onay verirseniz çalışır.',
+    tr:{ga:'Ziyaretleri ölçmek için çerez kullanıyoruz.',
         yok:'Bu sayfa yalnızca çalışması için gerekli kayıtları (dil seçimi, hesap tercihleri) tutar. İsteğe bağlı ölçüm çerezleri yalnızca onayınızla çalışır.',
         pol:'Çerez Politikası',kabul:'Kabul et',red:'Reddet',ayar:'Çerez tercihleri'},
-    en:{ga:'We use Google Analytics cookies to measure visits and which pages are popular. They only run if you accept.',
+    en:{ga:'We use cookies to measure visits.',
         yok:'This page only stores what it needs to work (language, calculator settings). Optional analytics cookies only run with your consent.',
         pol:'Cookie Policy',kabul:'Accept',red:'Reject',ayar:'Cookie settings'},
     ru:{ga:'Мы используем файлы cookie Google Analytics, чтобы считать посещения и популярные страницы. Они работают только с вашего согласия.',
@@ -35,18 +35,17 @@
   function oku(){ try{ var o=JSON.parse(localStorage.getItem(KEY)||'null'); if(o&&o.v&&Date.now()-o.t<YIL) return o.v; }catch(e){} return null; }
   function yaz(v){ try{ localStorage.setItem(KEY, JSON.stringify({v:v,t:Date.now()})); }catch(e){} }
 
-  var gaYuklendi = false;
-  function gaYukle(){
-    if (!GA || gaYuklendi) return; gaYuklendi = true;
+  /* Consent Mode: varsayılan "reddedildi", sayfanın gtag('config') satırından önce */
+  if (GA) {
     window.dataLayer = window.dataLayer || [];
-    if (typeof window.gtag !== 'function') {
-      window.gtag = function(){ dataLayer.push(arguments); };
-      gtag('js', new Date()); gtag('config', GA);
-    }
-    var s = document.createElement('script'); s.async = true;
-    s.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(GA);
-    document.head.appendChild(s);
+    window.gtag = window.gtag || function(){ dataLayer.push(arguments); };
+    var izin = oku() === 'kabul' ? 'granted' : 'denied';
+    gtag('consent', 'default', {analytics_storage: izin, ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied', wait_for_update: 500});
+    var gs = document.createElement('script'); gs.async = true;
+    gs.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(GA);
+    document.head.appendChild(gs);
   }
+  function gaIzin(v){ if (GA && window.gtag) gtag('consent', 'update', {analytics_storage: v ? 'granted' : 'denied'}); }
   function gaSil(){
     document.cookie.split(';').forEach(function(c){
       var ad = c.split('=')[0].trim(); if (!/^_ga|^_gid$|^_gat/.test(ad)) return;
@@ -62,20 +61,19 @@
     if (document.getElementById('cerezCss')) return;
     var st = document.createElement('style'); st.id = 'cerezCss';
     st.textContent =
-      '.cerez{position:fixed;left:12px;right:12px;bottom:12px;z-index:2147483000;max-width:560px;margin:0 auto;box-sizing:border-box;' +
-      'padding:14px 16px 14px;border-radius:16px;background:rgba(14,22,38,.96);color:#eef2f8;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);' +
-      'box-shadow:0 18px 40px -12px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.08);font:400 13.5px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;' +
-      'transform:translateY(130%);opacity:0;transition:transform .45s cubic-bezier(.2,.8,.2,1),opacity .3s}' +
+      '.cerez{position:fixed;left:10px;right:10px;bottom:10px;z-index:2147483000;max-width:460px;margin:0 auto;box-sizing:border-box;' +
+      'display:flex;align-items:center;gap:10px;padding:8px 8px 8px 14px;border-radius:14px;background:rgba(14,22,38,.92);color:#e6ebf3;' +
+      '-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);box-shadow:0 10px 26px -10px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,.07);' +
+      'font:400 12px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;transform:translateY(140%);opacity:0;transition:transform .4s cubic-bezier(.2,.8,.2,1),opacity .3s}' +
       '.cerez.ac{transform:none;opacity:1}' +
-      '.cerez p{margin:0 0 12px;text-align:start}' +
-      '.cerez a{color:#9cc4ff;text-decoration:underline;text-underline-offset:2px}' +
-      '.cerez .cb{display:flex;gap:10px}' +
-      '.cerez button{flex:1;min-height:44px;border-radius:11px;font:600 14.5px/1 inherit;font-family:inherit;cursor:pointer;border:0}' +
-      '.cerez .red{background:rgba(255,255,255,.1);color:#fff;box-shadow:inset 0 0 0 1px rgba(255,255,255,.22)}' +
+      '.cerez p{margin:0;flex:1;min-width:0;text-align:start}' +
+      '.cerez a{color:#9cc4ff;text-decoration:underline;text-underline-offset:2px;white-space:nowrap}' +
+      '.cerez .cb{display:flex;gap:6px;flex:none}' +
+      '.cerez button{height:32px;padding:0 12px;border-radius:9px;font:600 12px/1 inherit;font-family:inherit;cursor:pointer;border:0;white-space:nowrap}' +
+      '.cerez .red{background:transparent;color:#e6ebf3;box-shadow:inset 0 0 0 1px rgba(255,255,255,.25)}' +
       '.cerez .kabul{background:#fff;color:#0e1626}' +
       '.cerez button:focus-visible{outline:2px solid #9cc4ff;outline-offset:2px}' +
-      '@media(min-width:700px){.cerez{left:50%;right:auto;width:640px;margin:0;transform:translate(-50%,130%);bottom:20px;display:flex;align-items:center;gap:16px}' +
-      '.cerez.ac{transform:translate(-50%,0)}.cerez p{margin:0;flex:1}.cerez .cb{flex:none}.cerez button{min-width:104px;flex:none}}' +
+      '@media(min-width:700px){.cerez{left:20px;right:auto;bottom:20px;margin:0;width:auto;max-width:520px}}' +
       '@media(prefers-reduced-motion:reduce){.cerez{transition:none}}' +
       '.cerez-ayar{color:inherit;text-decoration:underline;text-underline-offset:2px;cursor:pointer}';
     document.head.appendChild(st);
@@ -93,9 +91,12 @@
     if (!serit) {
       serit = document.createElement('div'); serit.className = 'cerez'; serit.setAttribute('role','dialog');
       serit.innerHTML = '<p></p><div class="cb"><button type="button" class="red"></button><button type="button" class="kabul"></button></div>';
-      serit.querySelector('.red').onclick = function(){ yaz('red'); gaSil(); kapat(); };
-      serit.querySelector('.kabul').onclick = function(){ yaz('kabul'); gaYukle(); kapat(); };
+      serit.querySelector('.red').onclick = function(){ yaz('red'); gaIzin(false); gaSil(); kapat(); };
+      serit.querySelector('.kabul').onclick = function(){ yaz('kabul'); gaIzin(true); kapat(); };
       document.body.appendChild(serit);
+      /* Telefonda WhatsApp düğmesinin üstünü kapatmasın */
+      var wa = document.querySelector('.wa-fab');
+      if (wa && innerWidth < 700) { var r = wa.getBoundingClientRect(); if (r.height) serit.style.bottom = (innerHeight - r.top + 8) + 'px'; }
     }
     metin();
     requestAnimationFrame(function(){ requestAnimationFrame(function(){ serit.classList.add('ac'); }); });
@@ -117,7 +118,7 @@
   function basla(){
     css();
     var s = oku();
-    if (s === 'kabul') gaYukle(); else if (!s) goster();
+    if (!s) goster();
     ayarLinki(); setTimeout(ayarLinki, 600);
     /* Kıbrıs sayfasında dil değişince metni güncelle */
     if (window.MutationObserver) new MutationObserver(function(){
