@@ -41,19 +41,25 @@ body{background:var(--bg);color:var(--fg);font-family:var(--font);overflow:hidde
   function sh(t,src){var s=gl.createShader(t);gl.shaderSource(s,src);gl.compileShader(s);return s;}
   var pr=gl.createProgram();
   gl.attachShader(pr,sh(gl.VERTEX_SHADER,'attribute vec2 p;varying vec2 q;void main(){q=p;gl_Position=vec4(p,0.,1.);}'));
-  gl.attachShader(pr,sh(gl.FRAGMENT_SHADER,'precision highp float;varying vec2 q;uniform sampler2D A,B;uniform float m,yaw,pit,tf,asp;'+
+  gl.attachShader(pr,sh(gl.FRAGMENT_SHADER,'precision highp float;varying vec2 q;uniform sampler2D A,B,C;uniform float m,yaw,pit,tf,asp,tm;'+
     'void main(){vec3 d=normalize(vec3(q.x*tf*asp,q.y*tf,1.));float c=cos(pit),s=sin(pit);d=vec3(d.x,d.y*c+d.z*s,-d.y*s+d.z*c);'+
     'float cy=cos(yaw),sy=sin(yaw);d=vec3(d.x*cy+d.z*sy,d.y,-d.x*sy+d.z*cy);'+
     'vec2 uv=vec2(atan(d.x,d.z)/6.2831853+.5,.5-asin(clamp(d.y,-1.,1.))/3.1415927);'+
-    'gl_FragColor=mix(texture2D(A,uv),texture2D(B,uv),m);}'));
+    'vec3 col=mix(texture2D(A,uv),texture2D(B,uv),m).rgb;vec3 t=texture2D(C,uv).rgb;'+
+    // akan trafik: C dokusu b=yol maskesi, r,g=yol yönü (2θ kodlu); her şeritte ışık kesikleri yol boyunca kayar
+    'if(t.b>.02&&m>.01){float a=.5*atan(t.g*2.-1.,t.r*2.-1.);vec2 dr=vec2(cos(a),sin(a));vec2 p=uv*vec2(4096.,2048.);'+
+    'float l=floor(dot(p,vec2(-dr.y,dr.x))/2.2);float h=fract(sin(l*12.9898)*43758.545);float sg=h>.5?1.:-1.;'+
+    'float ph=fract(dot(p,dr)/(18.+h*14.)+sg*tm*(.5+h*.4)+h*9.);float pu=smoothstep(0.,.12,ph)*(1.-smoothstep(.12,.5,ph));'+
+    'col+=t.b*pu*m*.55*(sg>0.?vec3(1.,.92,.78):vec3(1.,.32,.18));}'+
+    'gl_FragColor=vec4(col,1.);}'));
   gl.linkProgram(pr);gl.useProgram(pr);
   var bf=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,bf);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,1,1]),gl.STATIC_DRAW);
   var lp=gl.getAttribLocation(pr,'p');gl.enableVertexAttribArray(lp);gl.vertexAttribPointer(lp,2,gl.FLOAT,false,0,0);
-  var U={};['A','B','m','yaw','pit','tf','asp'].forEach(function(k){U[k]=gl.getUniformLocation(pr,k);});
-  gl.uniform1i(U.A,0);gl.uniform1i(U.B,1);
+  var U={};['A','B','C','m','yaw','pit','tf','asp','tm'].forEach(function(k){U[k]=gl.getUniformLocation(pr,k);});
+  gl.uniform1i(U.A,0);gl.uniform1i(U.B,1);gl.uniform1i(U.C,2);
   // sahneler: assets/vr/gece-deneme/sN/{gunduz,gece}-{4k,8k}.jpg
-  var SCN=[1,2,3,5,6],cur=0,T=[0,1].map(function(unit){var t=gl.createTexture();gl.activeTexture(gl.TEXTURE0+unit);gl.bindTexture(gl.TEXTURE_2D,t);
-    gl.texImage2D(gl.TEXTURE_2D,0,gl.RGB,1,1,0,gl.RGB,gl.UNSIGNED_BYTE,new Uint8Array([11,16,32]));
+  var SCN=[1,2,3,5,6],cur=0,TRF=[1],T=[0,1,2].map(function(unit){var t=gl.createTexture();gl.activeTexture(gl.TEXTURE0+unit);gl.bindTexture(gl.TEXTURE_2D,t);
+    gl.texImage2D(gl.TEXTURE_2D,0,gl.RGB,1,1,0,gl.RGB,gl.UNSIGNED_BYTE,new Uint8Array(unit<2?[11,16,32]:[128,128,0]));
     gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
     gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.REPEAT);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);return t;});
   function scene(i){cur=i;var k=SCN[i],n=0,ld=document.getElementById('load');ld.textContent='Yükleniyor…';ld.hidden=false;
@@ -61,7 +67,11 @@ body{background:var(--bg);color:var(--fg);font-family:var(--font);overflow:hidde
     ['gunduz','gece'].forEach(function(f,unit){var im=new Image();
       im.onload=function(){if(cur!==i)return;gl.activeTexture(gl.TEXTURE0+unit);gl.bindTexture(gl.TEXTURE_2D,T[unit]);
         gl.texImage2D(gl.TEXTURE_2D,0,gl.RGB,gl.RGB,gl.UNSIGNED_BYTE,im);if(++n===2)ld.hidden=true;};
-      im.onerror=function(){ld.textContent='Görüntü yüklenemedi.';};im.src='assets/vr/gece-deneme/s'+k+'/'+f+'-'+sz+'.jpg';});}
+      im.onerror=function(){ld.textContent='Görüntü yüklenemedi.';};im.src='assets/vr/gece-deneme/s'+k+'/'+f+'-'+sz+'.jpg';});
+    gl.activeTexture(gl.TEXTURE2);gl.bindTexture(gl.TEXTURE_2D,T[2]);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGB,1,1,0,gl.RGB,gl.UNSIGNED_BYTE,new Uint8Array([128,128,0]));
+    if(TRF.indexOf(k)>=0){var tr=new Image();tr.onload=function(){if(cur!==i)return;gl.activeTexture(gl.TEXTURE2);gl.bindTexture(gl.TEXTURE_2D,T[2]);
+      gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.NEAREST);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
+      gl.texImage2D(gl.TEXTURE_2D,0,gl.RGB,gl.RGB,gl.UNSIGNED_BYTE,tr);};tr.src='assets/vr/gece-deneme/s'+k+'/trafik.png';}}
   var nav=document.getElementById('scn');SCN.forEach(function(k,i){var b=document.createElement('button');b.type='button';b.textContent=k;
     b.setAttribute('aria-label','Sahne '+k);b.onclick=function(){scene(i);};nav.appendChild(b);});
   scene(0);
@@ -83,7 +93,7 @@ body{background:var(--bg);color:var(--fg);font-family:var(--font);overflow:hidde
     var dp=Math.min(devicePixelRatio||1,2),w=Math.round(innerWidth*dp),h=Math.round(innerHeight*dp);
     if(cv.width!==w||cv.height!==h){cv.width=w;cv.height=h;cv.style.width=innerWidth+'px';cv.style.height=innerHeight+'px';gl.viewport(0,0,w,h);}
     mix+=((isNight?1:0)-mix)*(red?1:.12);
-    gl.uniform1f(U.m,mix);gl.uniform1f(U.yaw,lon*Math.PI/180);gl.uniform1f(U.pit,lat*Math.PI/180);
+    gl.uniform1f(U.m,mix);gl.uniform1f(U.tm,red?0:performance.now()/1000);gl.uniform1f(U.yaw,lon*Math.PI/180);gl.uniform1f(U.pit,lat*Math.PI/180);
     gl.uniform1f(U.tf,Math.tan(fov*Math.PI/360));gl.uniform1f(U.asp,w/h);gl.drawArrays(gl.TRIANGLE_STRIP,0,4);})();
 })();
 </script>
