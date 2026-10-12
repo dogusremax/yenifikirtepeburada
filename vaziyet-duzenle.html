@@ -47,6 +47,7 @@
   .acts{display:flex;gap:8px;margin-top:8px}
   .acts button{flex:1;border:0;border-radius:12px;padding:11px 6px;font:700 13px inherit;font-family:inherit;cursor:pointer;background:rgba(255,255,255,.16);color:#fff}
   .acts button.pri{background:var(--red)}
+  .acts select{flex:1.2;min-width:0;border:0;border-radius:12px;padding:11px 8px;font:700 13px inherit;font-family:inherit;background:#fff;color:var(--navy)}
   .acts button:disabled{opacity:.4}
   .help{font-size:12px;opacity:.85;margin:0 2px 8px;line-height:1.35}
 
@@ -117,7 +118,7 @@
   var bar=$('scs');
   NAMES.forEach(function(n,i){var b=document.createElement('button');b.type='button';b.textContent=n;b.className=i?'':'on';
     b.onclick=function(){closeSheet();cancelDraft();v.loadScene('s'+(i+1));};bar.appendChild(b);});
-  v.on('scenechange',function(id){cur=+id.slice(1)-1;[].forEach.call(bar.children,function(b,i){b.classList.toggle('on',i===cur);});sel=null;draw();});
+  v.on('scenechange',function(id){cur=+id.slice(1)-1;binalar(cur+1);[].forEach.call(bar.children,function(b,i){b.classList.toggle('on',i===cur);});sel=null;draw();});
 
   // --- ekran <-> küre (Pannellum'un kendi hesabı) ---
   function proj(yaw,pitch){
@@ -132,10 +133,10 @@
   var OX=10,OY=12;
 
   // --- durum ---
-  var mode='gez',sel=null,draft=null,drag=null;
+  var mode='gez',sel=null,draft=null,drag=null,aktif=0;try{aktif=+localStorage.getItem(KEY+'-aktif')||0;}catch(e){}
   var HELP={gez:'Sürükleyerek çevirin. Düzenlemek için alttan bir mod seçin.',
     etap:'Etap numarasını sürükleyip yerine bırakın. Dokununca numara ve isim değişir.',
-    bina:'Yeni bina için binanın köşelerine sırayla dokunun, sonra Bitir. Var olan şekle dokununca düzenlenir.'};
+    bina:'Binaya dokunun, sınırı kendiliğinden seçilir. Seçili binaya dokununca adı değişir.'};
   function setMode(m){mode=m;cancelDraft();closeSheet();sel=null;document.body.className='m-'+m;
     [].forEach.call($('modes').children,function(b){b.classList.toggle('on',b.dataset.m===m);});acts();draw();}
   [].forEach.call($('modes').children,function(b){b.onclick=function(){setMode(b.dataset.m);};});
@@ -143,18 +144,30 @@
   function acts(){
     var a=$('acts'),h='';$('help').textContent=HELP[mode];
     if(mode==='etap')h='<button type="button" id="aAdd">+ Etap ekle</button><button type="button" class="pri" id="aSave">Gönder</button>';
+    else if(mode==='bina'&&pick)h='<button type="button" id="pS"'+(pick.i>0?'':' disabled')+'>Daha küçük</button><button type="button" id="pB"'+(pick.i<pick.list.length-1?'':' disabled')+'>Daha büyük</button><button type="button" id="aCan">İptal</button><button type="button" class="pri" id="aFin">Tamam</button>';
+    else if(mode==='bina'&&wand)h='<button type="button" id="wN">Daha dar</button><button type="button" id="wW">Daha geniş</button><button type="button" id="aCan">İptal</button><button type="button" class="pri" id="aFin"'+(draft&&draft.length>2?'':' disabled')+'>Tamam</button>';
     else if(mode==='bina'&&draft)h='<button type="button" id="aUndo"'+(draft.length?'':' disabled')+'>Geri al</button><button type="button" id="aCan">İptal</button><button type="button" class="pri" id="aFin"'+(draft.length>2?'':' disabled')+'>Bitir</button>';
-    else if(mode==='bina')h='<button type="button" id="aNew">+ Yeni bina</button><button type="button" class="pri" id="aSave">Gönder</button>';
+    else if(mode==='bina')h='<select id="aEt" aria-label="Seçilen binalar hangi etaba eklensin">'+etapOpts(aktif).replace('Seçilmedi','Etap seç')+'</select><button type="button" id="aNew">Elle çiz</button><button type="button" class="pri" id="aSave">Gönder</button>';
     else h='<button type="button" class="pri" id="aSave">Gönder</button>';
     a.innerHTML=h;
     if($('aSave'))$('aSave').onclick=sendSheet;
+    if($('aEt'))$('aEt').onchange=function(){aktif=+this.value;try{localStorage.setItem(KEY+'-aktif',aktif);}catch(e){}acts();};
     if($('aAdd'))$('aAdd').onclick=function(){var c=unproj(innerWidth/2-OX,innerHeight/2-OY);var p=[c[0],c[1],0];D.sc[cur].pins.push(p);save();sel={t:'pin',o:p};draw();pinSheet(p,true);};
     if($('aNew'))$('aNew').onclick=function(){draft=[];document.body.classList.add('drafting');sel=null;closeSheet();acts();draw();$('help').textContent='Binanın köşelerine sırayla dokunun (en az 3 nokta).';};
     if($('aUndo'))$('aUndo').onclick=function(){draft.pop();acts();draw();};
     if($('aCan'))$('aCan').onclick=function(){cancelDraft();acts();draw();};
-    if($('aFin'))$('aFin').onclick=function(){var s={ad:'',etap:0,p:draft};D.sc[cur].shapes.push(s);cancelDraft();save();sel={t:'shp',o:s};acts();draw();shapeSheet(s,true);};
+    if($('wN'))$('wN').onclick=function(){wand.tol=Math.max(6,wand.tol*.75);regrow();};
+    if($('wW'))$('wW').onclick=function(){wand.tol=Math.min(120,wand.tol*1.33);regrow();};
+    if($('pS'))$('pS').onclick=function(){pick.i--;showPick();};
+    if($('pB'))$('pB').onclick=function(){pick.i++;showPick();};
+    if(mode==='bina'&&!pick&&!wand&&!draft)$('help').textContent=aktif?'Şimdi '+aktif+'. Etabın bloklarına dokunun, Tamam deyince bu etaba eklenir.':'Önce etabı seçin, sonra o etabın bloklarına dokunun.';
+    if(pick)$('help').textContent=(aktif?aktif+'. Etaba eklenecek. ':'')+'Bina seçildi. Eksik ya da fazlaysa "Daha büyük / küçük", başka binaya dokunarak değiştirin.';
+    if(wand)$('help').textContent='Seçim eksikse binanın başka bir yüzüne dokunup ekleyin. Taşıyorsa "Daha dar".';
+    if($('aFin'))$('aFin').onclick=function(){var s={ad:'',etap:0,p:draft.map(function(q){return [q[0],q[1]];})};D.sc[cur].shapes.push(s);cancelDraft();
+      if(aktif){s.etap=aktif;save();sel=null;acts();draw();toast(aktif+'. Etaba eklendi');return;}
+      save();sel={t:'shp',o:s};acts();draw();shapeSheet(s,true);};
   }
-  function cancelDraft(){draft=null;document.body.classList.remove('drafting');}
+  function cancelDraft(){draft=null;wand=null;pick=null;document.body.classList.remove('drafting');}
 
   // --- dokunma: bina modunda köşe ekle ---
   var down=null,pano=$('pano');
@@ -162,9 +175,118 @@
   pano.addEventListener('pointerup',function(e){
     if(!down)return;var dx=e.clientX-down.x,dy=e.clientY-down.y,tap=dx*dx+dy*dy<64&&Date.now()-down.t<600;down=null;
     if(!tap)return;
-    if(mode==='bina'&&draft){draft.push(unproj(e.clientX,e.clientY));acts();draw();}
+    if(mode==='bina'&&pick&&!wand){pickTap(e.clientX,e.clientY);}
+    else if(mode==='bina'&&wand){wandTap(e.clientX,e.clientY);}
+    else if(mode==='bina'&&draft){draft.push(unproj(e.clientX,e.clientY));acts();draw();}
+    else if(mode==='bina'&&!sel){pickTap(e.clientX,e.clientY);}
     else if(sel){sel=null;closeSheet();draw();}
   },true);
+
+  // --- hazır bina sınırları (tools/vr/binalar.py, MobileSAM ile önceden çıkarıldı) ---
+  var BIN={},pick=null;
+  function binalar(k){if(!BIN[k])BIN[k]=fetch('assets/vr/binalar/s'+k+'.json?v=1').then(function(r){if(!r.ok)throw 0;return r.json();}).catch(function(){return [];});return BIN[k];}
+  binalar(1);
+  function inPoly(x,y,P){var c=false;for(var i=0,j=P.length-1;i<P.length;j=i++){var a=P[i],b=P[j];if((a[1]>y)!==(b[1]>y)&&x<(b[0]-a[0])*(y-a[1])/(b[1]-a[1])+a[0])c=!c;}return c;}
+  function pickTap(x,y){
+    var k=cur+1;
+    if(pick&&pick.k===k&&Math.hypot(x-pick.x,y-pick.y)<12&&pick.i<pick.list.length-1){pick.i++;showPick();return;}
+    binalar(k).then(function(L){
+      var hits=[];
+      L.forEach(function(sh){var f=sh[1],P=[];for(var i=0;i<f.length;i+=2){var q=proj(f[i],f[i+1]);if(!q)return;P.push(q);}if(inPoly(x,y,P))hits.push(sh);});
+      if(!hits.length){pick=null;wandTap(x,y);return;}
+      hits.sort(function(a,b){return a[0]-b[0];});
+      // çok küçük parçaları (pencere, ağaç) atla: ilk seçim makul büyüklükte olsun
+      var i=0;while(i<hits.length-1&&hits[i][0]<1500)i++;
+      sel=null;closeSheet();wand=null;
+      pick={k:k,x:x,y:y,i:i,list:hits.map(function(h){var f=h[1],P=[];for(var j=0;j<f.length;j+=2)P.push([f[j],f[j+1]]);return P;})};
+      document.body.classList.add('drafting');showPick();
+    });
+  }
+  function showPick(){draft=pick.list[pick.i];acts();draw();}
+
+  // --- sihirli değnek: dokunulan binanın sınırını karo görüntüsünden bulur ---
+  // küp yüzleri tools/vr/cube.py ile aynı düzende: f(a,-b,1) r(1,-b,-a) b(-a,-b,-1) l(-1,-b,a) u(a,1,b) d(a,-1,-b)
+  var wand=null,FN=4096,WIN=2048,TS=512;
+  function dirOf(yaw,pitch){var r=Math.PI/180,cp=Math.cos(pitch*r);return [cp*Math.sin(yaw*r),Math.sin(pitch*r),cp*Math.cos(yaw*r)];}
+  function faceOf(d){var x=d[0],y=d[1],z=d[2],ax=Math.abs(x),ay=Math.abs(y),az=Math.abs(z);
+    if(az>=ax&&az>=ay)return z>0?['f',x/z,-y/z]:['b',x/z,y/z];
+    if(ax>=ay)return x>0?['r',-z/x,-y/x]:['l',-z/x,y/x];
+    return y>0?['u',x/y,z/y]:['d',-x/y,z/y];}
+  function dirFace(f,a,b){return f==='f'?[a,-b,1]:f==='r'?[1,-b,-a]:f==='b'?[-a,-b,-1]:f==='l'?[-1,-b,a]:f==='u'?[a,1,b]:[a,-1,-b];}
+  function ypOf(d){return [Math.atan2(d[0],d[2])*180/Math.PI,Math.atan2(d[1],Math.hypot(d[0],d[2]))*180/Math.PI];}
+  function loadWin(k,f,ox,oy){
+    var c=document.createElement('canvas');c.width=c.height=WIN;var g=c.getContext('2d'),ps=[];
+    for(var r=oy/TS;r<(oy+WIN)/TS;r++)for(var q=ox/TS;q<(ox+WIN)/TS;q++)(function(r,q){ps.push(new Promise(function(ok,no){var im=new Image();
+      im.onload=function(){g.drawImage(im,q*TS-ox,r*TS-oy);ok();};im.onerror=no;im.src='assets/vr/s'+k+'/4/'+f+r+'_'+q+'.jpg';}));})(r,q);
+    return Promise.all(ps).then(function(){return g.getImageData(0,0,WIN,WIN).data;});
+  }
+  function wandTap(x,y){
+    var yp=unproj(x,y),fa=faceOf(dirOf(yp[0],yp[1])),f=fa[0],px=Math.floor((fa[1]+1)/2*FN),py=Math.floor((fa[2]+1)/2*FN);
+    if(wand&&wand.k===cur+1&&wand.f===f&&px>=wand.ox&&py>=wand.oy&&px<wand.ox+WIN&&py<wand.oy+WIN){wand.seeds.push([px-wand.ox,py-wand.oy]);regrow();return;}
+    var ox=Math.max(0,Math.min(FN-WIN,Math.round((px-WIN/2)/TS)*TS)),oy=Math.max(0,Math.min(FN-WIN,Math.round((py-WIN/2)/TS)*TS));
+    sel=null;closeSheet();
+    wand={k:cur+1,f:f,ox:ox,oy:oy,tol:24,seeds:[[px-ox,py-oy]],data:null};draft=[];document.body.classList.add('drafting');acts();draw();
+    toast('Bina seçiliyor…');var w=wand;
+    loadWin(cur+1,f,ox,oy).then(function(d){if(wand!==w)return;w.data=blur(d,WIN,5);regrow();},function(){toast('Görüntü yüklenemedi');cancelDraft();acts();draw();});
+  }
+  function regrow(){
+    var w=wand;if(!w||!w.data)return;var d=w.data,N=WIN,m=new Uint8Array(N*N),Q=new Int32Array(N*N),tol=w.tol;
+    w.seeds.forEach(function(sd){
+      var sx=sd[0],sy=sd[1],R=0,G=0,B=0,n=0;
+      for(var j=-2;j<=2;j++)for(var i=-2;i<=2;i++){var o=((sy+j)*N+sx+i)*4;if(o>=0&&o<d.length){R+=d[o];G+=d[o+1];B+=d[o+2];n++;}}
+      R/=n;G/=n;B/=n;var t2=(tol*1.4)*(tol*1.4),e2=(tol*.35)*(tol*.35),h=0,tl=0,start=sy*N+sx;
+      if(m[start])return;m[start]=1;Q[tl++]=start;
+      while(h<tl&&tl<700000){var p=Q[h++],px=p%N,py=(p-px)/N,o=p*4;
+        for(var k=0;k<4;k++){var nx=px+(k===0?1:k===1?-1:0),ny=py+(k===2?1:k===3?-1:0);if(nx<0||ny<0||nx>=N||ny>=N)continue;
+          var q=ny*N+nx;if(m[q])continue;var oq=q*4,dr=d[oq]-R,dg=d[oq+1]-G,db=d[oq+2]-B;
+          if(dr*dr+dg*dg+db*db>t2)continue;dr=d[oq]-d[o];dg=d[oq+1]-d[o+1];db=d[oq+2]-d[o+2];if(dr*dr+dg*dg+db*db>e2)continue;
+          m[q]=1;Q[tl++]=q;}}
+    });
+    // kapat: 3 px genişlet + daralt, delikleri doldur
+    m=morph(morph(m,N,3,1),N,3,0);fillHoles(m,N);
+    var c=contour(m,N);if(!c){draft=[];acts();draw();toast('Seçilemedi, başka yere dokunun');return;}
+    c=simplify(c,1.6);
+    draft=c.map(function(q){return ypOf(dirFace(w.f,(w.ox+q[0]+.5)/FN*2-1,(w.oy+q[1]+.5)/FN*2-1));});
+    acts();draw();
+  }
+  function blur(d,N,r){ // pencere/balkon çizgileri bina yüzeyini bölmesin diye yumuşat
+    var a=new Float32Array(N*N*3),b=new Float32Array(N*N*3),x,y,c,s,k=2*r+1;
+    for(var i=0;i<N*N;i++){a[i*3]=d[i*4];a[i*3+1]=d[i*4+1];a[i*3+2]=d[i*4+2];}
+    for(c=0;c<3;c++){
+      for(y=0;y<N;y++){s=0;for(x=-r;x<N;x++){if(x+r<N)s+=a[(y*N+x+r)*3+c];else s+=a[(y*N+N-1)*3+c];if(x-r-1>=0)s-=a[(y*N+x-r-1)*3+c];else if(x>=0)s-=0;if(x>=0)b[(y*N+x)*3+c]=s;}}
+      for(x=0;x<N;x++){s=0;for(y=-r;y<N;y++){if(y+r<N)s+=b[((y+r)*N+x)*3+c];else s+=b[((N-1)*N+x)*3+c];if(y-r-1>=0)s-=b[((y-r-1)*N+x)*3+c];if(y>=0)a[(y*N+x)*3+c]=s;}}}
+    var o=new Uint8ClampedArray(N*N*4),nn;
+    for(y=0;y<N;y++){var hy=Math.min(N-1,y+r)-Math.max(0,y-r)+1+(y-r<0?r-y:0);for(x=0;x<N;x++){var i2=y*N+x;nn=k*k;o[i2*4]=a[i2*3]/nn;o[i2*4+1]=a[i2*3+1]/nn;o[i2*4+2]=a[i2*3+2]/nn;o[i2*4+3]=255;}}
+    return o;
+  }
+  function morph(m,N,r,dil){ // ayrılabilir kutu filtresi
+    var t=new Uint8Array(N*N),o=new Uint8Array(N*N),x,y,i,s;
+    for(y=0;y<N;y++){s=0;var row=y*N;for(x=-r;x<N;x++){if(x+r<N)s+=m[row+x+r];if(x-r-1>=0)s-=m[row+x-r-1];if(x>=0)t[row+x]=dil?(s>0):(s===Math.min(N,x+r+1)-Math.max(0,x-r));}}
+    for(x=0;x<N;x++){s=0;for(y=-r;y<N;y++){if(y+r<N)s+=t[(y+r)*N+x];if(y-r-1>=0)s-=t[(y-r-1)*N+x];if(y>=0)o[y*N+x]=dil?(s>0):(s===Math.min(N,y+r+1)-Math.max(0,y-r));}}
+    return o;
+  }
+  function fillHoles(m,N){var v=new Uint8Array(N*N),Q=new Int32Array(N*N),h=0,t=0,i;
+    function push(p){if(!m[p]&&!v[p]){v[p]=1;Q[t++]=p;}}
+    for(i=0;i<N;i++){push(i);push((N-1)*N+i);push(i*N);push(i*N+N-1);}
+    while(h<t){var p=Q[h++],x=p%N;if(x>0)push(p-1);if(x<N-1)push(p+1);if(p>=N)push(p-N);if(p<N*N-N)push(p+N);}
+    for(i=0;i<N*N;i++)if(!v[i])m[i]=1;}
+  function contour(m,N){ // Moore komşuluğu ile dış sınır (en büyük parça)
+    var best=-1,bs=0,lab=new Int32Array(N*N),Q=new Int32Array(N*N),id=0,i;
+    for(i=0;i<N*N;i++)if(m[i]&&!lab[i]){id++;var h=0,t=0;lab[i]=id;Q[t++]=i;
+      while(h<t){var p=Q[h++],x=p%N;[x>0?p-1:-1,x<N-1?p+1:-1,p-N,p+N].forEach(function(q){if(q>=0&&q<N*N&&m[q]&&!lab[q]){lab[q]=id;Q[t++]=q;}});}
+      if(t>bs){bs=t;best=i;}}
+    if(bs<60)return null;var L=lab[best],sx=best%N,sy=(best-sx)/N;
+    var D=[[1,0],[1,1],[0,1],[-1,1],[-1,0],[-1,-1],[0,-1],[1,-1]],x=sx,y=sy,dir=7,out=[[x,y]],guard=0;
+    function inn(a,b){return a>=0&&b>=0&&a<N&&b<N&&lab[b*N+a]===L;}
+    do{var found=false;for(var k=0;k<8;k++){var nd=(dir+6+k)%8,nx=x+D[nd][0],ny=y+D[nd][1];if(inn(nx,ny)){x=nx;y=ny;dir=nd;found=true;break;}}
+      if(!found)break;out.push([x,y]);}while((x!==sx||y!==sy)&&++guard<200000);
+    return out;
+  }
+  function simplify(P,eps){if(P.length<4)return P;
+    function rec(a,b,o){var mx=0,mi=-1,ax=P[a][0],ay=P[a][1],dx=P[b][0]-ax,dy=P[b][1]-ay,L=Math.hypot(dx,dy)||1;
+      for(var i=a+1;i<b;i++){var dd=Math.abs(dy*(P[i][0]-ax)-dx*(P[i][1]-ay))/L;if(dd>mx){mx=dd;mi=i;}}
+      if(mx>eps){rec(a,mi,o);rec(mi,b,o);}else o.push(P[b]);}
+    var o=[P[0]],h=Math.floor(P.length/2);rec(0,h,o);rec(h,P.length-1,o);return o;}
 
   // --- çizim ---
   var ov=$('ov'),lay=$('lay');
@@ -181,7 +303,7 @@
       if(isSel&&mode==='bina')s.p.forEach(function(q,j){var d=mk('div','vx',lay);d.dataset.v=j;g.vx.push(d);});
       els.shp.push(g);
     });
-    if(draft){els.dr=mk('polygon','dr',ov,1);draft.forEach(function(){els.dv.push(mk('div','vx d',lay));});}
+    if(draft){els.dr=mk('polygon','dr',ov,1);if(!wand&&!pick)draft.forEach(function(){els.dv.push(mk('div','vx d',lay));});}
     S.pins.forEach(function(p,i){var d=mk('div','pin'+(sel&&sel.o===p?' sel':''),lay);d.dataset.p=i;d.style.setProperty('--c',col(p[2]));
       d.textContent=p[2]||'?';var ad=D.etap[p[2]];if(ad){var t=mk('i','',d);t.textContent=ad;}els.pin.push({p:p,el:d});});
     place();
