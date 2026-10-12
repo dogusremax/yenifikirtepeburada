@@ -52,7 +52,7 @@ body{background:var(--bg);color:var(--fg);font-family:var(--font);overflow:hidde
   var U={};['A','B','m','yaw','pit','tf','asp'].forEach(function(k){U[k]=gl.getUniformLocation(pr,k);});
   gl.uniform1i(U.A,0);gl.uniform1i(U.B,1);
   // sahneler: assets/vr/gece-deneme/sN/{gunduz,gece}-{4k,8k}.jpg
-  var SCN=[1,2,3],cur=0,T=[0,1].map(function(unit){var t=gl.createTexture();gl.activeTexture(gl.TEXTURE0+unit);gl.bindTexture(gl.TEXTURE_2D,t);
+  var SCN=[1,2,3,5],cur=0,T=[0,1].map(function(unit){var t=gl.createTexture();gl.activeTexture(gl.TEXTURE0+unit);gl.bindTexture(gl.TEXTURE_2D,t);
     gl.texImage2D(gl.TEXTURE_2D,0,gl.RGB,1,1,0,gl.RGB,gl.UNSIGNED_BYTE,new Uint8Array([11,16,32]));
     gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
     gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.REPEAT);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);return t;});
