@@ -25,10 +25,8 @@
     '.k3d .ld{position:absolute;inset:0;display:none;align-items:center;justify-content:center;pointer-events:none}' +
     '.k3d .ld>div{background:rgba(255,255,255,.94);border-radius:12px;padding:10px 14px;font-size:.8rem;font-weight:600;color:#050A30;box-shadow:0 4px 18px rgba(5,10,48,.1);text-align:center}' +
     '.k3d .ldt{height:4px;width:180px;background:#e4e7f1;border-radius:4px;margin-top:8px;overflow:hidden}.k3d .ldb{height:100%;width:0;background:#DC1C2E;transition:width .2s}' +
-    '.k3d .play{position:absolute;left:12px;bottom:12px;display:flex;align-items:center;gap:6px;font:inherit;font-weight:700;font-size:.8rem;border:none;background:rgba(255,255,255,.94);color:#050A30;padding:8px 12px;border-radius:10px;cursor:pointer;box-shadow:0 4px 14px rgba(5,10,48,.1)}' +
-    '.k3d .play svg{width:16px;height:16px}.k3d .play.on{background:#050A30;color:#fff}' +
-    '.k3d .hint{position:absolute;right:12px;bottom:14px;font-size:.75rem;color:#59607d;background:rgba(255,255,255,.85);padding:5px 10px;border-radius:8px;transition:opacity .4s;pointer-events:none}' +
-    '@media(max-width:600px){.k3d .lb3{font-size:.62rem;padding:2px 6px;border-radius:6px}.k3d .lb3 i{font-size:.6rem}.k3d .hint{display:none}.k3d .play{top:12px;bottom:auto}}';
+    '.k3d .hint{position:absolute;left:50%;transform:translateX(-50%);bottom:14px;white-space:nowrap;font-size:.75rem;color:#59607d;background:rgba(255,255,255,.85);padding:5px 10px;border-radius:8px;transition:opacity .4s;pointer-events:none}' +
+    '@media(max-width:600px){.k3d .lb3{font-size:.62rem;padding:2px 6px;border-radius:6px}.k3d .lb3 i{font-size:.6rem}.k3d .hint{font-size:.72rem}}';
   var injected = false;
   function fmt(n) { return n.toFixed(2).replace('.', ',') + ' m²'; }
   function track(n, p) { try { if (typeof gtag === 'function') gtag('event', n, p || {}); } catch (e) {} }
@@ -37,12 +35,11 @@
     if (!injected) { var s = document.createElement('style'); s.textContent = css; document.head.appendChild(s); injected = true; }
     host.classList.add('k3d');
     host.innerHTML = '<div class="sp"><canvas></canvas><div class="lbls"></div><div class="ld"><div><span>Fotogerçekçi görüntü yükleniyor</span><div class="ldt"><div class="ldb"></div></div></div></div>' +
-      '<button type="button" class="play on" aria-label="Otomatik döndür"><svg viewBox="0 0 24 24"><path d="M12 5a7 7 0 1 1-6.6 4.7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><path d="M3.5 5.5l2 4.2 4.1-1.9" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>360°</span></button>' +
-      '<div class="hint">Sağa sola sürükleyerek çevirin</div></div>' +
+      '<div class="hint">↔ Sağa sola sürükleyerek çevirin</div></div>' +
       '<div class="tp"><div class="tbox"><img alt="Kuş bakışı kat planı"><svg viewBox="0 0 1 1" preserveAspectRatio="none"></svg></div><div class="lbls"></div></div>';
     var q = function (s) { return host.querySelector(s); };
     var sp = q('.sp'), tp = q('.tp'), cv = q('canvas'), cx = cv.getContext('2d'), DPR = 1, DPR0 = Math.min(window.devicePixelRatio || 1, 2);
-    var V = { pid: null, mode: null, frames: [], n: 0, p: 0, auto: true, drag: null, loaded: 0, hl: null, last: 0, on: false };
+    var V = { pid: null, mode: null, frames: [], n: 0, p: 0, auto: false, drag: null, loaded: 0, hl: null, last: 0, on: false };
 
     function rect(el, iw, ih, z) {
       var W = el.clientWidth, H = el.clientHeight, s = Math.min(W / iw, H / ih) * (z && W < 600 ? z : 1), w = iw * s, h = ih * s;
@@ -73,7 +70,7 @@
     }
     function load(pid) {
       var D = K[pid]; if (!D) return false; if (V.pid === pid) return true;
-      V.pid = pid; V.D = D; V.A = {}; V.n = D.n; V.p = 0; V.auto = true; V.loaded = 0; V.frames = []; V.hl = null; q('.play').classList.add('on');
+      V.pid = pid; V.D = D; V.A = {}; V.n = D.n; V.p = 0; V.loaded = 0; V.frames = []; V.hl = null; q('.hint').style.opacity = 1;
       V.L = mkLabels(sp.querySelector('.lbls')); V.TL = mkLabels(tp.querySelector('.lbls'));
       q('.ld').style.display = 'flex'; q('.ldb').style.width = '0%';
       // önce seyrek kareler: dönüş hemen başlayabilsin
@@ -103,52 +100,20 @@
     }
     function ready(i) { return !!V.frames[i]; }
     function near(i) { if (ready(i)) return i; for (var d = 1; d < V.n; d++) { var a = (i + d) % V.n, b = (i - d + V.n) % V.n; if (ready(a)) return a; if (ready(b)) return b; } return -1; }
-    // kare i'deki etiket noktalarını kare j'dekilere taşıyan 2B afin dönüşüm (en küçük kareler); zemin düzleminde neredeyse tam oturur
-    function aff(i, j) {
-      var key = i + '>' + j; V.A = V.A || {}; if (V.A[key] !== undefined) return V.A[key];
-      var P = V.D.labels[i], Q = V.D.labels[j], S = [0, 0, 0, 0, 0, 0, 0, 0, 0], X = [0, 0, 0], Y = [0, 0, 0], c = 0;
-      for (var k in P) { var p = P[k], q = Q[k]; if (!q) continue; c++;
-        var r = [p[0], p[1], 1]; for (var m = 0; m < 3; m++) { X[m] += r[m] * q[0]; Y[m] += r[m] * q[1]; for (var l = 0; l < 3; l++) S[m * 3 + l] += r[m] * r[l]; } }
-      var M = null;
-      if (c >= 3) {
-        var d = S[0] * (S[4] * S[8] - S[5] * S[7]) - S[1] * (S[3] * S[8] - S[5] * S[6]) + S[2] * (S[3] * S[7] - S[4] * S[6]);
-        if (Math.abs(d) > 1e-12) {
-          var inv = [S[4] * S[8] - S[5] * S[7], S[2] * S[7] - S[1] * S[8], S[1] * S[5] - S[2] * S[4], S[5] * S[6] - S[3] * S[8], S[0] * S[8] - S[2] * S[6], S[2] * S[3] - S[0] * S[5], S[3] * S[7] - S[4] * S[6], S[1] * S[6] - S[0] * S[7], S[0] * S[4] - S[1] * S[3]].map(function (v) { return v / d; });
-          var sol = function (B) { return [0, 1, 2].map(function (m) { return inv[m * 3] * B[0] + inv[m * 3 + 1] * B[1] + inv[m * 3 + 2] * B[2]; }); };
-          var u = sol(X), v = sol(Y); M = [u[0], u[1], u[2], v[0], v[1], v[2]];
-        }
-      }
-      return (V.A[key] = M);
-    }
-    // kareyi t oranında hedef konuma doğru bükerek alfa ile çiz (normalize koordinatlar R içinde)
-    function warp(im, M, t, al, R) {
-      if (al <= 0) return;
-      var a = 1, b = 0, c = 0, d = 0, e = 1, f = 0;
-      if (M) { a = 1 + t * (M[0] - 1); b = t * M[1]; c = t * M[2]; d = t * M[3]; e = 1 + t * (M[4] - 1); f = t * M[5]; }
-      // ekran = R.xy + R.wh * (A * uv); uv = (piksel - R.xy) / R.wh
-      cx.setTransform(DPR * a, DPR * d * R.h / R.w, DPR * b * R.w / R.h, DPR * e, DPR * (R.x + R.w * c - a * R.x - b * R.w / R.h * R.y), DPR * (R.y + R.h * f - d * R.h / R.w * R.x - e * R.y));
-      cx.globalAlpha = al; cx.drawImage(im, R.x, R.y, R.w, R.h);
-      cx.setTransform(DPR, 0, 0, DPR, 0, 0); cx.globalAlpha = 1;
-    }
-    function mix(A, B, t) { var o = {}; for (var k in A) { var p = A[k], q = B[k]; o[k] = q ? [p[0] + (q[0] - p[0]) * t, p[1] + (q[1] - p[1]) * t] : (t < 0.5 ? p : null); } for (var k2 in B) if (!A[k2] && t >= 0.5) o[k2] = B[k2]; return o; }
     function draw() {
       if (!V.on || V.mode !== 'spin' || !V.n) return;
       var W = sp.clientWidth, H = sp.clientHeight; if (!W) return;
-      var i0 = Math.floor(V.p) % V.n, i1 = (i0 + 1) % V.n, fr = V.p - Math.floor(V.p), a = near(i0); if (a < 0) return;
+      var a = near(Math.round(V.p) % V.n); if (a < 0) return;
       var im = V.frames[a], R = rect(sp, im.width, im.height, 1.32);
-      // tuval çözünürlüğü karenin kendi çözünürlüğünü aşmasın: retina ekranda boşuna 4 kat piksel çizip takılmasın
-      DPR = Math.max(1, Math.min(DPR0, im.width * 1.15 / R.w));
+      // masaüstünde kareyi kendi boyutundan büyütme: büyütülen fotoğraf bulanıklaşır
+      if (R.W >= 600 && R.w > im.width) { var k = im.width / R.w; R.x += R.w * (1 - k) / 2; R.y += R.h * (1 - k) / 2; R.w *= k; R.h *= k; }
+      DPR = DPR0;
       if (cv.width !== Math.round(W * DPR) || cv.height !== Math.round(H * DPR)) { cv.width = Math.round(W * DPR); cv.height = Math.round(H * DPR); }
       cx.setTransform(DPR, 0, 0, DPR, 0, 0); cx.clearRect(0, 0, W, H); cx.globalAlpha = 1;
-      var both = a === i0 && ready(i1) && fr > 0.001, b = both ? fr : 0;
-      if (!both) cx.drawImage(im, R.x, R.y, R.w, R.h);
-      else {
-        // ara kare: iki kareyi üst üste karıştırmak duvarları çift gösteriyordu (şaşı görüntü).
-        // Bunun yerine her an tek kare çizilir: yakın kare zemin düzlemine göre komşusuna doğru hafifçe bükülür, yarı yolda diğerine geçilir.
-        if (fr < 0.5) warp(V.frames[i0], aff(i0, i1), fr, 1, R);
-        else warp(V.frames[i1], aff(i1, i0), 1 - fr, 1, R);
-      }
-      setLbl(V.L, b ? mix(V.D.labels[i0], V.D.labels[i1], b) : V.D.labels[a], R);
+      cx.imageSmoothingEnabled = true; cx.imageSmoothingQuality = 'high';
+      // ara kare üretilmez: her zaman gerçek fotoğraf karelerinden biri gösterilir (net görüntü, çift görüntü yok)
+      cx.drawImage(im, R.x, R.y, R.w, R.h);
+      setLbl(V.L, V.D.labels[a], R);
     }
     function drawTop() {
       if (!V.on || V.mode !== 'top' || !V.D) return;
@@ -158,15 +123,8 @@
       setLbl(V.TL, D.labels, R);
       [].forEach.call(tp.querySelectorAll('polygon'), function (e) { e.classList.toggle('on', e.getAttribute('data-r') === V.hl); });
     }
-    function tick(t) {
-      var dt = Math.min(64, t - (V.last || t)); V.last = t;
-      if (V.on && V.mode === 'spin' && V.n && V.auto && V.loaded >= V.n && !document.hidden) { V.p = (V.p + dt * V.n / 26000) % V.n; draw(); }
-      requestAnimationFrame(tick);
-    }
-    requestAnimationFrame(tick);
     sp.addEventListener('pointerdown', function (e) {
-      if (e.target.closest('.play')) return;
-      V.drag = { x: e.clientX, p: V.p }; V.auto = false; q('.play').classList.remove('on');
+      V.drag = { x: e.clientX, p: V.p };
       try { sp.setPointerCapture(e.pointerId); } catch (_) {} q('.hint').style.opacity = 0;
     });
     sp.addEventListener('pointermove', function (e) {
@@ -175,7 +133,6 @@
     });
     function up() { if (V.drag) { V.drag = null; track('kat_plani3d_cevir', { plan: V.pid }); } }
     sp.addEventListener('pointerup', up); sp.addEventListener('pointercancel', up);
-    q('.play').onclick = function () { V.auto = !V.auto; this.classList.toggle('on', V.auto); };
     tp.querySelector('svg').addEventListener('click', function (e) {
       var p = e.target.closest('polygon'); if (!p) return; var r = p.getAttribute('data-r'); V.hl = V.hl === r ? null : r; drawTop();
       track('kat_plani3d_oda', { plan: V.pid, oda: r });
