@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>Vaziyet Planı Düzenleme | Yeni Fikirtepe</title>
+<link rel="icon" type="image/png" href="favicon.png">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/vendor/pannellum/pannellum.css">
+<style>
+  :root{--navy:#050A30;--red:#DC1C2E;--coral:#FB5160;--ink:#0f1722;--gray:#5b6473;--soft:#f2f4f8}
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;height:100%;background:#0b1020;font-family:'Plus Jakarta Sans',system-ui,sans-serif;color:#fff;overflow:hidden;touch-action:none}
+  #pano{position:fixed;inset:0}
+  .pnlm-controls-container,.pnlm-load-box{display:none!important}
+  #ov{position:fixed;inset:0;width:100%;height:100%;z-index:2;pointer-events:none}
+  #ov .shp{fill:var(--c);fill-opacity:.28;stroke:var(--c);stroke-width:2;stroke-linejoin:round}
+  #ov .shp.sel{fill-opacity:.45;stroke:#fff;stroke-width:3}
+  body.m-bina #ov .shp{pointer-events:visiblePainted;cursor:pointer}
+  body.drafting #ov .shp{pointer-events:none}
+  #ov .dr{fill:rgba(220,28,46,.18);stroke:var(--red);stroke-width:2;stroke-dasharray:6 4}
+  #ov text{font:700 12px 'Plus Jakarta Sans',sans-serif;fill:#fff;paint-order:stroke;stroke:rgba(5,10,48,.85);stroke-width:4px;text-anchor:middle}
+  #lay{position:fixed;inset:0;z-index:3;pointer-events:none}
+  .pin{position:absolute;width:32px;height:32px;margin:-16px 0 0 -16px;border-radius:50%;background:var(--navy);color:#fff;border:2px solid var(--c,#fff);
+    box-shadow:0 2px 10px rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;pointer-events:auto;cursor:grab;touch-action:none}
+  .pin.sel{background:var(--red);box-shadow:0 0 0 5px rgba(220,28,46,.35)}
+  .pin.drag{cursor:grabbing;transform:scale(1.15)}
+  .pin i{position:absolute;top:34px;left:50%;transform:translateX(-50%);white-space:nowrap;font-style:normal;font-size:11px;font-weight:700;
+    background:rgba(5,10,48,.8);padding:2px 6px;border-radius:6px}
+  body.m-bina .pin{pointer-events:none;opacity:.55}
+  .vx{position:absolute;width:18px;height:18px;margin:-9px 0 0 -9px;border-radius:50%;background:#fff;border:3px solid var(--red);pointer-events:auto;touch-action:none;cursor:move}
+  .vx.d{width:12px;height:12px;margin:-6px 0 0 -6px;border-width:2px;pointer-events:none}
+
+  .top{position:fixed;left:0;right:0;top:0;z-index:5;padding:calc(8px + env(safe-area-inset-top)) 16px 10px;background:linear-gradient(rgba(5,10,48,.85),rgba(5,10,48,0))}
+  .row1{display:flex;align-items:center;gap:10px}
+  .back{display:flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:11px;background:rgba(255,255,255,.14);color:#fff;text-decoration:none;font-size:20px;flex:none}
+  .ttl{flex:1;min-width:0}.ttl b{display:block;font-size:15px}.ttl span{display:block;font-size:12px;opacity:.8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .scs{display:flex;gap:6px;margin-top:8px;overflow-x:auto;scrollbar-width:none}.scs::-webkit-scrollbar{display:none}
+  .scs button{flex:none;border:0;border-radius:999px;padding:7px 12px;font:700 12px inherit;font-family:inherit;background:rgba(255,255,255,.16);color:#fff;cursor:pointer}
+  .scs button.on{background:#fff;color:var(--navy)}
+
+  .bar{position:fixed;left:0;right:0;bottom:0;z-index:5;padding:10px 16px calc(10px + env(safe-area-inset-bottom));background:linear-gradient(rgba(5,10,48,0),rgba(5,10,48,.9) 35%)}
+  .modes{display:flex;background:rgba(255,255,255,.12);border-radius:14px;padding:3px;gap:3px}
+  .modes button{flex:1;border:0;border-radius:11px;padding:10px 4px;font:700 13px inherit;font-family:inherit;background:none;color:#fff;cursor:pointer}
+  .modes button.on{background:#fff;color:var(--navy)}
+  .acts{display:flex;gap:8px;margin-top:8px}
+  .acts button{flex:1;border:0;border-radius:12px;padding:11px 6px;font:700 13px inherit;font-family:inherit;cursor:pointer;background:rgba(255,255,255,.16);color:#fff}
+  .acts button.pri{background:var(--red)}
+  .acts button:disabled{opacity:.4}
+  .help{font-size:12px;opacity:.85;margin:0 2px 8px;line-height:1.35}
+
+  .sheet{position:fixed;z-index:10;left:50%;bottom:0;width:min(480px,100%);transform:translate(-50%,110%);transition:transform .3s;background:#fff;color:var(--ink);
+    border-radius:20px 20px 0 0;padding:16px 16px calc(16px + env(safe-area-inset-bottom));box-shadow:0 -10px 40px rgba(0,0,0,.35)}
+  .sheet.on{transform:translate(-50%,0)}
+  .sheet h3{margin:0 0 12px;font-size:1.05rem}
+  .sheet label{display:block;font-size:12px;font-weight:700;color:var(--gray);margin:10px 0 4px}
+  .sheet input,.sheet select{width:100%;font:600 16px inherit;font-family:inherit;padding:11px 12px;border:1.5px solid #dfe3ea;border-radius:12px;color:var(--ink);background:#fff}
+  .sheet .btns{display:flex;gap:8px;margin-top:16px}
+  .sheet .btns button{flex:1;border:0;border-radius:12px;padding:12px;font:700 14px inherit;font-family:inherit;cursor:pointer;background:var(--soft);color:var(--navy)}
+  .sheet .btns .pri{background:var(--navy);color:#fff}.sheet .btns .del{background:#fdecee;color:var(--red);flex:0 0 auto;padding:12px 16px}
+  .sheet p{font-size:13px;color:var(--gray);line-height:1.45;margin:6px 0}
+  .toast{position:fixed;z-index:20;left:50%;top:calc(110px + env(safe-area-inset-top));transform:translateX(-50%);background:rgba(5,10,48,.92);padding:9px 14px;border-radius:12px;font-size:13px;font-weight:600;opacity:0;transition:opacity .3s;pointer-events:none}
+  .toast.on{opacity:1}
+</style>
+</head>
+<body class="m-gez">
+<div id="pano"></div>
+<svg id="ov"></svg>
+<div id="lay"></div>
+
+<div class="top">
+  <div class="row1">
+    <a class="back" href="vaziyet-plani-vr-onizleme.html" aria-label="Önizlemeye dön">‹</a>
+    <div class="ttl"><b>Vaziyet planı düzenleme</b><span id="st">Değişiklikler bu cihazda otomatik saklanır</span></div>
+  </div>
+  <div class="scs" id="scs"></div>
+</div>
+
+<div class="bar">
+  <p class="help" id="help"></p>
+  <div class="modes" id="modes">
+    <button type="button" data-m="gez" class="on">Gez</button>
+    <button type="button" data-m="etap">Etap numaraları</button>
+    <button type="button" data-m="bina">Bina / blok</button>
+  </div>
+  <div class="acts" id="acts"></div>
+</div>
+
+<div class="sheet" id="sheet" role="dialog"></div>
+<div class="toast" id="toast"></div>
+
+<script src="assets/vendor/pannellum/pannellum.js"></script>
+<script>
+(function(){
+  // Başlangıç: resmi Emlak Konut VR verisi (vaziyet-plani-vr-onizleme.html ile aynı)
+  var SC=[{"y":-7.52,"p":-29.15,"f":48.34,"l":[[43.27,-20.14,2],[-0.65,-12.87,3],[-32.31,-6.85,4],[-56.84,-11.35,5],[-50.28,-29.14,6],[-17.85,17.87,7]],"e":[[16.69,-28.59,7],[18.85,-25.72,8],[17.37,-22.37,17],[1.88,-25.08,9],[-15.41,-21.22,10],[-11.07,-26.94,6],[-32.84,-21.38,5],[-11.33,-18.93,15],[-5.74,-20.12,16],[-16.47,-18.92,14],[-21.92,-16.53,13],[-39.57,-16.62,4],[-44.15,-17.12,18],[-42.59,-15.52,3],[-28.29,-14.99,12],[-32.62,-14.97,11]]},{"y":-20.28,"p":-31.12,"f":40.84,"l":[[-57.42,-24.21,1],[1.84,-28.32,3],[5.0,-11.16,4],[-17.46,-9.04,5],[-33.43,-15.43,6],[-20.78,20.52,7]],"e":[[-19.17,-34.16,17],[-26.86,-31.63,8],[-32.69,-29.33,7],[-22.21,-24.91,9],[-11.45,-22.43,16],[-25.34,-21.94,6]]},{"y":-61.32,"p":-45.94,"f":69.06,"l":[[-103.8,-19.76,1],[-142.5,-25.28,2],[27.23,-25.38,4],[-12.22,-13.09,5],[-57.53,-25.13,6],[-63.81,14.01,7]],"e":[[-105.77,-33.02,7],[-112.61,-35.05,8],[-120.02,-39.98,17],[-80.35,-37.43,6],[-93.36,-40.69,9],[-76.61,-54.62,16],[-56.26,-58.36,15],[-36.47,-54.36,14],[-59.85,-47.42,10],[-19.71,-46.29,13],[-0.68,-39.01,12],[-8.24,-35.74,11],[-37.5,-35.38,5],[-16.63,-30.27,4],[-7.54,-28.42,3],[-5.75,-23.32,19],[-8.05,-21.81,2],[-20.98,-27.68,18]]},{"y":-22.22,"p":-31.34,"f":46.76,"l":[[-37.69,-9.09,1],[-55.86,-12.59,2],[-57.16,-27.58,3],[23.68,-32.67,5],[-10.58,-20.58,6],[-38.41,9.0,7]],"e":[[7.35,-35.84,19],[6.34,-32.8,2],[-12.41,-29.11,18],[-17.18,-29.47,4],[-7.32,-32.79,3],[-29.82,-31.33,11],[-36.04,-31.28,12],[-43.65,-27.04,13],[-28.92,-21.46,5]]},{"y":-27.38,"p":-38.65,"f":54.94,"l":[[-67.33,-31.15,4],[-39.66,-18.71,3],[-16.79,-9.79,2],[6.7,-13.02,1],[2.4,-31.0,6],[-25.55,10.28,7]],"e":[[-40.81,-51.02,2],[-52.16,-48.91,19],[-38.95,-41.27,3],[-41.34,-29.7,11],[-42.93,-26.15,12],[-26.64,-31.32,4],[-17.9,-23.66,5],[-32.04,-22.58,13],[-17.3,-19.15,10]]},{"y":-54.38,"p":-44.85,"f":68.71,"l":[[-133.42,-32.99,5],[-97.32,-20.44,4],[-46.25,-22.39,3],[-11.58,-13.78,2],[23.14,-28.28,1],[-49.33,8.09,7]],"e":[[-2.71,-25.75,7],[-6.96,-23.75,8],[-11.29,-21.6,17],[-14.75,-28.39,9],[-32.02,-35.02,10],[-37.88,-29.69,15],[-46.18,-31.29,14],[-58.1,-31.29,13],[-54.37,-43.86,5],[-19.37,-35.64,6],[-34.3,-28.77,16],[-75.5,-27.91,12],[-76.55,-32.94,11],[-86.82,-41.25,4],[-103.27,-36.39,3],[-114.91,-31.92,19],[-119.04,-34.36,2],[-97.17,-44.97,18]]},{"y":52.08,"p":-90.0,"f":78.32,"l":[[-17.75,-27.22,1],[50.95,-55.14,6],[112.47,-34.3,5],[153.69,-37.1,4],[-116.04,-56.12,3],[-57.03,-22.68,2]],"e":[[120.53,-41.5,2],[128.7,-41.27,19],[124.99,-54.01,3],[158.76,-58.41,11],[-167.66,-58.25,12],[-110.7,-69.27,13],[-83.57,-59.07,14],[-73.84,-51.69,15],[-53.38,-54.77,10],[-66.88,-46.15,16],[-52.54,-30.91,17],[-44.83,-31.76,8],[-37.45,-31.26,7],[-42.4,-38.39,9],[-29.89,-45.51,6],[7.44,-76.06,5],[121.68,-67.11,4],[105.18,-58.92,18]]}];
+  var NAMES=['1. Nokta','2. Nokta','3. Nokta','4. Nokta','5. Nokta','6. Nokta','Tepeden'];
+  var KEY='vaziyet-duzen-v1';
+  var COL=['#e6194b','#3cb44b','#ffe119','#4363d8','#f58231','#911eb4','#42d4f4','#f032e6','#bfef45','#fabed4','#469990','#dcbeff','#9a6324','#fffac8','#800000','#aaffc3','#808000','#ffd8b1','#a9a9ff','#ffffff'];
+  var $=function(id){return document.getElementById(id);};
+  function col(n){return COL[(+n||0)%COL.length];}
+  function fresh(){return {v:1,etap:{},sc:SC.map(function(s){return {pins:s.e.map(function(e){return [e[0],e[1],e[2]];}),shapes:[]};})};}
+  var D=null;try{D=JSON.parse(localStorage.getItem(KEY));}catch(e){}
+  var fromFile=!D;
+  if(!D||!D.sc||D.sc.length!==SC.length)D=fresh();
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(D));}catch(e){} $('st').textContent='Kaydedildi '+new Date().toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'});}
+  // daha önce gönderilmiş düzen dosyası varsa onunla başla
+  if(fromFile)fetch('assets/vr/duzen.json?cb='+Date.now(),{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(j){if(j&&j.sc&&j.sc.length===SC.length){D=j;draw();}}).catch(function(){});
+
+  function hfov(v){var a=innerWidth/innerHeight,h=2*Math.atan(Math.tan(v*Math.PI/360)*a)*180/Math.PI;return Math.max(40,Math.min(120,h));}
+  var scenes={};
+  SC.forEach(function(s,i){scenes['s'+(i+1)]={type:'multires',multiRes:{basePath:'assets/vr/s'+(i+1),path:'/%l/%s%y_%x',fallbackPath:'/fb3k/%s',extension:'jpg',tileResolution:512,maxLevel:4,cubeResolution:4096},
+    yaw:s.y,pitch:s.p,hfov:hfov(s.f),minHfov:15,maxHfov:120};});
+  var v=pannellum.viewer('pano',{default:{firstScene:'s1',sceneFadeDuration:400,autoLoad:true,showControls:false,compass:false},scenes:scenes});
+  var cur=0;
+  var bar=$('scs');
+  NAMES.forEach(function(n,i){var b=document.createElement('button');b.type='button';b.textContent=n;b.className=i?'':'on';
+    b.onclick=function(){closeSheet();cancelDraft();v.loadScene('s'+(i+1));};bar.appendChild(b);});
+  v.on('scenechange',function(id){cur=+id.slice(1)-1;[].forEach.call(bar.children,function(b,i){b.classList.toggle('on',i===cur);});sel=null;draw();});
+
+  // --- ekran <-> küre (Pannellum'un kendi hesabı) ---
+  function proj(yaw,pitch){
+    var W=innerWidth,H=innerHeight,r=Math.PI/180,cp=v.getPitch()*r,cy=v.getYaw()*r,hf=v.getHfov()*r;
+    var ps=Math.sin(pitch*r),pc=Math.cos(pitch*r),yc=Math.cos(-yaw*r+cy),ys=Math.sin(-yaw*r+cy);
+    var z=ps*Math.sin(cp)+pc*yc*Math.cos(cp);if(z<=0)return null;
+    var t=Math.tan(hf/2);
+    return [W/2-W/t*ys*pc/z/2, H/2-W/t*(ps*Math.cos(cp)-pc*yc*Math.sin(cp))/z/2];
+  }
+  function unproj(x,y){var c=v.mouseEventToCoords({clientX:x,clientY:y});return [c[1],c[0]];} // [yaw,pitch]
+  // pin görünümü noktanın 10/12 px sağ altında (önizlemedeki ile aynı yer)
+  var OX=10,OY=12;
+
+  // --- durum ---
+  var mode='gez',sel=null,draft=null,drag=null;
+  var HELP={gez:'Sürükleyerek çevirin. Düzenlemek için alttan bir mod seçin.',
+    etap:'Etap numarasını sürükleyip yerine bırakın. Dokununca numara ve isim değişir.',
+    bina:'Yeni bina için binanın köşelerine sırayla dokunun, sonra Bitir. Var olan şekle dokununca düzenlenir.'};
+  function setMode(m){mode=m;cancelDraft();closeSheet();sel=null;document.body.className='m-'+m;
+    [].forEach.call($('modes').children,function(b){b.classList.toggle('on',b.dataset.m===m);});acts();draw();}
+  [].forEach.call($('modes').children,function(b){b.onclick=function(){setMode(b.dataset.m);};});
+
+  function acts(){
+    var a=$('acts'),h='';$('help').textContent=HELP[mode];
+    if(mode==='etap')h='<button type="button" id="aAdd">+ Etap ekle</button><button type="button" class="pri" id="aSave">Gönder</button>';
+    else if(mode==='bina'&&draft)h='<button type="button" id="aUndo"'+(draft.length?'':' disabled')+'>Geri al</button><button type="button" id="aCan">İptal</button><button type="button" class="pri" id="aFin"'+(draft.length>2?'':' disabled')+'>Bitir</button>';
+    else if(mode==='bina')h='<button type="button" id="aNew">+ Yeni bina</button><button type="button" class="pri" id="aSave">Gönder</button>';
+    else h='<button type="button" class="pri" id="aSave">Gönder</button>';
+    a.innerHTML=h;
+    if($('aSave'))$('aSave').onclick=sendSheet;
+    if($('aAdd'))$('aAdd').onclick=function(){var c=unproj(innerWidth/2-OX,innerHeight/2-OY);var p=[c[0],c[1],0];D.sc[cur].pins.push(p);save();sel={t:'pin',o:p};draw();pinSheet(p,true);};
+    if($('aNew'))$('aNew').onclick=function(){draft=[];document.body.classList.add('drafting');sel=null;closeSheet();acts();draw();$('help').textContent='Binanın köşelerine sırayla dokunun (en az 3 nokta).';};
+    if($('aUndo'))$('aUndo').onclick=function(){draft.pop();acts();draw();};
+    if($('aCan'))$('aCan').onclick=function(){cancelDraft();acts();draw();};
+    if($('aFin'))$('aFin').onclick=function(){var s={ad:'',etap:0,p:draft};D.sc[cur].shapes.push(s);cancelDraft();save();sel={t:'shp',o:s};acts();draw();shapeSheet(s,true);};
+  }
+  function cancelDraft(){draft=null;document.body.classList.remove('drafting');}
+
+  // --- dokunma: bina modunda köşe ekle ---
+  var down=null,pano=$('pano');
+  pano.addEventListener('pointerdown',function(e){down={x:e.clientX,y:e.clientY,t:Date.now()};},true);
+  pano.addEventListener('pointerup',function(e){
+    if(!down)return;var dx=e.clientX-down.x,dy=e.clientY-down.y,tap=dx*dx+dy*dy<64&&Date.now()-down.t<600;down=null;
+    if(!tap)return;
+    if(mode==='bina'&&draft){draft.push(unproj(e.clientX,e.clientY));acts();draw();}
+    else if(sel){sel=null;closeSheet();draw();}
+  },true);
+
+  // --- çizim ---
+  var ov=$('ov'),lay=$('lay');
+  function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  // yapı değişince öğeler yeniden kurulur, her karede yalnızca konumları güncellenir
+  var NS='http://www.w3.org/2000/svg',els=null;
+  function mk(tag,cls,parent,svg){var e=svg?document.createElementNS(NS,tag):document.createElement(tag);if(cls)e.setAttribute('class',cls);parent.appendChild(e);return e;}
+  function draw(){
+    var S=D.sc[cur];ov.innerHTML='';lay.innerHTML='';els={shp:[],pin:[],vx:[],dr:null,dv:[]};
+    S.shapes.forEach(function(s,i){
+      var isSel=sel&&sel.o===s,g={s:s,poly:mk('polygon','shp'+(isSel?' sel':''),ov,1),txt:null,vx:[]};
+      g.poly.setAttribute('style','--c:'+col(s.etap));g.poly.dataset.i=i;
+      var lb=(s.ad||'')+(s.etap?(s.ad?' · ':'')+s.etap+'. Etap':'');if(lb){g.txt=mk('text','',ov,1);g.txt.textContent=lb;}
+      if(isSel&&mode==='bina')s.p.forEach(function(q,j){var d=mk('div','vx',lay);d.dataset.v=j;g.vx.push(d);});
+      els.shp.push(g);
+    });
+    if(draft){els.dr=mk('polygon','dr',ov,1);draft.forEach(function(){els.dv.push(mk('div','vx d',lay));});}
+    S.pins.forEach(function(p,i){var d=mk('div','pin'+(sel&&sel.o===p?' sel':''),lay);d.dataset.p=i;d.style.setProperty('--c',col(p[2]));
+      d.textContent=p[2]||'?';var ad=D.etap[p[2]];if(ad){var t=mk('i','',d);t.textContent=ad;}els.pin.push({p:p,el:d});});
+    place();
+  }
+  function pos(e,q,ox,oy){if(!q){e.style.display='none';return;}e.style.display='';e.style.left=(q[0]+(ox||0))+'px';e.style.top=(q[1]+(oy||0))+'px';}
+  function place(){
+    if(!els)return;
+    els.shp.forEach(function(g){var pts=g.s.p.map(function(q){return proj(q[0],q[1]);}),ok=pts.every(Boolean);
+      g.poly.style.display=ok?'':'none';if(g.txt)g.txt.style.display=ok?'':'none';
+      if(!ok){g.vx.forEach(function(d){d.style.display='none';});return;}
+      g.poly.setAttribute('points',pts.map(function(q){return q[0].toFixed(1)+','+q[1].toFixed(1);}).join(' '));
+      if(g.txt){var cx=0,cy=0;pts.forEach(function(q){cx+=q[0];cy+=q[1];});g.txt.setAttribute('x',(cx/pts.length).toFixed(1));g.txt.setAttribute('y',(cy/pts.length).toFixed(1));}
+      g.vx.forEach(function(d,j){if(!(drag&&drag.el===d))pos(d,pts[j]);});});
+    if(els.dr){var dp=draft.map(function(q){return proj(q[0],q[1]);});els.dr.setAttribute('points',dp.filter(Boolean).map(function(q){return q.join(',');}).join(' '));
+      els.dv.forEach(function(d,j){pos(d,dp[j]);});}
+    els.pin.forEach(function(o){if(!(drag&&drag.el===o.el))pos(o.el,proj(o.p[0],o.p[1]),OX,OY);});
+  }
+  (function loop(){place();requestAnimationFrame(loop);})();
+
+  // --- sürükleme: etap pini ve bina köşeleri ---
+  lay.addEventListener('pointerdown',function(e){
+    var t=e.target.closest('.pin,.vx');if(!t)return;e.preventDefault();e.stopPropagation();
+    var o,kind;
+    if(t.classList.contains('pin')){if(mode!=='etap')return;o=D.sc[cur].pins[+t.dataset.p];kind='pin';}
+    else{o=sel.o.p[+t.dataset.v];kind='vx';}
+    drag={o:o,k:kind,x:e.clientX,y:e.clientY,moved:false,el:t};t.classList.add('drag');try{t.setPointerCapture(e.pointerId);}catch(_){}
+  });
+  lay.addEventListener('pointermove',function(e){
+    if(!drag)return;var dx=e.clientX-drag.x,dy=e.clientY-drag.y;if(!drag.moved&&dx*dx+dy*dy<25)return;drag.moved=true;
+    var c=drag.k==='pin'?unproj(e.clientX-OX,e.clientY-OY):unproj(e.clientX,e.clientY);drag.o[0]=c[0];drag.o[1]=c[1];
+    drag.el.style.left=e.clientX+'px';drag.el.style.top=e.clientY+'px';
+  });
+  function endDrag(){if(!drag)return;var d=drag;drag=null;d.el.classList.remove('drag');
+    if(d.moved){save();}
+    else if(d.k==='pin'){sel={t:'pin',o:d.o};draw();pinSheet(d.o);}}
+  lay.addEventListener('pointerup',endDrag);lay.addEventListener('pointercancel',endDrag);
+  ov.addEventListener('click',function(e){var t=e.target.closest('.shp');if(!t||mode!=='bina'||draft)return;var s=D.sc[cur].shapes[+t.dataset.i];sel={t:'shp',o:s};draw();shapeSheet(s);});
+
+  // --- düzenleme kartları ---
+  var sh=$('sheet');
+  function closeSheet(){sh.classList.remove('on');}
+  function etapOpts(n){var h='<option value="0">Seçilmedi</option>';for(var i=1;i<=19;i++)h+='<option value="'+i+'"'+(+n===i?' selected':'')+'>'+i+'. Etap</option>';return h;}
+  function pinSheet(p,isNew){
+    sh.innerHTML='<h3>'+(isNew?'Yeni etap numarası':'Etap numarası')+'</h3>'+
+      '<label for="fN">Etap</label><select id="fN">'+etapOpts(p[2])+'</select>'+
+      '<label for="fA">Etap adı (isteğe bağlı, her açıda görünür)</label><input id="fA" placeholder="Örn. Nidapark" value="'+esc(D.etap[p[2]]||'')+'">'+
+      '<p>Yerini değiştirmek için kartı kapatıp numarayı sürükleyin.</p>'+
+      '<div class="btns"><button type="button" class="del" id="bDel">Sil</button><button type="button" id="bCl">Kapat</button><button type="button" class="pri" id="bOk">Kaydet</button></div>';
+    sh.classList.add('on');
+    $('fN').onchange=function(){$('fA').value=D.etap[$('fN').value]||'';};
+    $('bOk').onclick=function(){p[2]=+$('fN').value;var a=$('fA').value.trim();if(p[2]){if(a)D.etap[p[2]]=a;else delete D.etap[p[2]];}save();closeSheet();sel=null;draw();toast('Kaydedildi');};
+    $('bCl').onclick=function(){closeSheet();sel=null;draw();};
+    $('bDel').onclick=function(){var a=D.sc[cur].pins;a.splice(a.indexOf(p),1);save();closeSheet();sel=null;draw();toast('Silindi');};
+  }
+  function shapeSheet(s,isNew){
+    sh.innerHTML='<h3>'+(isNew?'Yeni bina / blok':'Bina / blok')+'</h3>'+
+      '<label for="fB">Bina / blok adı</label><input id="fB" placeholder="Örn. A Blok" value="'+esc(s.ad)+'">'+
+      '<label for="fE">Hangi etap</label><select id="fE">'+etapOpts(s.etap)+'</select>'+
+      '<p>Köşeleri düzeltmek için kartı kapatıp beyaz noktaları sürükleyin.</p>'+
+      '<div class="btns"><button type="button" class="del" id="bDel">Sil</button><button type="button" id="bCl">Kapat</button><button type="button" class="pri" id="bOk">Kaydet</button></div>';
+    sh.classList.add('on');setTimeout(function(){if(isNew)$('fB').focus();},300);
+    $('bOk').onclick=function(){s.ad=$('fB').value.trim();s.etap=+$('fE').value;save();closeSheet();draw();toast('Kaydedildi');};
+    $('bCl').onclick=function(){closeSheet();draw();};
+    $('bDel').onclick=function(){var a=D.sc[cur].shapes;a.splice(a.indexOf(s),1);save();closeSheet();sel=null;draw();toast('Silindi');};
+  }
+  function json(){return JSON.stringify(D);}
+  function sendSheet(){
+    var nP=0,nS=0;D.sc.forEach(function(s){nP+=s.pins.length;nS+=s.shapes.length;});
+    sh.innerHTML='<h3>Düzenlemeyi gönder</h3><p>7 açıda toplam <b>'+nP+'</b> etap numarası ve <b>'+nS+'</b> bina/blok var. Değişiklikler bu cihazda saklanıyor.</p>'+
+      '<p>Siteye işlenmesi için dosyayı paylaşın ya da indirip Claude\'a gönderin (duzen.json).</p>'+
+      '<div class="btns"><button type="button" class="pri" id="bSh">Paylaş / indir</button><button type="button" id="bCp">Kopyala</button></div>'+
+      '<div class="btns"><button type="button" class="del" id="bRs" style="flex:1">Baştan başla</button><button type="button" id="bCl">Kapat</button></div>';
+    sh.classList.add('on');
+    $('bSh').onclick=function(){
+      var blob=new Blob([JSON.stringify(D,null,1)],{type:'application/json'}),f;
+      try{f=new File([blob],'duzen.json',{type:'application/json'});}catch(e){}
+      if(f&&navigator.canShare&&navigator.canShare({files:[f]})){navigator.share({files:[f],title:'Vaziyet planı düzeni'}).catch(function(){});return;}
+      var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='duzen.json';document.body.appendChild(a);a.click();a.remove();toast('duzen.json indirildi');};
+    $('bCp').onclick=function(){(navigator.clipboard?navigator.clipboard.writeText(json()):Promise.reject()).then(function(){toast('Kopyalandı');},function(){toast('Kopyalanamadı');});};
+    $('bRs').onclick=function(){if(!confirm('Tüm düzenlemeler silinip resmi konumlara dönülsün mü?'))return;D=fresh();save();closeSheet();sel=null;draw();toast('Baştan başlandı');};
+    $('bCl').onclick=closeSheet;
+  }
+  var tt;function toast(m){var t=$('toast');t.textContent=m;t.classList.add('on');clearTimeout(tt);tt=setTimeout(function(){t.classList.remove('on');},1800);}
+  acts();
+})();
+</script>
+</body>
+</html>
