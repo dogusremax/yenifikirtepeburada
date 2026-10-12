@@ -14,6 +14,10 @@ body{background:var(--bg);color:var(--fg);font-family:var(--font);overflow:hidde
 .bar button{font:600 14px/1 var(--font);letter-spacing:.02em;color:var(--fg);background:none;border:0;border-radius:999px;padding:11px 20px;cursor:pointer}
 .bar button[aria-pressed="true"]{background:var(--on);color:var(--onfg)}
 .bar button:focus-visible{outline:2px solid var(--on);outline-offset:2px}
+.scn{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(76px + env(safe-area-inset-bottom,0px));display:flex;gap:6px;padding:4px;border-radius:999px;background:var(--chip);border:1px solid var(--line);backdrop-filter:blur(8px)}
+.scn button{font:600 14px/1 var(--font);color:var(--fg);background:none;border:0;border-radius:999px;width:38px;height:38px;cursor:pointer}
+.scn button[aria-pressed="true"]{background:var(--fg);color:var(--bg)}
+.scn button:focus-visible{outline:2px solid var(--on);outline-offset:2px}
 .hint{position:fixed;top:calc(16px + env(safe-area-inset-top,0px));left:16px;right:16px;text-align:center;font:500 13px/1.4 var(--font);opacity:.85;pointer-events:none;transition:opacity .6s}
 .hint.off{opacity:0}
 #load{position:fixed;inset:0;display:grid;place-items:center;font:500 14px var(--font);pointer-events:none}
@@ -22,7 +26,8 @@ body{background:var(--bg);color:var(--fg);font-family:var(--font);overflow:hidde
 </head><body>
 <div id="v"></div>
 <div id="load">Yükleniyor…</div>
-<div class="hint" id="hint">Sahne 1 · Sürükleyerek çevirin, iki parmakla yakınlaştırın</div>
+<nav class="scn" id="scn" aria-label="Sahneler"></nav>
+<div class="hint" id="hint">Sürükleyerek çevirin, iki parmakla yakınlaştırın</div>
 <div class="bar" role="group" aria-label="Gündüz ve gece">
   <button id="bd" type="button" aria-pressed="false">Gündüz</button>
   <button id="bn" type="button" aria-pressed="true">Gece</button>
@@ -46,15 +51,20 @@ body{background:var(--bg);color:var(--fg);font-family:var(--font);overflow:hidde
   var lp=gl.getAttribLocation(pr,'p');gl.enableVertexAttribArray(lp);gl.vertexAttribPointer(lp,2,gl.FLOAT,false,0,0);
   var U={};['A','B','m','yaw','pit','tf','asp'].forEach(function(k){U[k]=gl.getUniformLocation(pr,k);});
   gl.uniform1i(U.A,0);gl.uniform1i(U.B,1);
-  var n=0;
-  function tex(unit,f){var t=gl.createTexture();gl.activeTexture(gl.TEXTURE0+unit);gl.bindTexture(gl.TEXTURE_2D,t);
+  // sahneler: assets/vr/gece-deneme/sN/{gunduz,gece}-{4k,8k}.jpg
+  var SCN=[1,2,3],cur=0,T=[0,1].map(function(unit){var t=gl.createTexture();gl.activeTexture(gl.TEXTURE0+unit);gl.bindTexture(gl.TEXTURE_2D,t);
     gl.texImage2D(gl.TEXTURE_2D,0,gl.RGB,1,1,0,gl.RGB,gl.UNSIGNED_BYTE,new Uint8Array([11,16,32]));
     gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.REPEAT);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
-    var im=new Image();im.onload=function(){gl.activeTexture(gl.TEXTURE0+unit);gl.bindTexture(gl.TEXTURE_2D,t);
-      gl.texImage2D(gl.TEXTURE_2D,0,gl.RGB,gl.RGB,gl.UNSIGNED_BYTE,im);if(++n===2)document.getElementById('load').hidden=true;};
-    im.onerror=function(){document.getElementById('load').textContent='Görüntü yüklenemedi.';};im.src='assets/vr/gece-deneme/'+f+'-'+sz+'.jpg';}
-  tex(0,'gunduz');tex(1,'gece');
+    gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.REPEAT);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);return t;});
+  function scene(i){cur=i;var k=SCN[i],n=0,ld=document.getElementById('load');ld.textContent='Yükleniyor…';ld.hidden=false;
+    document.querySelectorAll('.scn button').forEach(function(b,j){b.setAttribute('aria-pressed',j===i);});
+    ['gunduz','gece'].forEach(function(f,unit){var im=new Image();
+      im.onload=function(){if(cur!==i)return;gl.activeTexture(gl.TEXTURE0+unit);gl.bindTexture(gl.TEXTURE_2D,T[unit]);
+        gl.texImage2D(gl.TEXTURE_2D,0,gl.RGB,gl.RGB,gl.UNSIGNED_BYTE,im);if(++n===2)ld.hidden=true;};
+      im.onerror=function(){ld.textContent='Görüntü yüklenemedi.';};im.src='assets/vr/gece-deneme/s'+k+'/'+f+'-'+sz+'.jpg';});}
+  var nav=document.getElementById('scn');SCN.forEach(function(k,i){var b=document.createElement('button');b.type='button';b.textContent=k;
+    b.setAttribute('aria-label','Sahne '+k);b.onclick=function(){scene(i);};nav.appendChild(b);});
+  scene(0);
   var isNight=true,mix=1,lon=0,lat=-12,fov=75;
   function set(v){isNight=v;document.getElementById('bn').setAttribute('aria-pressed',v);document.getElementById('bd').setAttribute('aria-pressed',!v);}
   document.getElementById('bn').onclick=function(){set(true)};document.getElementById('bd').onclick=function(){set(false)};
