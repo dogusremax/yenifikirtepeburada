@@ -155,6 +155,11 @@
   <img class="logo" src="assets/dogus-logo.png?v=4" alt="RE/MAX Doğuş">
 </div>
 
+<button class="tgl" id="tgl" type="button" aria-pressed="false" aria-label="Gündüz ve gece görünümü arasında geçiş yap">
+  <span class="d"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="4.5"/><path d="M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3M4.6 4.6l2.1 2.1M17.3 17.3l2.1 2.1M4.6 19.4l2.1-2.1M17.3 6.7l2.1-2.1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Gündüz</span>
+  <span class="m"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 14.6A8.5 8.5 0 0 1 9.4 3.5a8.5 8.5 0 1 0 11.1 11.1z"/></svg>Gece</span>
+</button>
+
 <div class="hint" id="hint">Sürükleyerek çevirin · Etap numarasına dokunun</div>
 
 <nav class="scenes" id="scenes" aria-label="Bakış noktaları"></nav>
@@ -188,7 +193,7 @@
   function goEl(div,a){div.classList.add('go');div.title=NAMES[a[0]-1];div.innerHTML=EYE;}
 
   // gece: her sahnenin gece karoları assets/vr/sNn (tools/vr/night_tiles.py)
-  var night=false; // gece görünümü şimdilik kapalı (Umut beğenmedi), karolar assets/vr/sNn
+  var night=/[?&]gece=1/.test(location.search);
   var scenes={};
   ['','n'].forEach(function(nx){SC.forEach(function(s,i){
     var k=i+1,hs=[];
@@ -216,6 +221,8 @@
     var id=sid(cur+1);if(v.getScene()!==id)v.loadScene(id,v.getPitch(),v.getYaw(),v.getHfov());
     try{history.replaceState(null,'',on?'?gece=1':location.pathname);}catch(e){}
   }
+  document.body.classList.toggle('night',night);$('tgl').setAttribute('aria-pressed',night);
+  $('tgl').onclick=function(){setNight(!night);};
   v.on('mousedown',function(){$('hint').classList.add('off');});
   v.on('touchstart',function(){$('hint').classList.add('off');});
   setTimeout(function(){$('hint').classList.add('off');},5000);
