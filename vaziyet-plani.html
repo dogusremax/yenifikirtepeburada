@@ -51,7 +51,7 @@
   .logo{height:34px;width:auto;border-radius:8px;background:#fff;padding:4px 8px}
 
   /* etap pini: resmi VR'daki görünür konumla aynı olsun diye noktanın 20/25 px sağ altında durur */
-  .pin{width:30px;height:30px;margin:25px 0 0 20px;border-radius:50%;background:var(--navy);color:#fff;
+  .pin{width:30px;height:30px;margin:0;border-radius:50%;background:var(--navy);color:#fff;
     border:2px solid #fff;box-shadow:0 2px 10px rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;
     font-weight:800;font-size:13px;cursor:pointer;transition:background .15s,box-shadow .15s}
   .pin{border-color:var(--c,#fff)}
@@ -261,7 +261,6 @@
     var f=(W/2)/Math.tan(h*Math.PI/360),cx=W/2,cy=H/2;
     if(mob)cy=H*.34;                             // kart etabın altında açılır
     else cx=W/2-card.offsetWidth*.55;            // kart etabın sağında açılır
-    cx-=20;cy-=25;                               // pin noktanın 20/25 px sağ altında görünüyor
     var dy=Math.atan((cx-W/2)/f)*180/Math.PI,dp=Math.atan((H/2-cy)/f)*180/Math.PI;
     v.lookAt(Math.max(-90,pitch-dp),yaw-dy,h,900);
   }
@@ -339,12 +338,20 @@
   var DZ=null,HL=0,svg=null;
   fetch('assets/vr/duzen.json?cb='+Date.now(),{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(j){
     if(!j||!j.sc||j.sc.length!==SC.length)return;DZ=j;
+    if(v.isLoaded())applyDZ();else{var o=function(){v.off('load',o);applyDZ();};v.on('load',o);}  // sahne yüklenmeden değiştirilirse eski numaralar kalıyor
+  }).catch(function(){});
+  function applyDZ(){
     SC.forEach(function(s,i){['','n'].forEach(function(nx){var id='s'+(i+1)+nx;
       s.e.forEach(function(e,q){try{v.removeHotSpot('e'+q,id);}catch(_){}});
       DZ.sc[i].pins.forEach(function(pn,q){if(!pn[2])return;v.addHotSpot({id:'e'+q,yaw:pn[0],pitch:pn[1],cssClass:'etaphs',createTooltipFunc:pinEl,createTooltipArgs:[pn[2]],
         clickHandlerFunc:function(){open(pn[2],pn[0],pn[1]);}},id);});});});
-    paint();
-  }).catch(function(){});
+    prune();paint();
+  }
+  // sahne yüklenmeden düzen gelirse eski/çift numaralar ekranda kalabiliyor: geçerli sahnede olmayan numaraları sil
+  function prune(){var c=v.getConfig(),keep=(c.hotSpots||[]).map(function(h){return h.div;});
+    [].forEach.call(document.querySelectorAll('.etaphs'),function(d){if(keep.indexOf(d)<0&&d.parentNode)d.parentNode.removeChild(d);});
+    if(sel)mark(sel);}
+  v.on('load',prune);
   // diğer sayfalardan vaziyet-plani.html#etap-N ile gelinirse: o etabın göründüğü bakış noktasını açıp kartını göster
   var HQ=0;
   function openHash(){
