@@ -107,7 +107,7 @@
   if(!D||!D.sc||D.sc.length!==SC.length)D=fresh();
   function save(){try{localStorage.setItem(KEY,JSON.stringify(D));}catch(e){} $('st').textContent='Kaydedildi '+new Date().toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'});}
   // daha önce gönderilmiş düzen dosyası varsa onunla başla
-  if(fromFile)fetch('assets/vr/duzen.json?cb='+Date.now(),{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(j){if(j&&j.sc&&j.sc.length===SC.length){D=j;draw();}}).catch(function(){});
+  if(fromFile)fetch('assets/vr/duzen-onizleme.json?cb='+Date.now(),{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(j){if(j&&j.sc&&j.sc.length===SC.length){D=j;draw();}}).catch(function(){});
 
   function hfov(v){var a=innerWidth/innerHeight,h=2*Math.atan(Math.tan(v*Math.PI/360)*a)*180/Math.PI;return Math.max(40,Math.min(120,h));}
   var scenes={};

@@ -150,21 +150,6 @@
   .tgl svg{width:14px;height:14px}
   .night .tgl::before{transform:translateX(100%);background:var(--coral)}
   .night .tgl span.d{color:rgba(255,255,255,.8)}.night .tgl span.m{color:#fff}
-  /* mini harita: bakış noktaları ve bakış yönü */
-  .mini{position:fixed;z-index:5;left:16px;top:calc(64px + env(safe-area-inset-top));width:270px;border-radius:14px;overflow:hidden;
-    background:rgba(5,10,48,.72);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);box-shadow:0 8px 24px rgba(0,0,0,.35);transition:opacity .3s}
-  .mini .hd{display:flex;align-items:center;justify-content:space-between;width:100%;border:0;background:none;color:#fff;font:inherit;
-    padding:6px 10px;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;cursor:pointer}
-  .mini .hd i{font-style:normal;transition:transform .3s}
-  .mini svg{display:block;width:100%;height:auto}
-  .mini.min svg{display:none}.mini.min .hd i{transform:rotate(180deg)}
-  .mini .cam{cursor:pointer}
-  .mini .cam circle{fill:#fff;stroke:var(--navy);stroke-width:10}
-  .mini .cam text{fill:var(--navy);font-weight:800;font-size:96px;text-anchor:middle;dominant-baseline:central;pointer-events:none}
-  .mini .cam.on circle{fill:var(--coral)}.mini .cam.on text{fill:#fff}
-  .mini .cone{fill:url(#mcg);pointer-events:none}
-  @media (max-width:767px){.mini{left:10px;width:46vw;max-width:210px;top:calc(60px + env(safe-area-inset-top))}}
-  body.carded .mini{opacity:.35}
 </style>
 </head>
 <body>
@@ -180,16 +165,6 @@
   <span class="d"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="4.5"/><path d="M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3M4.6 4.6l2.1 2.1M17.3 17.3l2.1 2.1M4.6 19.4l2.1-2.1M17.3 6.7l2.1-2.1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Gündüz</span>
   <span class="m"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 14.6A8.5 8.5 0 0 1 9.4 3.5a8.5 8.5 0 1 0 11.1 11.1z"/></svg>Gece</span>
 </button>
-
-<div class="mini" id="mini">
-  <button class="hd" type="button" id="mhd" aria-expanded="true"><span>Bakış noktaları</span><i>▾</i></button>
-  <svg viewBox="-20 40 1880 880" role="img" aria-label="Bakış noktaları haritası">
-    <defs><radialGradient id="mcg" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="scale(560)"><stop offset="0" stop-color="#FB5160" stop-opacity=".85"/><stop offset="1" stop-color="#FB5160" stop-opacity="0"/></radialGradient></defs>
-    <rect x="-20" y="40" width="1880" height="880" fill="#0b1442"/>
-    <image href="assets/vr/plan.jpg" x="100" y="140" width="1633" height="770" preserveAspectRatio="none" opacity=".9"/>
-    <path class="cone" id="mcone"/><g id="mcam"></g>
-  </svg>
-</div>
 
 <div class="hint" id="hint">Sürükleyerek çevirin · Etap numarasına dokunun</div>
 
@@ -342,7 +317,7 @@
 
   // Umut'un düzenleme sayfasında (vaziyet-duzenle.html) yaptığı düzen: pin yerleri ve etaplara bağlı bloklar
   var DZ=null,HL=0,svg=null;
-  fetch('assets/vr/duzen.json?cb='+Date.now(),{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(j){
+  fetch('assets/vr/duzen-onizleme.json?cb='+Date.now(),{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(j){
     if(!j||!j.sc||j.sc.length!==SC.length)return;DZ=j;
     SC.forEach(function(s,i){['','n'].forEach(function(nx){var id='s'+(i+1)+nx;
       s.e.forEach(function(e,q){try{v.removeHotSpot('e'+q,id);}catch(_){}});
@@ -350,19 +325,6 @@
         clickHandlerFunc:function(){open(pn[2],pn[0],pn[1]);}},id);});});});
     paint();
   }).catch(function(){});
-  // mini harita: noktalar kuş bakışı planda (x, y, kuzey açısı); koni o anki bakış yönü
-  var CAM=[[218,-85,-159.77],[-411,933,-89.67],[706,1024,-63.93],[1743,1164,381.48],[1798,166,91.37],[1038,76,118.21],[1057,647,47.89]],MKEY='';
-  (function(){var g=$('mcam');CAM.forEach(function(c,i){var x=Math.max(60,Math.min(1780,c[0])),y=Math.max(120,Math.min(860,c[1]));
-    var e=document.createElementNS('http://www.w3.org/2000/svg','g');e.setAttribute('class','cam');e.setAttribute('data-k',i+1);e.setAttribute('transform','translate('+x+' '+y+')');
-    e.innerHTML='<circle r="78"/><text>'+(i<6?i+1:'T')+'</text>';e.addEventListener('click',function(){if(sel)close();if(v.getScene()!==sid(i+1))v.loadScene(sid(i+1));});g.appendChild(e);});
-    $('mhd').onclick=function(){var m=$('mini').classList.toggle('min');$('mhd').setAttribute('aria-expanded',!m);};
-  })();
-  function miniTick(){var c=CAM[cur],yaw=v.getYaw(),hf=v.getHfov(),k=cur+':'+yaw.toFixed(1)+':'+hf.toFixed(1);if(k===MKEY)return;MKEY=k;
-    [].forEach.call($('mcam').children,function(e){e.classList.toggle('on',+e.getAttribute('data-k')===cur+1);});
-    var x=Math.max(60,Math.min(1780,c[0])),y=Math.max(120,Math.min(860,c[1])),th=yaw-c[2],R=560,r=Math.PI/180,a0=(th-hf/2)*r,a1=(th+hf/2)*r;
-    $('mcone').setAttribute('transform','translate('+x+' '+y+')');
-    $('mcone').setAttribute('d','M0 0L'+(R*Math.sin(a0)).toFixed(1)+' '+(-R*Math.cos(a0)).toFixed(1)+'A'+R+' '+R+' 0 0 1 '+(R*Math.sin(a1)).toFixed(1)+' '+(-R*Math.cos(a1)).toFixed(1)+'Z');}
-
   // diğer sayfalardan vaziyet-plani.html#etap-N ile gelinirse: o etabın göründüğü bakış noktasını açıp kartını göster
   var HQ=0;
   function openHash(){
@@ -422,15 +384,14 @@
         PS.forEach(function(P){var A=0;for(var j=0;j<P.length;j++){var a=P[j],b=P[(j+1)%P.length];A+=a[0]*b[1]-b[0]*a[1];}
           var Q=A>0?P.slice().reverse():P;dd+='M'+Q.map(function(q){return q[0].toFixed(1)+' '+q[1].toFixed(1);}).join('L')+'Z';});
         EL.dim.setAttribute('d',dd);
-        var h=Math.max(1,y1-y0);
-        if(FX===1){EL.dim.setAttribute('opacity',.62*ez);EL.fill.setAttribute('y',y0);EL.fill.setAttribute('height',h);EL.fill.setAttribute('opacity',ez*(.3+.2*pu));}
-        else if(FX===2){EL.dim.setAttribute('opacity',.4*ez);EL.fill.setAttribute('y',y0);EL.fill.setAttribute('height',h);EL.fill.setAttribute('opacity',.22*ez);
+        var h=Math.max(1,y1-y0),dk=PS.length?1:0;
+        if(FX===1){EL.dim.setAttribute('opacity',.62*ez*dk);EL.fill.setAttribute('y',y0);EL.fill.setAttribute('height',h);EL.fill.setAttribute('opacity',ez*(.3+.2*pu));}
+        else if(FX===2){EL.dim.setAttribute('opacity',.4*ez*dk);EL.fill.setAttribute('y',y0);EL.fill.setAttribute('height',h);EL.fill.setAttribute('opacity',.22*ez);
           var bh=Math.max(60,h*.45),ph=(t%2.4)/2.4;EL.band.setAttribute('height',bh);EL.band.setAttribute('y',(y1-(h+bh)*ph).toFixed(1));EL.band.setAttribute('opacity',ez);}
-        else{var r=1-Math.pow(1-Math.min(1,t/1.3),3);EL.dim.setAttribute('opacity',.62*ez);EL.fill.setAttribute('y',(y1-h*r).toFixed(1));EL.fill.setAttribute('height',(h*r+2).toFixed(1));EL.fill.setAttribute('opacity',(.32+(r>=1?.16*pu:0)).toFixed(3));}
+        else{var r=1-Math.pow(1-Math.min(1,t/1.3),3);EL.dim.setAttribute('opacity',.62*ez*dk);EL.fill.setAttribute('y',(y1-h*r).toFixed(1));EL.fill.setAttribute('height',(h*r+2).toFixed(1));EL.fill.setAttribute('opacity',(.32+(r>=1?.16*pu:0)).toFixed(3));}
       }
     }
     if(card.classList.contains('on'))place();
-    try{miniTick();}catch(_){}
     requestAnimationFrame(loop);
   })();
   // kartı etabın yanına yerleştir: geniş ekranda sağına (yer yoksa soluna), telefonda altına (yer yoksa üstüne)
