@@ -346,7 +346,7 @@
     // gerçek 3D modeli hazır olan planlarda "3D" sekmesi modeli açar (her yönden çevirme, yakınlaştırma)
     function hasModel(id){return (window.KAT3D_MODELS||[]).indexOf(id)>=0;}
     function model(id){$('lb3d').style.display='none';if(V3)V3.hide();
-      (M3p||(M3p=import('./assets/kat3d/model3d.js?v=1').then(function(m){M3=m.create($('lb3m'));return M3;}))).then(function(v){if(mode==='spin'&&lb.classList.contains('open'))v.show(id);});}
+      (M3p||(M3p=import('./assets/kat3d/model3d.js?v=4').then(function(m){M3=m.create($('lb3m'));return M3;}))).then(function(v){if(mode==='spin'&&lb.classList.contains('open'))v.show(id);});}
     $('lbseg').addEventListener('click',function(ev){var b=ev.target.closest('button');if(!b)return;mode=b.getAttribute('data-m');show(li);});
     function show(i){
       li=(i+list.length)%list.length;var e=ETAP[cur],r=list[li],src=file(e,r,true);

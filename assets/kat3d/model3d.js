@@ -3,6 +3,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from '../vendor/three/OrbitControls.js';
 import { GLTFLoader } from '../vendor/three/GLTFLoader.js';
+import { MeshoptDecoder } from '../vendor/three/meshopt_decoder.module.js';
 
 var css = '.m3d{position:relative;width:100%;height:100%;overflow:hidden;background:linear-gradient(180deg,#f7f8fc,#e9edf6);border-radius:14px;font-family:"Plus Jakarta Sans","Archivo",sans-serif;user-select:none;-webkit-user-select:none}' +
   '.m3d canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;cursor:grab}.m3d canvas:active{cursor:grabbing}' +
@@ -27,13 +28,13 @@ export function create(host) {
   var q = function (s) { return host.querySelector(s); };
   var cv = q('canvas'), L = q('.lbls');
   var R = new THREE.WebGLRenderer({ canvas: cv, antialias: true, alpha: true });
-  R.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2)); R.outputColorSpace = THREE.SRGBColorSpace;
+  R.setPixelRatio(Math.min(window.devicePixelRatio || 1, matchMedia('(pointer:coarse)').matches ? 1.5 : 2)); R.outputColorSpace = THREE.SRGBColorSpace;
   var scene = new THREE.Scene(), cam = new THREE.PerspectiveCamera(35, 1, 0.1, 300);
   var ctl = new OrbitControls(cam, cv);
   ctl.enableDamping = true; ctl.dampingFactor = 0.09; ctl.rotateSpeed = 0.75; ctl.enablePan = false;
   ctl.minPolarAngle = 0; ctl.maxPolarAngle = Math.PI * 0.42;   // zeminin altına inmesin
-  var st = { pid: null, root: null, labels: [], on: false, home: null, dirty: true, moved: false };
-  var loader = new GLTFLoader(), v3 = new THREE.Vector3(), ray = new THREE.Raycaster(), occT = 0;
+  var st = { rest: false, occ: false, still: 0, pid: null, root: null, labels: [], on: false, home: null, dirty: true, moved: false };
+  var loader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder), v3 = new THREE.Vector3(), ray = new THREE.Raycaster(), occT = 0;
 
   function size() {
     var w = host.clientWidth, h = host.clientHeight; if (!w || !h) return;
@@ -52,13 +53,12 @@ export function create(host) {
   function place() {
     var w = host.clientWidth, h = host.clientHeight, mob = w < 600, shown = [], now = performance.now();
     // duvarın arkasında kalan odanın etiketini gizle (ışın testi pahalı: en fazla 5 kez/sn)
-    if (st.root && now - occT > 200) {
-      occT = now;
+    if (st.root && st.rest && !st.occ) {
+      st.occ = true; st.rest = false; occT = now;
       st.labels.forEach(function (l) {
         var dir = v3.copy(l.p).sub(cam.position), d = dir.length(); ray.set(cam.position, dir.normalize()); ray.far = d - 0.05;
         l.hid = ray.intersectObject(st.root, true).some(function (x) { return !x.object.material.transparent; });
       });
-      setTimeout(function () { st.dirty = true; }, 210);
     }
     st.labels.forEach(function (l) { v3.copy(l.p).project(cam); l.x = (v3.x + 1) / 2 * w; l.y = (1 - v3.y) / 2 * h; l.ok = v3.z < 1; });
     st.labels.slice().sort(function (a, b) { return b.m - a.m; }).forEach(function (l) {
@@ -71,10 +71,15 @@ export function create(host) {
   function loop() {
     requestAnimationFrame(loop);
     if (!st.on) return;
-    if (ctl.update() || st.dirty) { st.dirty = false; R.render(scene, cam); place(); }
+    var moved = ctl.update();
+    if (moved) st.occ = false;
+    // parmak/mouse bırakılınca en fazla 2.5 kez/sn duvar arkası etiket testi (sürüklerken yapılmaz: telefonda takılmasın)
+    if (!st.occ && !st.drag && performance.now() - occT > 400) { st.rest = true; st.dirty = true; }
+    if (moved || st.dirty) { st.dirty = false; R.render(scene, cam); place(); }
   }
   ctl.addEventListener('change', function () { st.dirty = true; });
-  ctl.addEventListener('start', function () { q('.hint').style.opacity = 0; if (!st.moved) { st.moved = true; track('kat_plani3d_model_cevir', { plan: st.pid }); } });
+  ctl.addEventListener('end', function () { st.drag = false; });
+  ctl.addEventListener('start', function () { st.drag = true; q('.hint').style.opacity = 0; if (!st.moved) { st.moved = true; track('kat_plani3d_model_cevir', { plan: st.pid }); } });
   q('.rst').onclick = function () { if (!st.home) return; cam.position.copy(st.home.p); ctl.target.copy(st.home.t); ctl.update(); st.dirty = true; };
   window.addEventListener('resize', size);
   if (window.ResizeObserver) new ResizeObserver(size).observe(host);
@@ -82,7 +87,7 @@ export function create(host) {
 
   function load(pid) {
     if (st.pid === pid) return;
-    st.pid = pid; st.moved = false; q('.hint').style.opacity = 1;
+    st.pid = pid; st.moved = false; st.rest = false; st.occ = false; st.still = 0; q('.hint').style.opacity = 1;
     if (st.root) { scene.remove(st.root); st.root.traverse(function (o) { if (o.isMesh) { o.geometry.dispose(); if (o.material.map) o.material.map.dispose(); o.material.dispose(); } }); st.root = null; }
     L.innerHTML = ''; st.labels = []; q('.ld').style.display = 'flex'; q('.ldb').style.width = '0%';
     var dir = 'assets/kat3d/' + pid + '/';
