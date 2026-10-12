@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow"><title>3D Kat Planı Deneme · Yeni Fikirtepe</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}html,body{margin:0;height:100%;background:#050A30;font-family:"Plus Jakarta Sans",sans-serif;color:#fff}
+.wrap{display:flex;flex-direction:column;height:100%;height:100dvh}
+header{padding:12px 16px 6px}h1{margin:0;font-size:1.05rem}header p{margin:4px 0 0;font-size:.8rem;color:#aab1cc}
+.list{display:flex;gap:8px;overflow-x:auto;padding:8px 16px 10px;scrollbar-width:none}.list::-webkit-scrollbar{display:none}
+.list button{flex:none;font:inherit;font-size:.8rem;font-weight:600;border:1px solid #2a3260;background:#0f1640;color:#fff;border-radius:10px;padding:7px 11px;cursor:pointer;text-align:left;line-height:1.25}
+.list button small{display:block;font-weight:500;color:#aab1cc;font-size:.7rem}
+.list button.on{background:#fff;color:#050A30;border-color:#fff}.list button.on small{color:#59607d}
+#v{flex:1;min-height:0;margin:0 8px 8px}#v.m3d{width:auto;height:auto}
+</style>
+<script type="importmap">{"imports":{"three":"./assets/vendor/three/three.module.min.js"}}</script>
+</head><body><div class="wrap">
+<header><h1>3D kat planı denemesi</h1><p>Daire seçin, sonra parmağınızla ya da mouse ile her yöne çevirin, yakınlaştırın.</p></header>
+<div class="list" id="list"></div><div id="v"></div></div>
+<script type="module">
+import { create } from './assets/kat3d/model3d.js?v=2';
+var D = [["2-01", "2. Etap", "2+1", "Tip E"], ["2-02", "2. Etap", "3+1", "Tip E"], ["2-03", "2. Etap", "3+1", "Tip C2"], ["2-04", "2. Etap", "4+1", "Tip A2-2"], ["3-01", "3. Etap", "1+1", "Tip 2A"], ["3-02", "3. Etap", "2+1", "Tip 1A"], ["3-03", "3. Etap", "2+1", "Tip B"], ["3-04", "3. Etap", "2+1", "Tip C"], ["11-01", "11. Etap", "1+1", "Tip Y1"], ["11-03", "11. Etap", "2+1", "Tip Y2"], ["11-05", "11. Etap", "3+1", "Tip Y1"], ["11-06", "11. Etap", "3+1", "Tip Y2"], ["11-07", "11. Etap", "4+1", "Tip C1"], ["11-c1", "11. Etap", "3+1", "Tip C1"], ["11-y1", "11. Etap", "2+1", "Tip Y1"], ["12-01", "12. Etap", "2+1", "Tip A"], ["12-02", "12. Etap", "3+1", "Tip A"], ["12-03", "12. Etap", "3+1", "Tip B1 A"], ["12-04", "12. Etap", "4+1", "Tip A"], ["19-01", "19. Etap", "3+1", "Tip 1A"], ["19-02", "19. Etap", "3+1", "Tip 2B"], ["19-03", "19. Etap", "4+1", "Tip 1A"], ["19-04", "19. Etap", "5+1", "Tip 1A"]];
+var v = create(document.getElementById('v')), list = document.getElementById('list');
+function pick(id) {
+  [].forEach.call(list.children, function (b) { var on = b.dataset.id === id; b.classList.toggle('on', on); if (on) b.scrollIntoView({ inline: 'center', block: 'nearest' }); });
+  v.show(id); history.replaceState(null, '', '#' + id);
+}
+D.forEach(function (d) {
+  var b = document.createElement('button'); b.dataset.id = d[0]; b.innerHTML = d[1] + ' · ' + d[2] + '<small>' + d[3] + '</small>';
+  b.onclick = function () { pick(d[0]); }; list.appendChild(b);
+});
+var h = location.hash.slice(1);
+pick(D.some(function (d) { return d[0] === h; }) ? h : D[0][0]);
+</script></body></html>
