@@ -132,6 +132,9 @@
   .hint{position:fixed;z-index:4;left:50%;top:50%;transform:translate(-50%,-50%);background:rgba(5,10,48,.78);padding:10px 16px;border-radius:12px;
     font-size:13px;font-weight:600;pointer-events:none;transition:opacity .5s}
   .hint.off{opacity:0}
+  .hlsvg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+  .hlsvg polygon{fill-opacity:.38;stroke-width:2.5;stroke-linejoin:round;animation:hlp 1.6s ease-in-out infinite alternate}
+  @keyframes hlp{from{fill-opacity:.22}to{fill-opacity:.5}}
   /* gündüz / gece */
   .tgl{position:fixed;z-index:5;right:16px;top:calc(62px + env(safe-area-inset-top));display:flex;background:rgba(5,10,48,.55);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
     border-radius:999px;padding:3px;border:0;cursor:pointer;font:inherit}
@@ -190,7 +193,7 @@
   ['','n'].forEach(function(nx){SC.forEach(function(s,i){
     var k=i+1,hs=[];
     s.l.forEach(function(l){hs.push({yaw:l[0],pitch:l[1],type:'scene',sceneId:'s'+l[2]+nx,cssClass:'gohs',createTooltipFunc:goEl,createTooltipArgs:[l[2]]});});
-    s.e.forEach(function(e){hs.push({yaw:e[0],pitch:e[1],cssClass:'etaphs',createTooltipFunc:pinEl,createTooltipArgs:[e[2]],clickHandlerFunc:function(){open(e[2],e[0],e[1]);}});});
+    s.e.forEach(function(e,j){hs.push({id:'e'+j,yaw:e[0],pitch:e[1],cssClass:'etaphs',createTooltipFunc:pinEl,createTooltipArgs:[e[2]],clickHandlerFunc:function(){open(e[2],e[0],e[1]);}});});
     scenes['s'+k+nx]={type:'multires',multiRes:{basePath:'assets/vr/s'+k+nx,path:'/%l/%s%y_%x',fallbackPath:'/fb3k/%s',extension:'jpg',tileResolution:512,maxLevel:4,cubeResolution:4096},
       yaw:s.y,pitch:s.p,hfov:hfov(s.f),minHfov:20,maxHfov:120,hotSpots:hs};
   });});
@@ -293,13 +296,42 @@
     h+='<div class="acts"><a class="pri" href="teslim-takvimi.html#etap-'+hedef+'">'+(e.st==='ok'?'Etap ayrıntıları':'Teslim takvimi')+'</a><div class="row">'+
       (KAT.indexOf(n)>=0?'<a class="sec2" href="kat-planlari.html#etap-'+n+'">Kat planları</a>':'<a class="sec2" href="etaplar.html">Etap bilgisi</a>')+
       '<a class="wa" href="'+wa+'" target="_blank" rel="noopener" aria-label="WhatsApp"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="'+WAP+'"/></svg>WhatsApp</a></div></div>';
-    card.innerHTML=h;card.classList.add('on');card.scrollTop=0;document.body.classList.add('carded');
+    hl(n);card.innerHTML=h;card.classList.add('on');card.scrollTop=0;document.body.classList.add('carded');
     if(yaw!==undefined)zoomTo(yaw,pitch);
     countAll(card,250);
     var vl=card.querySelector('.val');if(vl)setTimeout(function(){vl.style.width=vl.getAttribute('data-w')+'%';},60);
     $('cx').onclick=close;
   }
-  function close(){card.classList.remove('on');if(sel)home();sel=null;mark(0);}
+  function close(){card.classList.remove('on');if(sel)home();sel=null;mark(0);hl(0);}
+
+  // Umut'un düzenleme sayfasında (vaziyet-duzenle.html) yaptığı düzen: pin yerleri ve etaplara bağlı bloklar
+  var DZ=null,HL=0,svg=null;
+  fetch('assets/vr/duzen.json?cb='+Date.now(),{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(j){
+    if(!j||!j.sc||j.sc.length!==SC.length)return;DZ=j;
+    SC.forEach(function(s,i){['','n'].forEach(function(nx){var id='s'+(i+1)+nx;
+      s.e.forEach(function(e,q){try{v.removeHotSpot('e'+q,id);}catch(_){}});
+      DZ.sc[i].pins.forEach(function(pn,q){if(!pn[2])return;v.addHotSpot({id:'e'+q,yaw:pn[0],pitch:pn[1],cssClass:'etaphs',createTooltipFunc:pinEl,createTooltipArgs:[pn[2]],
+        clickHandlerFunc:function(){open(pn[2],pn[0],pn[1]);}},id);});});});
+    paint();
+  }).catch(function(){});
+  function proj(yaw,pitch){
+    var W=innerWidth,H=innerHeight,r=Math.PI/180,cp=v.getPitch()*r,cy=v.getYaw()*r,hf=v.getHfov()*r;
+    var ps=Math.sin(pitch*r),pc=Math.cos(pitch*r),yc=Math.cos(-yaw*r+cy),ys=Math.sin(-yaw*r+cy);
+    var z=ps*Math.sin(cp)+pc*yc*Math.cos(cp);if(z<=0)return null;var t=Math.tan(hf/2);
+    return [W/2-W/t*ys*pc/z/2,H/2-W/t*(ps*Math.cos(cp)-pc*yc*Math.sin(cp))/z/2];
+  }
+  // seçilen etabın blokları parlasın
+  function hl(n){HL=n;if(svg)svg.innerHTML='';}
+  (function loop(){
+    if(HL&&DZ){
+      if(!svg||!svg.isConnected){var rc=document.querySelector('#pano .pnlm-render-container');if(rc){svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.setAttribute('class','hlsvg');rc.insertBefore(svg,rc.querySelector('canvas').nextSibling);}}
+      if(svg){var h='',c=E[HL]?ST[E[HL].st][1]:'#FB5160';
+        (DZ.sc[cur].shapes||[]).forEach(function(sh){if(+sh.etap!==HL)return;var P=sh.p.map(function(q){return proj(q[0],q[1]);});if(P.some(function(q){return !q;}))return;
+          h+='<polygon points="'+P.map(function(q){return q[0].toFixed(1)+','+q[1].toFixed(1);}).join(' ')+'" style="fill:'+c+';stroke:'+c+'"/>';});
+        svg.innerHTML=h;}
+    }
+    requestAnimationFrame(loop);
+  })();
   addEventListener('keydown',function(e){if(e.key==='Escape')close();});
 })();
 </script>
