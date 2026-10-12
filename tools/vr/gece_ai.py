@@ -125,50 +125,138 @@ def night_sky(H, W, hor):
     """Tek parça gece göğü: ufukta şehir ışığı yansıyan sıcak pus, tepeye doğru koyu lacivert. hor: ufuk rengi (BGR)."""
     lat = 90 - (np.arange(H) + .5) / H * 180
     t = np.clip(lat / 35, 0, 1) ** .55
-    zen = np.array([38, 16, 6.]); mid = np.array([70, 36, 18.])
+    zen = np.array([62, 24, 10.]); mid = np.array([115, 60, 30.])  # mavi saat: tepe koyu lacivert
     col = np.where(t[:, None] < .25, hor * (1 - t[:, None] / .25) + mid * (t[:, None] / .25),
                    mid * (1 - (t[:, None] - .25) / .75) + zen * ((t[:, None] - .25) / .75))
     sky = np.repeat(col[:, None, :], W, 1).astype(np.float32)
     rng = np.random.default_rng(1); noise = cv2.resize(rng.normal(0, 1, (H // 64, W // 64)).astype(np.float32), (W, H), interpolation=cv2.INTER_CUBIC)
     return sky * (1 + noise[..., None] * .025)            # çok hafif bulut/pus dokusu, düz bant görünmesin
 
+def _project(night, f, W, H, n, r0=0, r1=None):
+    """Yüz görüntüsünü eşdikdörtgen panoramanın r0:r1 satırlarına yansıt; (görüntü, ağırlık) döndürür."""
+    r1 = H if r1 is None else r1
+    lon = (np.arange(W) + .5) / W * 2 * np.pi - np.pi; la = (np.pi / 2 - (np.arange(r0, r1) + .5) / H * np.pi)[:, None]
+    t = np.tan(np.radians(FOV / 2)); lo = lon[None, :]
+    d = np.stack([np.cos(la) * np.sin(lo), np.sin(la) * np.ones_like(lo), np.cos(la) * np.cos(lo)], -1) @ rot(*FACES[f])  # dünya -> yüz
+    z = d[..., 2]; ok = z > 1e-3
+    x = np.where(ok, d[..., 0] / np.maximum(z, 1e-3) / t, 9); y = np.where(ok, -d[..., 1] / np.maximum(z, 1e-3) / t, 9)
+    w = np.clip(1 - np.maximum(np.abs(x), np.abs(y)), 0, 1)              # tüm örtüşme boyunca yumuşak geçiş
+    px = ((x + 1) / 2 * n - .5).astype(np.float32); py = ((y + 1) / 2 * n - .5).astype(np.float32)
+    return cv2.remap(night, px, py, cv2.INTER_LINEAR, borderMode=cv2.BORDER_REFLECT).astype(np.float32), w.astype(np.float32)
+
+def _gains(nights, n, ground):
+    """Yüzler arası renk/parlaklık farkını gider: örtüşmelerde kanal başına kazanç (panorama dikiş yöntemi)."""
+    W, H = 1024, 512; fs = list(nights); P = {f: _project(cv2.resize(nights[f], (256, 256), interpolation=cv2.INTER_AREA), f, W, H, 256) for f in fs}
+    k = len(fs); g = np.ones((k, 3))
+    for c in range(3):
+        A = np.eye(k) * 50.; bb = np.ones(k) * 50.        # kazançlar 1'e yakın kalsın
+        for i in range(k):
+            for j in range(i + 1, k):
+                m = (P[fs[i]][1] > .05) & (P[fs[j]][1] > .05) & ground
+                if m.sum() < 50: continue
+                Ii = P[fs[i]][0][..., c][m].mean(); Ij = P[fs[j]][0][..., c][m].mean(); N = m.sum() / 1000.
+                A[i, i] += N * Ii * Ii / 1e3; A[j, j] += N * Ij * Ij / 1e3; A[i, j] -= N * Ii * Ij / 1e3; A[j, i] -= N * Ii * Ij / 1e3
+        g[:, c] = np.linalg.solve(A, bb)
+    print('kazançlar', {f: np.round(g[i], 3).tolist() for i, f in enumerate(fs)})
+    return {f: g[i] for i, f in enumerate(fs)}
+
+def _up(G, W, H, r0, r1):
+    gh, gw = G.shape[:2]
+    x = np.tile(((np.arange(W) + .5) * gw / W - .5).astype(np.float32), (r1 - r0, 1))
+    y = np.repeat(((np.arange(r0, r1) + .5) * gh / H - .5).astype(np.float32)[:, None], W, 1)
+    return cv2.remap(G, x, y, cv2.INTER_LINEAR, borderMode=cv2.BORDER_WRAP)
+
+def _blurw(a, sg):
+    """Yatayda sarmalı (360°) Gauss bulanıklığı."""
+    p = int(sg * 3); w = a.shape[1]
+    b = cv2.GaussianBlur(np.concatenate([a[:, -p:], a, a[:, :p]], 1), (0, 0), sg, borderType=cv2.BORDER_REFLECT)
+    return b[:, p:p + w]
+
+def _gain_fields(bands, n, ground, gw=1024):
+    """Yerel renk eşitleme: örtüşmelerde her yüzü ortak renge çeken, yüz içine yumuşakça yayılan kazanç alanı."""
+    gh = gw // 2; P = {f: _project(cv2.resize(low, (256, 256), interpolation=cv2.INTER_AREA), f, gw, gh, 256) for f, (low, _) in bands.items()}
+    ws = sum(w for _, w in P.values()); M = sum(L * w[..., None] for L, w in P.values()) / np.maximum(ws, 1e-6)[..., None]
+    G = {}
+    for f, (L, w) in P.items():
+        other = ws - w; c = (w * np.clip(other * 4, 0, 1) * ground).astype(np.float32)
+        R = np.clip(M / np.maximum(L, 4), .4, 2.5).astype(np.float32)
+        num = _blurw(R * c[..., None], gw / 40)
+        den = _blurw(c, gw / 40)[..., None]
+        k = np.clip(den / .02, 0, 1)
+        G[f] = (num / np.maximum(den, 1e-6) * k + (1 - k)).astype(np.float32)
+    return G
+
 def merge(src, out, dst, W=16384):
     H = W // 2; n = cv2.imread(f'{out}/yuz_f.jpg').shape[0]
-    eq = cv2.imread(src).astype(np.float32)
+    eq = cv2.imread(src)
     if eq.shape[1] != W: eq = cv2.resize(eq, (W, H), interpolation=cv2.INTER_AREA)
-    acc = np.zeros((H, W, 3), np.float32); wsum = np.zeros((H, W), np.float32)
-    lon = (np.arange(W) + .5) / W * 2 * np.pi - np.pi; lat = np.pi / 2 - (np.arange(H) + .5) / H * np.pi
-    t = np.tan(np.radians(FOV / 2))
-    for f in FACES:
-        p = f'{out}/gece_{f}.png'
-        if not os.path.exists(p): continue
-        night = align(cv2.imread(f'{out}/yuz_{f}.jpg'), cv2.imread(p))
-        R = rot(*FACES[f])
-        for r0 in range(0, H, 512):
-            la = lat[r0:r0 + 512][:, None]; lo = lon[None, :]
-            d = np.stack([np.cos(la) * np.sin(lo), np.sin(la) * np.ones_like(lo), np.cos(la) * np.cos(lo)], -1) @ R  # dünya -> yüz
-            z = d[..., 2]; ok = z > 1e-3
-            x = np.where(ok, d[..., 0] / np.maximum(z, 1e-3) / t, 9); y = np.where(ok, -d[..., 1] / np.maximum(z, 1e-3) / t, 9)
-            inside = (np.abs(x) < 1) & (np.abs(y) < 1)
-            w = (np.clip((1 - np.maximum(np.abs(x), np.abs(y))) * 6, 0, 1) * inside) ** 2  # kenarlarda yumuşak geçiş
-            px = ((x + 1) / 2 * n - .5).astype(np.float32); py = ((y + 1) / 2 * n - .5).astype(np.float32)
-            sm = cv2.remap(night, px, py, cv2.INTER_LINEAR, borderMode=cv2.BORDER_REFLECT).astype(np.float32)
-            acc[r0:r0 + 512] += sm * w[..., None]; wsum[r0:r0 + 512] += w
-    night = acc / np.maximum(wsum, 1e-4)[..., None]; del acc
-    # gündüz görüntüsünün netliğini (ince ayrıntıyı) gece görüntüsüne ekle: binalar keskin ve yerinde kalır
-    for r0 in range(0, H, 1024):
-        a, b = max(0, r0 - 64), min(H, r0 + 1024 + 64)
-        dd = eq[a:b]; hp = dd - cv2.GaussianBlur(dd, (0, 0), 3)
-        nn = night[a:b]; lum = cv2.GaussianBlur(nn.mean(2), (0, 0), 3) / 255.0
-        night[a:b] = nn + hp * np.clip(lum * 1.6, 0.08, 1)[..., None] * float(os.environ.get('HP', .6))
-    # gök: maskeyle tek parça yapay gece göğü
-    mask = sky_mask(eq)[..., None]
-    band = (mask[..., 0] < .5) & (np.arange(H)[:, None] < H * .53) & (np.arange(H)[:, None] > H * .47)
-    hor = np.median(night[band], 0) if band.any() else np.array([60, 60, 80.])
-    hor = hor * .6 + np.array([70, 70, 95.]) * .4
-    night = night * (1 - mask) + night_sky(H, W, hor) * mask
-    cv2.imwrite(dst, np.clip(night, 0, 255).astype(np.uint8), [cv2.IMWRITE_JPEG_QUALITY, 92])
-    cv2.imwrite(dst.replace('.jpg', '_mask.jpg'), cv2.resize((mask[..., 0] * 255).astype(np.uint8), (4096, 2048)))
+    mask = sky_mask(eq)
+    if os.environ.get('SKYONLY') and os.path.exists(f'{out}/_res.npy'):
+        res = np.load(f'{out}/_res.npy'); return _sky(res, eq, mask, dst)
+    nights = {f: align(cv2.imread(f'{out}/yuz_{f}.jpg'), cv2.imread(f'{out}/gece_{f}.png')) for f in FACES if os.path.exists(f'{out}/gece_{f}.png')}
+    gains = _gains(nights, n, cv2.resize(mask, (1024, 512)) < .5)
+    # iki bantlı birleştirme: renk (alçak frekans) geniş geçişle, ayrıntı dar geçişle -> renk farkı dikiş yapmaz
+    bands = {}
+    for f, night in nights.items():
+        night = np.clip(night.astype(np.float32) * gains[f][None, None, :], 0, 255)
+        low = cv2.GaussianBlur(night, (0, 0), night.shape[0] / 60); bands[f] = (low, night - low)
+    del nights
+    G = _gain_fields(bands, n, (cv2.resize(mask, (1024, 512)) < .5).astype(np.float32))
+    res = np.zeros((H, W, 3), np.uint8); hpk = float(os.environ.get('HP', .35)); B = 512
+    for r0 in range(0, H, B):
+        r1 = min(H, r0 + B); lo = np.zeros((r1 - r0, W, 3), np.float32); hi = np.zeros_like(lo)
+        lw = np.zeros((r1 - r0, W), np.float32); hw = np.zeros_like(lw)
+        for f, (low, high) in bands.items():
+            sl, w = _project(low, f, W, H, n, r0, r1); sh, _ = _project(high, f, W, H, n, r0, r1)
+            g = _up(G[f], W, H, r0, r1); sl *= g; sh *= g
+            lo += sl * w[..., None]; lw += w; w2 = w ** 4; hi += sh * w2[..., None]; hw += w2
+        nn = lo / np.maximum(lw, 1e-6)[..., None] + hi / np.maximum(hw, 1e-8)[..., None]
+        # gündüz görüntüsünün netliğini (ince ayrıntıyı) ekle: binalar keskin ve yerinde kalır
+        a, b = max(0, r0 - 32), min(H, r1 + 32)
+        dd = eq[a:b].astype(np.float32).mean(2); hp = (dd - cv2.GaussianBlur(dd, (0, 0), 2))[r0 - a:r0 - a + (r1 - r0)]
+        lum = cv2.GaussianBlur(nn.mean(2), (0, 0), 3) / 255.0
+        nn += (np.clip(hp, -40, 40) * np.clip(lum * 1.6, .08, 1) * hpk)[..., None]
+        res[r0:r1] = np.clip(nn, 0, 255).astype(np.uint8)
+    del bands
+    np.save(f'{out}/_res.npy', res)                                           # gök ayarı denemeleri için ara sonuç
+    _sky(res, eq, mask, dst)
+
+def _sky(res, eq, mask, dst):
+    H, W = res.shape[:2]
+    # gök: maskeyle tek parça yapay gece göğü; ufuk rengi sütun sütun alttaki şehirden alınır (şerit kalmaz)
+    h, w = 2048, 4096; ms = cv2.resize(mask, (w, h), interpolation=cv2.INTER_AREA); ns = cv2.resize(res, (w, h), interpolation=cv2.INTER_AREA).astype(np.float32)
+    sk = (ms > .5).sum(0)                                                     # her sütunda siluet satırı
+    med = np.median(np.lib.stride_tricks.sliding_window_view(np.concatenate([sk[-75:], sk, sk[:75]]), 151), 1)
+    sk = np.maximum(sk, med).astype(int)                  # kuleler yok sayılır: genel ufuk çizgisi
+    rows = np.arange(h)[:, None]; below = (rows >= sk[None] + 3) & (rows < sk[None] + 25)
+    C = np.stack([(ns[..., c] * below).sum(0) / np.maximum(below.sum(0), 1) for c in range(3)], -1)
+    C = np.stack([np.convolve(np.tile(C[:, c], 3), np.ones(301) / 301, 'same')[w:2 * w] for c in range(3)], -1)
+    C = C * .85 + np.array([150, 105, 80.]) * .15
+    base = night_sky(h, w, C.mean(0))
+    up = np.clip((sk[None] - rows) / (h / 180 * 9), 0, 1) ** .7            # siluetten 9° yukarıya kadar ufuk rengi söner
+    sky = (C[None] * (1 - up[..., None]) + base * up[..., None]).astype(np.float32)
+    top = int(H * .56)                                                        # gök yalnızca üst kısımda
+    sky = cv2.resize(sky, (W, H), interpolation=cv2.INTER_LINEAR)[:top]
+    m3 = cv2.GaussianBlur(mask[:top], (0, 0), 3)[..., None]
+    part = res[:top].astype(np.float32); day = eq[:top].astype(np.float32)
+    # ufkun üstüne taşan kuleler (yapay zekâ çizmemiş olabilir): çevresindeki gök piksel piksel ayrılır, kule gündüzden koyu siluet
+    skf = cv2.resize(sk[None].astype(np.float32), (W, 1), interpolation=cv2.INTER_LINEAR)[0] * H / h
+    above = np.arange(top)[:, None] < skf[None] - 2
+    tall = (mask[:top] < .5) & above
+    if tall.any():
+        mk = mask[:top].copy()
+        for r in np.unique(np.nonzero(tall)[0]):
+            row = day[r]; sky_px = mask[r] > .5
+            sp = sky_px.astype(np.float32)[None]                             # yakındaki gök rengi (ufuk pusu yatayda değişir)
+            ref = _blurw(row[None] * sp[..., None], 250)[0] / np.maximum(_blurw(sp, 250)[0], 1e-3)[:, None]
+            dist = np.abs(row - ref).max(1); t = tall[r]
+            mk[r, t] = np.clip((22 - dist[t]) / 10, 0, 1)                    # göğe benzeyen piksel = gök
+        sil = tall & (mk < .5)
+        part[sil] = part[sil] * .3 + day[sil] * np.array([.40, .32, .28]) * .7
+        near = cv2.dilate(tall.astype(np.uint8), np.ones((9, 9), np.uint8)).astype(bool)
+        m3 = np.where(near[..., None], cv2.GaussianBlur(mk, (0, 0), 1.2)[..., None], m3)
+    res[:top] = np.clip(part * (1 - m3) + sky * m3, 0, 255).astype(np.uint8)
+    cv2.imwrite(dst, res, [cv2.IMWRITE_JPEG_QUALITY, 92])
     print('merge', dst)
 
 if __name__ == '__main__':
