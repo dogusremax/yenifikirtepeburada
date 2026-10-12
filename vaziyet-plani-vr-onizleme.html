@@ -133,6 +133,11 @@
     font-size:13px;font-weight:600;pointer-events:none;transition:opacity .5s}
   .hint.off{opacity:0}
   .hlsvg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+  /* kart etabın hemen yanında açılır (konumu her karede JS ile) */
+  .card.pop{left:0;top:0;right:auto;bottom:auto;width:min(270px,calc(100vw - 24px));padding:8px 10px;border-radius:16px;
+    box-shadow:0 18px 44px -12px rgba(5,10,48,.6);transform:scale(.9);transform-origin:var(--ox,0) 50%;opacity:0;pointer-events:none;
+    transition:opacity .3s ease,transform .4s cubic-bezier(.2,.9,.25,1)}
+  .card.pop.on{transform:none;opacity:1;pointer-events:auto}
     /* gündüz / gece */
   .tgl{position:fixed;z-index:5;right:16px;top:calc(62px + env(safe-area-inset-top));display:flex;background:rgba(5,10,48,.55);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
     border-radius:999px;padding:3px;border:0;cursor:pointer;font:inherit}
@@ -181,7 +186,7 @@
   var WAP='M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.64.07-.3-.15-1.26-.46-2.39-1.47-.88-.79-1.48-1.76-1.65-2.06-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.67-1.61-.92-2.21-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48s1.07 2.88 1.21 3.08c.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.69.63.71.23 1.36.2 1.87.12.57-.09 1.76-.72 2.01-1.41.25-.69.25-1.29.17-1.41-.07-.12-.27-.2-.57-.35zM12.04 21.5h-.01a9.43 9.43 0 0 1-4.8-1.32l-.35-.21-3.57.94.95-3.48-.22-.36a9.4 9.4 0 0 1-1.44-5.02c0-5.2 4.23-9.43 9.44-9.43 2.52 0 4.89.98 6.67 2.77a9.37 9.37 0 0 1 2.76 6.67c0 5.2-4.24 9.44-9.43 9.44zm8.03-17.47A11.27 11.27 0 0 0 12.04.7C5.78.7.69 5.79.69 12.04c0 2 .52 3.95 1.52 5.67L.6 23.3l5.72-1.5a11.33 11.33 0 0 0 5.42 1.38h.01c6.25 0 11.34-5.09 11.35-11.35 0-3.03-1.18-5.88-3.33-8.02z"';
   var EYE='<svg viewBox="0 0 24 24"><path d="M12 5C6.5 5 2.7 9.2 1.5 12c1.2 2.8 5 7 10.5 7s9.3-4.2 10.5-7C21.3 9.2 17.5 5 12 5zm0 11a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm0-2.2a1.8 1.8 0 1 0 0-3.6 1.8 1.8 0 0 0 0 3.6z"/></svg>';
   var $=function(id){return document.getElementById(id);};
-  var card=$('card'),sel=null,cur=0;
+  var card=$('card'),sel=null,cur=0,SELYP=null;card.classList.add('pop');
   function tr(n){return Number(n).toLocaleString('tr-TR');}
 
   // Marzipano dikey görüş açısını Pannellum yatay görüş açısına çevir
@@ -231,10 +236,8 @@
   function zoomTo(yaw,pitch){
     var W=innerWidth,H=innerHeight,mob=W<768,h=mob?32:34;
     var f=(W/2)/Math.tan(h*Math.PI/360),cx=W/2,cy=H/2;
-    if(card.classList.contains('on')){
-      if(mob)cy=(H-card.offsetHeight)*.5;       // kartın üstündeki alanın ortası
-      else cy=(H-card.offsetHeight-16)*.5;      // kart sağ altta: etap üstteki alanın ortasında
-    }
+    if(mob)cy=H*.34;                             // kart etabın altında açılır
+    else cx=W/2-card.offsetWidth*.55;            // kart etabın sağında açılır
     cx-=20;cy-=25;                               // pin noktanın 20/25 px sağ altında görünüyor
     var dy=Math.atan((cx-W/2)/f)*180/Math.PI,dp=Math.atan((H/2-cy)/f)*180/Math.PI;
     v.lookAt(Math.max(-90,pitch-dp),yaw-dy,h,900);
@@ -301,7 +304,7 @@
     h+='<div class="acts"><a class="pri" href="teslim-takvimi.html#etap-'+hedef+'">'+(e.st==='ok'?'Etap ayrıntıları':'Teslim takvimi')+'</a><div class="row">'+
       (KAT.indexOf(n)>=0?'<a class="sec2" href="kat-planlari.html#etap-'+n+'">Kat planları</a>':'<a class="sec2" href="etaplar.html">Etap bilgisi</a>')+
       '<a class="wa" href="'+wa+'" target="_blank" rel="noopener" aria-label="WhatsApp"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="'+WAP+'"/></svg>WhatsApp</a></div></div>';
-    hl(n);card.innerHTML=h;card.classList.add('on');card.scrollTop=0;document.body.classList.add('carded');
+    SELYP=yaw!==undefined?[yaw,pitch]:null;hl(n);card.innerHTML=h;card.classList.add('on');card.scrollTop=0;document.body.classList.add('carded');
     if(yaw!==undefined)zoomTo(yaw,pitch);
     countAll(card,250);
     var vl=card.querySelector('.val');if(vl)setTimeout(function(){vl.style.width=vl.getAttribute('data-w')+'%';},60);
@@ -327,22 +330,23 @@
   }
   // seçilen etabın blokları parlasın
   // efekt: ?fx=1 spot (çevre kararır, çizgi kendini çizer), 2 tarama (ışık bandı yukarı süzülür), 3 yükselen (renk alttan dolar, kenarda akan ışık)
-  var FX=+((location.search.match(/[?&]fx=(\d)/)||[])[1])||1,T0=0,KEY='',NS='http://www.w3.org/2000/svg',EL=null;
-  function hl(n){HL=n;T0=performance.now();KEY='';if(svg)svg.innerHTML='';}
+  var FX=+((location.search.match(/[?&]fx=(\d)/)||[])[1])||3,T0=0,KEY='',NS='http://www.w3.org/2000/svg',EL=null;
+  function hl(n){HL=n;BB=null;T0=performance.now();KEY='';if(svg)svg.innerHTML='';}
   function mk(t,a,par){var e=document.createElementNS(NS,t);for(var k in a)e.setAttribute(k,a[k]);if(par)par.appendChild(e);return e;}
   function hlBuild(n,c){
     svg.innerHTML='';var d=mk('defs',{},svg);
-    var f=mk('filter',{id:'hlg',x:'-20%',y:'-20%',width:'140%',height:'140%'},d);mk('feGaussianBlur',{stdDeviation:'7'},f);
+    var f=mk('filter',{id:'hlg',x:'-20%',y:'-20%',width:'140%',height:'140%'},d);mk('feGaussianBlur',{stdDeviation:'9'},f);
     var g=mk('linearGradient',{id:'hlb',x1:0,y1:0,x2:0,y2:1},d);
     [[0,0],[.5,.75],[1,0]].forEach(function(s){mk('stop',{offset:s[0],'stop-color':'#fff','stop-opacity':s[1]},g);});
-    var cp=mk('clipPath',{id:'hlc'},d),m=mk('mask',{id:'hlm'},d);mk('rect',{x:0,y:0,width:'100%',height:'100%',fill:'#fff'},m);
-    EL={dim:mk('rect',{x:0,y:0,width:'100%',height:'100%',fill:'#060a14',mask:'url(#hlm)',opacity:0},svg),cp:[],mk:[],gl:[],ln:[]};
+    var cp=mk('clipPath',{id:'hlc'},d);
+    EL={dim:mk('path',{fill:'#060a14','fill-rule':'nonzero',opacity:0},svg),cp:[],gl:[],ln:[],co:[]};
     var inn=mk('g',{'clip-path':'url(#hlc)'},svg);
     EL.fill=mk('rect',{x:0,width:'100%',fill:c,opacity:0},inn);EL.band=mk('rect',{x:0,width:'100%',fill:'url(#hlb)',opacity:0},inn);
     var gg=mk('g',{filter:'url(#hlg)'},svg);
-    for(var i=0;i<n;i++){EL.cp.push(mk('polygon',{},cp));EL.mk.push(mk('polygon',{fill:'#000'},m));
-      EL.gl.push(mk('polygon',{fill:'none',stroke:c,'stroke-width':8,'stroke-linejoin':'round'},gg));
-      EL.ln.push(mk('polygon',{fill:'none',stroke:c,'stroke-width':2.5,'stroke-linejoin':'round'},svg));}
+    for(var i=0;i<n;i++){EL.cp.push(mk('polygon',{},cp));
+      EL.gl.push(mk('polygon',{fill:'none',stroke:c,'stroke-width':14,'stroke-linejoin':'round'},gg));
+      EL.ln.push(mk('polygon',{fill:'none',stroke:c,'stroke-width':3.5,'stroke-linejoin':'round'},svg));
+      EL.co.push(mk('polygon',{fill:'none',stroke:'#fff','stroke-width':1.2,'stroke-linejoin':'round',opacity:0},svg));}
   }
   (function loop(){
     if(HL&&DZ){
@@ -352,20 +356,38 @@
         var k=HL+'/'+cur+'/'+PS.length;if(k!==KEY){KEY=k;hlBuild(PS.length,c);}
         var t=(performance.now()-T0)/1000,e=Math.min(1,t/.9),ez=1-Math.pow(1-e,3),y0=1e9,y1=-1e9,pu=.5+.5*Math.sin(t*3);
         PS.forEach(function(P,i){var s=P.map(function(q){if(q[1]<y0)y0=q[1];if(q[1]>y1)y1=q[1];return q[0].toFixed(1)+','+q[1].toFixed(1);}).join(' ');
-          EL.cp[i].setAttribute('points',s);EL.mk[i].setAttribute('points',s);EL.gl[i].setAttribute('points',s);EL.ln[i].setAttribute('points',s);
+          EL.cp[i].setAttribute('points',s);EL.gl[i].setAttribute('points',s);EL.ln[i].setAttribute('points',s);EL.co[i].setAttribute('points',s);
           var L=0;for(var j=0;j<P.length;j++){var a=P[j],b=P[(j+1)%P.length];L+=Math.hypot(b[0]-a[0],b[1]-a[1]);}
-          if(FX===1){EL.ln[i].setAttribute('stroke-dasharray',L+' '+L);EL.ln[i].setAttribute('stroke-dashoffset',(L*(1-ez)).toFixed(1));}
+          if(FX===1){[EL.ln[i],EL.co[i]].forEach(function(o){o.setAttribute('stroke-dasharray',L+' '+L);o.setAttribute('stroke-dashoffset',(L*(1-ez)).toFixed(1));});EL.co[i].setAttribute('opacity',(.55+.35*pu).toFixed(3));}
           else if(FX===3){EL.ln[i].setAttribute('stroke-dasharray','22 12');EL.ln[i].setAttribute('stroke-dashoffset',(-t*70).toFixed(1));}
-          EL.gl[i].setAttribute('opacity',(ez*(.35+.35*pu)).toFixed(3));});
+          EL.gl[i].setAttribute('opacity',(ez*(FX!==2?.6+.4*pu:.35+.35*pu)).toFixed(3));if(FX===3)EL.co[i].setAttribute('opacity',(ez*(.45+.35*pu)).toFixed(3));});
+        BB=PS.length?[1e9,y0,-1e9,y1]:null;PS.forEach(function(P){P.forEach(function(q){if(q[0]<BB[0])BB[0]=q[0];if(q[0]>BB[2])BB[2]=q[0];});});
+        var W=innerWidth,H=innerHeight,dd='M0 0H'+W+'V'+H+'H0Z';
+        PS.forEach(function(P){var A=0;for(var j=0;j<P.length;j++){var a=P[j],b=P[(j+1)%P.length];A+=a[0]*b[1]-b[0]*a[1];}
+          var Q=A>0?P.slice().reverse():P;dd+='M'+Q.map(function(q){return q[0].toFixed(1)+' '+q[1].toFixed(1);}).join('L')+'Z';});
+        EL.dim.setAttribute('d',dd);
         var h=Math.max(1,y1-y0);
-        if(FX===1){EL.dim.setAttribute('opacity',.55*ez);EL.fill.setAttribute('y',y0);EL.fill.setAttribute('height',h);EL.fill.setAttribute('opacity',ez*(.2+.14*pu));}
+        if(FX===1){EL.dim.setAttribute('opacity',.62*ez);EL.fill.setAttribute('y',y0);EL.fill.setAttribute('height',h);EL.fill.setAttribute('opacity',ez*(.3+.2*pu));}
         else if(FX===2){EL.dim.setAttribute('opacity',.4*ez);EL.fill.setAttribute('y',y0);EL.fill.setAttribute('height',h);EL.fill.setAttribute('opacity',.22*ez);
           var bh=Math.max(60,h*.45),ph=(t%2.4)/2.4;EL.band.setAttribute('height',bh);EL.band.setAttribute('y',(y1-(h+bh)*ph).toFixed(1));EL.band.setAttribute('opacity',ez);}
-        else{var r=1-Math.pow(1-Math.min(1,t/1.3),3);EL.dim.setAttribute('opacity',.5*ez);EL.fill.setAttribute('y',(y1-h*r).toFixed(1));EL.fill.setAttribute('height',(h*r+2).toFixed(1));EL.fill.setAttribute('opacity',.34);}
+        else{var r=1-Math.pow(1-Math.min(1,t/1.3),3);EL.dim.setAttribute('opacity',.62*ez);EL.fill.setAttribute('y',(y1-h*r).toFixed(1));EL.fill.setAttribute('height',(h*r+2).toFixed(1));EL.fill.setAttribute('opacity',(.32+(r>=1?.16*pu:0)).toFixed(3));}
       }
     }
+    if(card.classList.contains('on'))place();
     requestAnimationFrame(loop);
   })();
+  // kartı etabın yanına yerleştir: geniş ekranda sağına (yer yoksa soluna), telefonda altına (yer yoksa üstüne)
+  var BB=null;
+  function place(){
+    var W=innerWidth,H=innerHeight,cw=card.offsetWidth,ch=card.offsetHeight,g=14,b=null;
+    if(HL&&BB&&BB[0]<BB[2])b=BB;else if(SELYP){var q=proj(SELYP[0],SELYP[1]);if(q)b=[q[0]-16,q[1]-16,q[0]+16,q[1]+16];}
+    var x,y,ox;
+    if(!b){x=(W-cw)/2;y=H-ch-g;ox='50%';}
+    else if(W>=768){x=b[2]+g;ox='0';if(x+cw>W-g){x=b[0]-g-cw;ox='100%';}y=(b[1]+b[3])/2-ch/2;}
+    else{x=(b[0]+b[2])/2-cw/2;y=b[3]+g;ox='50%';if(y+ch>H-g)y=b[1]-g-ch;}
+    x=Math.max(g,Math.min(W-cw-g,x));y=Math.max(70,Math.min(H-ch-g,y));
+    card.style.left=x.toFixed(0)+'px';card.style.top=y.toFixed(0)+'px';card.style.setProperty('--ox',ox);
+  }
   addEventListener('keydown',function(e){if(e.key==='Escape')close();});
 })();
 </script>
