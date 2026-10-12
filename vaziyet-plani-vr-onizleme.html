@@ -132,6 +132,15 @@
   .hint{position:fixed;z-index:4;left:50%;top:50%;transform:translate(-50%,-50%);background:rgba(5,10,48,.78);padding:10px 16px;border-radius:12px;
     font-size:13px;font-weight:600;pointer-events:none;transition:opacity .5s}
   .hint.off{opacity:0}
+  /* gündüz / gece */
+  .tgl{position:fixed;z-index:5;right:16px;top:calc(62px + env(safe-area-inset-top));display:flex;background:rgba(5,10,48,.55);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+    border-radius:999px;padding:3px;border:0;cursor:pointer;font:inherit}
+  .tgl::before{content:'';position:absolute;top:3px;bottom:3px;left:3px;width:calc(50% - 3px);border-radius:999px;background:#fff;box-shadow:0 2px 8px rgba(5,10,48,.25);transition:transform .5s cubic-bezier(.6,0,.2,1),background .5s}
+  .tgl span{position:relative;z-index:1;padding:6px 11px;font-size:.76rem;font-weight:700;color:rgba(255,255,255,.8);transition:color .4s;display:flex;align-items:center;gap:5px}
+  .tgl span.d{color:var(--navy)}
+  .tgl svg{width:14px;height:14px}
+  .night .tgl::before{transform:translateX(100%);background:var(--coral)}
+  .night .tgl span.d{color:rgba(255,255,255,.8)}.night .tgl span.m{color:#fff}
 </style>
 </head>
 <body>
@@ -142,6 +151,11 @@
   <div class="ttl"><b>Yeni Fikirtepe 360°</b><span id="sname">Etap numarasına dokunun</span></div>
   <img class="logo" src="assets/dogus-logo.png?v=4" alt="RE/MAX Doğuş">
 </div>
+
+<button class="tgl" id="tgl" type="button" aria-pressed="false" aria-label="Gündüz ve gece görünümü arasında geçiş yap">
+  <span class="d"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="4.5"/><path d="M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3M4.6 4.6l2.1 2.1M17.3 17.3l2.1 2.1M4.6 19.4l2.1-2.1M17.3 6.7l2.1-2.1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Gündüz</span>
+  <span class="m"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 14.6A8.5 8.5 0 0 1 9.4 3.5a8.5 8.5 0 1 0 11.1 11.1z"/></svg>Gece</span>
+</button>
 
 <div class="hint" id="hint">Sürükleyerek çevirin · Etap numarasına dokunun</div>
 
@@ -175,26 +189,37 @@
   function pinEl(div,a){var n=a[0];div.classList.add('pin');if(window.__E&&__E[n])div.style.setProperty('--c',__ST[__E[n].st][1]);div.dataset.n=n;div.innerHTML='<span>'+n+'</span>';}
   function goEl(div,a){div.classList.add('go');div.title=NAMES[a[0]-1];div.innerHTML=EYE;}
 
+  // gece: her sahnenin gece karoları assets/vr/sNn (tools/vr/night_tiles.py)
+  var night=/[?&]gece=1/.test(location.search);
   var scenes={};
-  SC.forEach(function(s,i){
+  ['','n'].forEach(function(nx){SC.forEach(function(s,i){
     var k=i+1,hs=[];
-    s.l.forEach(function(l){hs.push({yaw:l[0],pitch:l[1],type:'scene',sceneId:'s'+l[2],cssClass:'gohs',createTooltipFunc:goEl,createTooltipArgs:[l[2]]});});
+    s.l.forEach(function(l){hs.push({yaw:l[0],pitch:l[1],type:'scene',sceneId:'s'+l[2]+nx,cssClass:'gohs',createTooltipFunc:goEl,createTooltipArgs:[l[2]]});});
     s.e.forEach(function(e){hs.push({yaw:e[0],pitch:e[1],cssClass:'etaphs',createTooltipFunc:pinEl,createTooltipArgs:[e[2]],clickHandlerFunc:function(){open(e[2],e[0],e[1]);}});});
-    scenes['s'+k]={type:'multires',multiRes:{basePath:'assets/vr/s'+k,path:'/%l/%s%y_%x',fallbackPath:'/fb3k/%s',extension:'jpg',tileResolution:512,maxLevel:4,cubeResolution:4096},
+    scenes['s'+k+nx]={type:'multires',multiRes:{basePath:'assets/vr/s'+k+nx,path:'/%l/%s%y_%x',fallbackPath:'/fb3k/%s',extension:'jpg',tileResolution:512,maxLevel:4,cubeResolution:4096},
       yaw:s.y,pitch:s.p,hfov:hfov(s.f),minHfov:20,maxHfov:120,hotSpots:hs};
-  });
+  });});
+  function sid(k){return 's'+k+(night?'n':'');}
 
-  var v=pannellum.viewer('pano',{default:{firstScene:'s1',sceneFadeDuration:600,autoLoad:true,showControls:false,compass:false,mouseZoom:true,keyboardZoom:true},scenes:scenes});
+  var v=pannellum.viewer('pano',{default:{firstScene:sid(1),sceneFadeDuration:600,autoLoad:true,showControls:false,compass:false,mouseZoom:true,keyboardZoom:true},scenes:scenes});
 
   // sahne şeridi
   var bar=$('scenes');
   SC.forEach(function(s,i){var b=document.createElement('button');b.type='button';b.className='sc'+(i?'':' on');b.dataset.k=i+1;
     b.innerHTML='<img src="assets/vr/thumb/w'+(i+1)+'.jpg" alt="" loading="lazy"><span>'+NAMES[i]+'</span>';
-    b.onclick=function(){if(v.getScene()!=='s'+(i+1))v.loadScene('s'+(i+1));};bar.appendChild(b);});
-  v.on('scenechange',function(id){cur=+id.slice(1)-1;
+    b.onclick=function(){if(v.getScene()!==sid(i+1))v.loadScene(sid(i+1));};bar.appendChild(b);});
+  v.on('scenechange',function(id){cur=parseInt(id.slice(1),10)-1;
     [].forEach.call(bar.children,function(b){b.classList.toggle('on',+b.dataset.k===cur+1);});
     $('sname').textContent=NAMES[cur]+' · Etap numarasına dokunun';
     if(sel)mark(sel);});
+  // gündüz / gece: aynı bakış açısında sahneyi gece karolarıyla değiştir (yumuşak geçiş)
+  function setNight(on){
+    night=on;document.body.classList.toggle('night',on);$('tgl').setAttribute('aria-pressed',on);
+    var id=sid(cur+1);if(v.getScene()!==id)v.loadScene(id,v.getPitch(),v.getYaw(),v.getHfov());
+    try{history.replaceState(null,'',on?'?gece=1':location.pathname);}catch(e){}
+  }
+  document.body.classList.toggle('night',night);$('tgl').setAttribute('aria-pressed',night);
+  $('tgl').onclick=function(){setNight(!night);};
   v.on('mousedown',function(){$('hint').classList.add('off');});
   v.on('touchstart',function(){$('hint').classList.add('off');});
   setTimeout(function(){$('hint').classList.add('off');},5000);
