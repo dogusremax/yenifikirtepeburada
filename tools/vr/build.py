@@ -1,7 +1,7 @@
 """vr-tur sayfasını üretir: tur.tpl.html + vaziyet-plani.html'deki etap/kamera verisi -> vr-tur-onizleme.html"""
 import re, pathlib
 R=pathlib.Path(__file__).resolve().parents[2]
-v=(R/'vaziyet-plani.html').read_text()
+v=(R/'vaziyet-plani-eski.html').read_text()
 t=(R/'tools/vr/tur.tpl.html').read_text()
 def grab(pat):
     m=re.search(pat,v,re.S); assert m,pat; return m.group(1).strip()

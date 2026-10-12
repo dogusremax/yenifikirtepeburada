@@ -322,6 +322,21 @@
         clickHandlerFunc:function(){open(pn[2],pn[0],pn[1]);}},id);});});});
     paint();
   }).catch(function(){});
+  // diğer sayfalardan vaziyet-plani.html#etap-N ile gelinirse: o etabın göründüğü bakış noktasını açıp kartını göster
+  var HQ=0;
+  function openHash(){
+    var m=/etap-(\d+)/.exec(location.hash);if(!m)return;var n=+m[1],t0=Date.now();clearTimeout(HQ);
+    (function tryOpen(){
+      if(!E[n]||!v.isLoaded()){if(Date.now()-t0<15000)HQ=setTimeout(tryOpen,200);return;}
+      var best=null;for(var d=0;d<SC.length&&!best;d++){var i=(cur+d)%SC.length,ps=DZ?DZ.sc[i].pins:SC[i].e;
+        ps.forEach(function(q){if(!best&&+q[2]===n)best=[i,q[0],q[1]];});}
+      if(!best)return open(n);
+      if(best[0]===cur)return open(n,best[1],best[2]);
+      var once=function(){v.off('load',once);setTimeout(function(){open(n,best[1],best[2]);},300);};
+      v.on('load',once);v.loadScene(sid(best[0]+1));
+    })();
+  }
+  addEventListener('hashchange',openHash);setTimeout(openHash,600);
   function proj(yaw,pitch){
     var W=innerWidth,H=innerHeight,r=Math.PI/180,cp=v.getPitch()*r,cy=v.getYaw()*r,hf=v.getHfov()*r;
     var ps=Math.sin(pitch*r),pc=Math.cos(pitch*r),yc=Math.cos(-yaw*r+cy),ys=Math.sin(-yaw*r+cy);
