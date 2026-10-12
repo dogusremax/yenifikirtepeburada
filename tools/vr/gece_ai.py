@@ -221,7 +221,7 @@ def merge(src, out, dst, W=16384):
     np.save(f'{out}/_res.npy', res)                                           # gök ayarı denemeleri için ara sonuç
     _sky(_detail(res, eq), eq, mask, dst)
 
-def _detail(res, eq, s=6.0, mixn=.3, B=512):
+def _detail(res, eq, s=12.0, mixn=0., B=512):
     """Gece görüntüsünün orta frekansını gündüzün yapısıyla değiştir: gece parçaları ~5 kat düşük çözünürlüklü geldiği için
     bulanık ve kaymış kenarlar (hayalet) oluşur. Geceyi s ölçeğinde yumuşatıp gündüz parlaklığının yerel oranıyla çarpınca
     binalar gündüz kadar keskin, renk ve ışık geceden kalır."""
@@ -230,7 +230,7 @@ def _detail(res, eq, s=6.0, mixn=.3, B=512):
         r1 = min(H, r0 + B); a, b = max(0, r0 - m), min(H, r1 + m)
         n = res[a:b].astype(np.float32); L = eq[a:b].astype(np.float32).mean(2) + 10
         base = _blurw(n, s) * (1 - mixn) + n * mixn
-        rat = np.clip(L / _blurw(L, s), .3, 3)
+        rat = np.clip(L / _blurw(L, s), .25, 3.5)
         out[r0:r1] = np.clip(base * rat[..., None], 0, 255)[r0 - a:r0 - a + (r1 - r0)].astype(np.uint8)
     return out
 
