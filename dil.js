@@ -41,6 +41,10 @@
     'html.dil-bekle body{opacity:0}' +
     'html[lang="fa"] body{font-family:"Vazirmatn",system-ui,sans-serif}' +
     'html[lang="fa"] *{letter-spacing:0!important}' +
+    '.dil-sel.dil-yer{position:relative;top:auto;inset-inline-end:auto;pointer-events:auto;flex:0 0 auto}' +
+    '.dil-sel.dil-nav{position:absolute;top:50%;transform:translateY(-50%);inset-inline-end:16px}' +
+    '.navbar.dil-navbar .topnav{padding-inline:118px}' +
+    '@media(max-width:760px){.dil-sel.dil-nav{top:20px;transform:none;inset-inline-end:70px}.navbar.dil-navbar .topnav{padding-inline:24px}}' +
     '@media print{.dil-sel{display:none}}';
   for (var k in FLAG) css += '.dil-flag-' + k + '{background-image:url("data:image/svg+xml,' + FLAG[k] + '")}';
   var st = document.createElement('style'); st.textContent = css; document.head.appendChild(st);
@@ -58,7 +62,12 @@
   function tr(s){
     if (!D) return null;
     var n = norm(s); if (!n) return null;
-    var t = D[n]; if (t == null || t === n) return null;
+    var t = D[n];
+    if (t == null && D.__re) { /* sayılı/tarihli metinler: ["^(\\d+)\\. Etap$", "Phase $1"] */
+      if (!D.__rc) D.__rc = D.__re.map(function(r){ return [new RegExp(r[0]), r[1]]; });
+      for (var i = 0; i < D.__rc.length; i++) if (D.__rc[i][0].test(n)) { t = n.replace(D.__rc[i][0], D.__rc[i][1]); break; }
+    }
+    if (t == null || t === n) return null;
     var m = s.match(/^\s*/)[0], e = s.match(/\s*$/)[0];
     return m + t + e;
   }
@@ -162,7 +171,11 @@
     var items = '';
     for (var i = 0; i < LANGS.length; i++) items += '<li><button type="button" role="option" data-lang="' + LANGS[i] + '"><i class="dil-flag dil-flag-' + LANGS[i] + '"></i>' + ADI[LANGS[i]] + '</button></li>';
     box.innerHTML = '<button type="button" class="dil-btn" aria-haspopup="listbox" aria-expanded="false" aria-label="Dil / Language"><i class="dil-flag"></i><span>TR</span></button><ul class="dil-menu" role="listbox" hidden>' + items + '</ul>';
-    document.body.appendChild(box);
+    /* Yer: sayfada data-dil-yer varsa oraya, menü çubuğu (.navbar) varsa onun sağına, yoksa sağ üst köşeye sabit */
+    var yer = document.querySelector('[data-dil-yer]'), nav = document.querySelector('.navbar');
+    if (yer) { box.classList.add('dil-yer'); yer.parentNode.replaceChild(box, yer); }
+    else if (nav) { box.classList.add('dil-nav'); nav.classList.add('dil-navbar'); nav.appendChild(box); }
+    else document.body.appendChild(box);
     btn = box.querySelector('.dil-btn'); menu = box.querySelector('.dil-menu'); flag = btn.querySelector('i'); code = btn.querySelector('span');
     function open(o){ menu.hidden = !o; btn.setAttribute('aria-expanded', o); }
     btn.addEventListener('click', function(e){ e.stopPropagation(); open(menu.hidden); });
