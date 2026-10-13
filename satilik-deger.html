@@ -144,6 +144,19 @@
 .waonay{display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:14px;line-height:1.45}
 .waonay input{width:20px;height:20px;flex:none;margin-top:1px;accent-color:#25D366}
 .waonay span{color:#334}
+  .beklenti{display:flex;gap:10px;align-items:flex-start;background:#eef2f9;border:1px solid #d6dff0;border-radius:10px;padding:12px 14px;margin:14px 0 4px;font-size:.9rem;line-height:1.5;color:var(--ink)}
+  .beklenti::before{content:"i";flex:none;width:20px;height:20px;border-radius:50%;background:var(--blue);color:#fff;font-weight:600;font-size:.8rem;display:grid;place-items:center;margin-top:1px;font-style:italic}
+  .success{padding-left:18px;padding-right:18px}
+  .success .mesaj{color:var(--ink);font-weight:400;line-height:1.55;max-width:440px;margin:0 auto}
+  .nobetci{display:flex;align-items:center;gap:14px;text-align:left;max-width:440px;margin:22px auto 0;padding:14px 16px;border:1px solid var(--line);border-radius:14px;background:var(--soft)}
+  .nobetci[hidden]{display:none}
+  .nobetci-foto{width:64px;height:64px;flex:none;border-radius:50%;overflow:hidden;background:var(--blue);color:#fff;display:grid;place-items:center;font-weight:600;font-size:1.2rem;box-shadow:0 0 0 3px #fff,0 0 0 4px var(--line)}
+  .nobetci-foto img{width:100%;height:100%;object-fit:cover;display:block}
+  .nobetci-bilgi{min-width:0;flex:1}
+  .nobetci-etiket{display:block;font-size:.78rem;color:var(--gray);font-weight:400;text-transform:uppercase;letter-spacing:.04em}
+  .nobetci-ad{display:block;font-size:1.08rem;font-weight:600;color:var(--blue);margin:2px 0}
+  .nobetci-wa{display:inline-block;font-size:.85rem;font-weight:500;color:#1e9e5a;text-decoration:none}
+  .nobetci-wa:hover{text-decoration:underline}
 </style>
 <!-- Google tag (gtag.js) -->
 <script src="cerez.js" data-ga="G-ZNHG94R2JK"></script>
@@ -375,13 +388,22 @@
         </label>
       </div>
 
-      <button type="submit" class="submit">Satılık Değer Talebi Gönder</button>
+      <p class="beklenti">Fiyatı bölgeyi bilen danışmanımız hazırlar. Sizi bugün arayıp 2-3 soru soracak, ardından ücretsiz değerleme raporunuzu iletecek.</p>
+      <button type="submit" class="submit">Uzman değerlemesi iste</button>
     </form>
 
     <div class="card success" id="successCard">
       <div class="check">✓</div>
       <h2>Talebiniz alındı</h2>
-      <p>Uzman danışmanımız en kısa sürede sizinle iletişime geçecek.</p>
+      <p class="mesaj">Fiyatı bölgeyi bilen danışmanımız hazırlar. Sizi bugün arayıp 2-3 soru soracak, ardından ücretsiz değerleme raporunuzu iletecek.</p>
+      <div class="nobetci" id="nobetciKart" hidden>
+        <div class="nobetci-foto" aria-hidden="true"></div>
+        <div class="nobetci-bilgi">
+          <span class="nobetci-etiket">Bugünkü nöbetçi danışmanınız</span>
+          <span class="nobetci-ad" data-dil-yok></span>
+          <a class="nobetci-wa" href="https://wa.me/902163151515" target="_blank" rel="noopener">WhatsApp ile yazın</a>
+        </div>
+      </div>
     </div>
 
     
@@ -484,6 +506,7 @@
   });
 })();
 </script>
+<script src="nobetci.js" defer></script>
 <script src="telif.js" defer></script>
 </body>
 </html>

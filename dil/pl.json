@@ -1104,6 +1104,9 @@
 "tarihinde başlıyor,": ",",
 "tarihinde başlıyor. İlk blok:": ". Pierwszy blok:",
 "kaldı. İlk blok:": "pozostało. Pierwszy blok:",
+"Uzman değerlemesi iste": "Poproś o wycenę eksperta",
+"Fiyatı bölgeyi bilen danışmanımız hazırlar. Sizi bugün arayıp 2-3 soru soracak, ardından ücretsiz değerleme raporunuzu iletecek.": "Cenę przygotowuje nasz doradca, który zna okolicę. Zadzwoni do Ciebie dziś, zada 2-3 pytania, a następnie prześle Ci bezpłatny raport z wyceny.",
+"Bugünkü nöbetçi danışmanınız": "Twój dyżurny doradca na dziś",
 "__re": [
 [
 "^(\\d+)\\. Etap$",

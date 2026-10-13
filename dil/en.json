@@ -1104,6 +1104,9 @@
 "tarihinde başlıyor,": ",",
 "tarihinde başlıyor. İlk blok:": ". First block:",
 "kaldı. İlk blok:": "left. First block:",
+"Uzman değerlemesi iste": "Request an expert valuation",
+"Fiyatı bölgeyi bilen danışmanımız hazırlar. Sizi bugün arayıp 2-3 soru soracak, ardından ücretsiz değerleme raporunuzu iletecek.": "The price is prepared by our consultant who knows the area. They will call you today, ask 2-3 questions, and then send you your free valuation report.",
+"Bugünkü nöbetçi danışmanınız": "Your consultant on duty today",
 "__re": [
 [
 "^(\\d+)\\. Etap$",
