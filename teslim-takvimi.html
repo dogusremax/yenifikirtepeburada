@@ -715,7 +715,7 @@
     // Programı açıklanmamış etaplar (konut sayısı). Program açıklanınca listeden kendiliğinden düşer.
     var YAKIN=[[3,null],[4,'194 konut'],[5,'588 konut'],[6,'677 konut'],[7,'136 konut'],[8,'686 konut'],[9,'548 konut'],[10,'282 konut'],[12,'855 konut'],[13,'1.160 konut'],[14,'252 konut'],[15,'262 konut'],[16,'760 konut'],[17,'1.097 konut'],[18,'503 ofis'],[19,'250 konut']];
     // Anahtar teslimi tamamlanmış etaplar
-    var TESLIM=[4,5,6,7,10,14,15,16,18,19];
+    var TESLIM=[4,5,6,7,10,14,15,16,19];
     function teslimEdildi(n){return TESLIM.indexOf(n)>=0;}
     function teslimler(){return YAKIN.filter(function(y){return teslimEdildi(y[0])&&!ETAP.some(function(e){return e.id===String(y[0]);});});}
     function yakinlar(){return YAKIN.filter(function(y){return !teslimEdildi(y[0])&&!ETAP.some(function(e){return e.id===String(y[0]);})&&!(y[0]===3&&ETAP.some(function(e){return e.id==='3';}));});}
