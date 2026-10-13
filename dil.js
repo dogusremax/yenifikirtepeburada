@@ -152,7 +152,7 @@
       if (d == null) { l = 'tr'; d = {}; }
       L = l; D = d;
       root.lang = l;
-      root.dir = l === 'fa' ? 'rtl' : 'ltr';
+      root.dir = (l === 'fa' && !root.hasAttribute('data-dil-ltr')) ? 'rtl' : 'ltr'; /* data-dil-ltr: düzeni aynalanmayacak sayfalar */
       if (l === 'fa') fontFa();
       all();
       if (flag) { flag.className = 'dil-flag dil-flag-' + l; code.textContent = l.toUpperCase();
