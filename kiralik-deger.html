@@ -97,6 +97,7 @@
     transition:.18s;
   }
   .submit:hover{background:var(--blue-mid)}
+  .submit:disabled{opacity:.6;cursor:wait}
   .note{text-align:center;font-size:.82rem;color:var(--gray);margin:18px 0 50px;font-weight:300}
 
   .success{display:none;text-align:center;padding:20px 0}
@@ -400,9 +401,17 @@
   </div>
 
 <script>
+  var GONDERILIYOR = false;
   function submitForm(e){
     e.preventDefault();
+    // Çift dokunmada talep birden fazla kez gitmesin (2026-10-15: bir müşterinin
+    // formu 4 sn içinde 4 kez düştü). Gönderim bitene kadar düğme kilitli.
+    if (GONDERILIYOR) return false;
+    GONDERILIYOR = true;
     var form = e.target;
+    var btn = form.querySelector('button[type="submit"]');
+    var btnMetin = btn ? btn.textContent : '';
+    if (btn) { btn.disabled = true; btn.textContent = 'Gönderiliyor...'; }
     var data = new FormData(form);
 
     // Ofis servisine bildir — müşteriye WhatsApp, nöbetçi danışmana e-posta gider.
@@ -429,7 +438,11 @@
         document.getElementById('successCard').style.display='block';
         window.scrollTo({top:0,behavior:'smooth'});
       })
-      .catch(function(){ alert('Bir hata oluştu, lütfen tekrar deneyin.'); });
+      .catch(function(){
+        GONDERILIYOR = false;
+        if (btn) { btn.disabled = false; btn.textContent = btnMetin; }
+        alert('Bir hata oluştu, lütfen tekrar deneyin.');
+      });
     return false;
   }
 </script>
