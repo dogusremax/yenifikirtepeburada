@@ -1107,6 +1107,17 @@
 "Uzman değerlemesi iste": "درخواست ارزیابی کارشناسی",
 "Fiyatı bölgeyi bilen danışmanımız hazırlar. Sizi bugün arayıp 2-3 soru soracak, ardından ücretsiz değerleme raporunuzu iletecek.": "قیمت را مشاور ما که منطقه را به‌خوبی می‌شناسد تهیه می‌کند. امروز با شما تماس می‌گیرد، ۲ تا ۳ سؤال می‌پرسد و سپس گزارش ارزیابی رایگان شما را ارسال می‌کند.",
 "Bugünkü nöbetçi danışmanınız": "مشاور کشیک امروز شما",
+"Benzer mülklerde tahmini fiyat aralığı": "محدوده تخمینی قیمت املاک مشابه",
+"Benzer mülklerde tahmini aylık kira aralığı": "محدوده تخمینی اجاره ماهانه املاک مشابه",
+"/ ay": "/ ماه",
+"Bölge ortalamasına dayalı kaba bir tahmindir. Kat, cephe, manzara ve dairenin durumu fiyatı belirgin biçimde değiştirir.": "این یک تخمین تقریبی بر اساس میانگین منطقه است. طبقه، جهت، چشم‌انداز و وضعیت آپارتمان می‌تواند قیمت را به‌طور قابل‌توجهی تغییر دهد.",
+"m² girilmediği için oda sayısına göre ortalama büyüklük kullanıldı.": "چون متراژ وارد نشده، از متراژ میانگین بر اساس تعداد اتاق‌ها استفاده شد.",
+"Mülkünüze birebir hazırlanmış ÜCRETSİZ değerleme raporu için nöbetçi danışmanımız sizi bugün arayıp 2-3 soru soracak.": "برای گزارش ارزیابی رایگان که مخصوص ملک شما تهیه می‌شود، مشاور کشیک ما امروز با شما تماس می‌گیرد و ۲ تا ۳ سؤال می‌پرسد.",
+"Sizi aramasını onaylıyor musunuz?": "آیا با تماس موافقید؟",
+"Evet, arasın": "بله، تماس بگیرید",
+"Şimdi değil": "الان نه",
+"Teşekkürler. Danışmanımız bugün sizi arayacak.": "متشکریم. مشاور ما امروز با شما تماس می‌گیرد.",
+"Tamam, sizi aramayacağız. Talebiniz kayıtlı; istediğiniz zaman WhatsApp'tan bize yazabilirsiniz.": "باشه، با شما تماس نمی‌گیریم. درخواست شما ثبت شده است؛ هر زمان خواستید می‌توانید در واتس‌اپ به ما پیام دهید.",
 "__re": [
 [
 "^(\\d+)\\. Etap$",

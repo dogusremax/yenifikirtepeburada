@@ -1,0 +1,22 @@
+{
+  "_not": "Değerleme formundan sonra gösterilen TAHMİNİ aralık. Brüt m² başına TL. satis = satış fiyatı, kira = aylık kira. Grupta olmayan site 'diger' değerlerini kullanır. Umut onaylamadan canlıya alınmayacak; rakamlar ilk taslaktır.",
+  "guncelleme": "2026-10-15",
+  "gruplar": {
+    "emlakkonut": { "satis": [85000, 130000], "kira": [450, 700] },
+    "premium":    { "satis": [110000, 170000], "kira": [550, 850] },
+    "diger":      { "satis": [75000, 120000], "kira": [400, 650] }
+  },
+  "siteler": {
+    "Emlak Konut Yenifikirtepe": "emlakkonut",
+    "Concord İstanbul": "premium",
+    "Concord İstanbul 2. Etap": "premium",
+    "İstanbul 216": "premium",
+    "İstanbul 216 2. Etap": "premium",
+    "Mina Towers": "premium",
+    "The Mandarins": "premium",
+    "Brooklyn Park": "premium",
+    "Brooklyn Life": "premium",
+    "Uplife Kadıköy": "premium"
+  },
+  "ortalama_m2": { "1+1": 65, "2+1": 100, "3+1": 140, "4+1": 185, "5+1 ve üzeri": 240 }
+}

@@ -152,6 +152,23 @@
   .nobetci-bilgi{min-width:0;flex:1}
   .nobetci-etiket{display:block;font-size:.78rem;color:var(--gray);font-weight:400;text-transform:uppercase;letter-spacing:.04em}
   .nobetci-ad{display:block;font-size:1.08rem;font-weight:600;color:var(--blue);margin:2px 0}
+  .dk-ozet{list-style:none;display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin:4px 0 18px;padding:0}
+  .dk-ozet li{background:var(--soft);border:1px solid var(--line);border-radius:999px;padding:5px 11px;font-size:.84rem;color:var(--ink)}
+  .dk-aralik{background:linear-gradient(160deg,#0a2a5e,#163f80);color:#fff;border-radius:14px;padding:16px 16px 14px;margin:0 0 16px;text-align:center}
+  .dk-aralik[hidden],.dk-soru[hidden],.dk-sonuc[hidden],.dk-not[hidden]{display:none}
+  .dk-etiket{display:block;font-size:.8rem;letter-spacing:.04em;text-transform:uppercase;opacity:.8}
+  .dk-rakam{display:flex;justify-content:center;align-items:baseline;flex-wrap:wrap;gap:4px 8px;font-size:1.2rem;white-space:nowrap;font-weight:600;margin:6px 0 8px}
+  .dk-rakam small{font-size:.8rem;font-weight:400;opacity:.75}
+  .dk-not{display:block;font-size:.78rem;line-height:1.45;opacity:.8}
+  .dk-rapor{color:var(--ink);line-height:1.55;margin:0 auto}
+  .dk-rapor strong{color:var(--blue)}
+  .dk-soru{margin-top:18px}
+  .dk-soru p{font-weight:600;color:var(--blue);margin-bottom:10px}
+  .dk-btns{display:flex;gap:10px}
+  .dk-btns button{flex:1;font-family:inherit;font-size:1rem;font-weight:600;padding:14px;border-radius:8px;cursor:pointer;border:1.5px solid var(--blue)}
+  .dk-evet{background:var(--blue);color:#fff}
+  .dk-hayir{background:#fff;color:var(--blue);flex:0 0 auto !important}
+  .dk-sonuc{margin-top:16px;background:#e8f5ee;color:#16784a;border-radius:10px;padding:12px 14px;font-weight:500;line-height:1.5}
   .nobetci-wa{display:inline-block;font-size:.85rem;font-weight:500;color:#1e9e5a;text-decoration:none}
   .nobetci-wa:hover{text-decoration:underline}
 </style>
@@ -392,15 +409,30 @@
     <div class="card success" id="successCard">
       <div class="check">✓</div>
       <h2>Talebiniz alındı</h2>
-      <p class="mesaj">Fiyatı bölgeyi bilen danışmanımız hazırlar. Sizi bugün arayıp 2-3 soru soracak, ardından ücretsiz değerleme raporunuzu iletecek.</p>
+      <ul class="dk-ozet" id="dkOzet" data-dil-yok></ul>
+      <div class="dk-aralik" id="dkAralik" hidden>
+        <span class="dk-etiket">Benzer mülklerde tahmini aylık kira aralığı</span>
+        <div class="dk-rakam"><span id="dkMin" data-dil-yok></span><span>–</span><span id="dkMax" data-dil-yok></span><small>/ ay</small></div>
+        <span class="dk-not">Bölge ortalamasına dayalı kaba bir tahmindir. Kat, cephe, manzara ve dairenin durumu fiyatı belirgin biçimde değiştirir.</span>
+        <span class="dk-not" id="dkM2Not" hidden>m² girilmediği için oda sayısına göre ortalama büyüklük kullanıldı.</span>
+      </div>
+      <p class="dk-rapor">Mülkünüze birebir hazırlanmış ÜCRETSİZ değerleme raporu için nöbetçi danışmanımız sizi bugün arayıp 2-3 soru soracak.</p>
       <div class="nobetci" id="nobetciKart" hidden>
         <div class="nobetci-foto" aria-hidden="true"></div>
         <div class="nobetci-bilgi">
           <span class="nobetci-etiket">Bugünkü nöbetçi danışmanınız</span>
           <span class="nobetci-ad" data-dil-yok></span>
-          <a class="nobetci-wa" href="https://wa.me/902163151515" target="_blank" rel="noopener">WhatsApp ile yazın</a>
         </div>
       </div>
+      <div class="dk-soru" id="dkSoru">
+        <p>Sizi aramasını onaylıyor musunuz?</p>
+        <div class="dk-btns">
+          <button type="button" class="dk-evet" id="dkEvet">Evet, arasın</button>
+          <button type="button" class="dk-hayir" id="dkHayir">Şimdi değil</button>
+        </div>
+      </div>
+      <div class="dk-sonuc" id="dkEvetSonuc" hidden>Teşekkürler. Danışmanımız bugün sizi arayacak.</div>
+      <div class="dk-sonuc" id="dkHayirSonuc" hidden>Tamam, sizi aramayacağız. Talebiniz kayıtlı; istediğiniz zaman WhatsApp'tan bize yazabilirsiniz.</div>
     </div>
 
     
@@ -458,6 +490,7 @@
       .then(function(){
         document.getElementById('formCard').style.display='none';
         document.getElementById('successCard').style.display='block';
+        if (window.degerlemeKart) degerlemeKart(data, 'kiralik');
         window.scrollTo({top:0,behavior:'smooth'});
       })
       .catch(function(){
@@ -516,6 +549,7 @@
 })();
 </script>
 <script src="nobetci.js" defer></script>
+<script src="degerleme-kart.js" defer></script>
 <script src="telif.js" defer></script>
 </body>
 </html>

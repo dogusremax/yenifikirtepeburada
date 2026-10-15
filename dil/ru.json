@@ -1107,6 +1107,17 @@
 "Uzman değerlemesi iste": "Запросить экспертную оценку",
 "Fiyatı bölgeyi bilen danışmanımız hazırlar. Sizi bugün arayıp 2-3 soru soracak, ardından ücretsiz değerleme raporunuzu iletecek.": "Цену подготовит наш консультант, который хорошо знает район. Сегодня он позвонит вам, задаст 2-3 вопроса, а затем пришлёт бесплатный отчёт об оценке.",
 "Bugünkü nöbetçi danışmanınız": "Дежурный консультант сегодня",
+"Benzer mülklerde tahmini fiyat aralığı": "Ориентировочный диапазон цен на похожие объекты",
+"Benzer mülklerde tahmini aylık kira aralığı": "Ориентировочный диапазон месячной аренды похожих объектов",
+"/ ay": "/ мес.",
+"Bölge ortalamasına dayalı kaba bir tahmindir. Kat, cephe, manzara ve dairenin durumu fiyatı belirgin biçimde değiştirir.": "Это грубая оценка на основе средних цен по району. Этаж, сторона света, вид и состояние квартиры могут существенно изменить цену.",
+"m² girilmediği için oda sayısına göre ortalama büyüklük kullanıldı.": "Площадь не указана, поэтому использован средний размер для данного числа комнат.",
+"Mülkünüze birebir hazırlanmış ÜCRETSİZ değerleme raporu için nöbetçi danışmanımız sizi bugün arayıp 2-3 soru soracak.": "Для БЕСПЛАТНОГО отчёта об оценке, подготовленного именно для вашего объекта, наш дежурный консультант сегодня позвонит вам и задаст 2-3 вопроса.",
+"Sizi aramasını onaylıyor musunuz?": "Вы согласны на звонок?",
+"Evet, arasın": "Да, позвоните",
+"Şimdi değil": "Не сейчас",
+"Teşekkürler. Danışmanımız bugün sizi arayacak.": "Спасибо. Наш консультант позвонит вам сегодня.",
+"Tamam, sizi aramayacağız. Talebiniz kayıtlı; istediğiniz zaman WhatsApp'tan bize yazabilirsiniz.": "Хорошо, мы не будем звонить. Ваша заявка сохранена; вы можете написать нам в WhatsApp в любое время.",
 "__re": [
 [
 "^(\\d+)\\. Etap$",

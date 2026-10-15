@@ -35,6 +35,7 @@
     var wa = kart.querySelector('.nobetci-wa');
     if(wa) wa.href = 'https://wa.me/902163151515?text=' +
       encodeURIComponent('Merhaba, değerleme talebim için nöbetçi danışman ' + name + ' ile görüşmek istiyorum.');
+    window.NOBETCI_AD = name;
     kart.hidden = false;
   }
 

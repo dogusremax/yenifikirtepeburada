@@ -1107,6 +1107,17 @@
 "Uzman değerlemesi iste": "Poproś o wycenę eksperta",
 "Fiyatı bölgeyi bilen danışmanımız hazırlar. Sizi bugün arayıp 2-3 soru soracak, ardından ücretsiz değerleme raporunuzu iletecek.": "Cenę przygotowuje nasz doradca, który zna okolicę. Zadzwoni do Ciebie dziś, zada 2-3 pytania, a następnie prześle Ci bezpłatny raport z wyceny.",
 "Bugünkü nöbetçi danışmanınız": "Twój dyżurny doradca na dziś",
+"Benzer mülklerde tahmini fiyat aralığı": "Szacowany przedział cen podobnych nieruchomości",
+"Benzer mülklerde tahmini aylık kira aralığı": "Szacowany przedział miesięcznego czynszu podobnych nieruchomości",
+"/ ay": "/ mies.",
+"Bölge ortalamasına dayalı kaba bir tahmindir. Kat, cephe, manzara ve dairenin durumu fiyatı belirgin biçimde değiştirir.": "To przybliżona szacunkowa wartość oparta na średnich dla okolicy. Piętro, ekspozycja, widok i stan mieszkania mogą znacząco zmienić cenę.",
+"m² girilmediği için oda sayısına göre ortalama büyüklük kullanıldı.": "Ponieważ nie podano m², przyjęto średnią powierzchnię dla liczby pokoi.",
+"Mülkünüze birebir hazırlanmış ÜCRETSİZ değerleme raporu için nöbetçi danışmanımız sizi bugün arayıp 2-3 soru soracak.": "Aby otrzymać BEZPŁATNY raport z wyceny przygotowany dla Twojej nieruchomości, nasz dyżurny doradca zadzwoni do Ciebie dziś i zada 2-3 pytania.",
+"Sizi aramasını onaylıyor musunuz?": "Czy zgadzasz się na telefon?",
+"Evet, arasın": "Tak, proszę dzwonić",
+"Şimdi değil": "Nie teraz",
+"Teşekkürler. Danışmanımız bugün sizi arayacak.": "Dziękujemy. Nasz doradca zadzwoni do Ciebie dziś.",
+"Tamam, sizi aramayacağız. Talebiniz kayıtlı; istediğiniz zaman WhatsApp'tan bize yazabilirsiniz.": "Dobrze, nie zadzwonimy. Twoje zgłoszenie zostało zapisane; w każdej chwili możesz napisać do nas na WhatsApp.",
 "__re": [
 [
 "^(\\d+)\\. Etap$",

@@ -1107,6 +1107,17 @@
 "Uzman değerlemesi iste": "Request an expert valuation",
 "Fiyatı bölgeyi bilen danışmanımız hazırlar. Sizi bugün arayıp 2-3 soru soracak, ardından ücretsiz değerleme raporunuzu iletecek.": "The price is prepared by our consultant who knows the area. They will call you today, ask 2-3 questions, and then send you your free valuation report.",
 "Bugünkü nöbetçi danışmanınız": "Your consultant on duty today",
+"Benzer mülklerde tahmini fiyat aralığı": "Estimated price range for similar properties",
+"Benzer mülklerde tahmini aylık kira aralığı": "Estimated monthly rent range for similar properties",
+"/ ay": "/ month",
+"Bölge ortalamasına dayalı kaba bir tahmindir. Kat, cephe, manzara ve dairenin durumu fiyatı belirgin biçimde değiştirir.": "This is a rough estimate based on area averages. Floor, orientation, view and the condition of the apartment can change the price significantly.",
+"m² girilmediği için oda sayısına göre ortalama büyüklük kullanıldı.": "As no m² was entered, an average size for the number of rooms was used.",
+"Mülkünüze birebir hazırlanmış ÜCRETSİZ değerleme raporu için nöbetçi danışmanımız sizi bugün arayıp 2-3 soru soracak.": "For a FREE valuation report prepared specifically for your property, our consultant on duty will call you today and ask 2-3 questions.",
+"Sizi aramasını onaylıyor musunuz?": "Do you agree to receive a call?",
+"Evet, arasın": "Yes, please call",
+"Şimdi değil": "Not now",
+"Teşekkürler. Danışmanımız bugün sizi arayacak.": "Thank you. Our consultant will call you today.",
+"Tamam, sizi aramayacağız. Talebiniz kayıtlı; istediğiniz zaman WhatsApp'tan bize yazabilirsiniz.": "Okay, we will not call you. Your request is saved; you can message us on WhatsApp at any time.",
 "__re": [
 [
 "^(\\d+)\\. Etap$",
