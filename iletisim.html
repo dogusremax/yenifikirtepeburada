@@ -295,16 +295,26 @@
   </div>
 
 <script>
+  var GONDERILIYOR = false;
   function sendMsg(e){
     e.preventDefault();
+    if (GONDERILIYOR) return false;               // çift dokunmada mesaj iki kez gitmesin
+    GONDERILIYOR = true;
     var form = e.target;
+    var btn = form.querySelector('button[type="submit"]');
+    var btnMetin = btn ? btn.textContent : '';
+    if (btn) { btn.disabled = true; btn.textContent = 'Gönderiliyor...'; }
     var data = new FormData(form);
     fetch('https://formspree.io/f/mdajqbgo', {method:'POST', headers:{'Accept':'application/json'}, body:data})
       .then(function(){
         document.getElementById('formBox').style.display='none';
         document.getElementById('okBox').style.display='block';
       })
-      .catch(function(){ alert('Bir hata oluştu, lütfen tekrar deneyin.'); });
+      .catch(function(){
+        GONDERILIYOR = false;
+        if (btn) { btn.disabled = false; btn.textContent = btnMetin; }
+        alert('Bir hata oluştu, lütfen tekrar deneyin.');
+      });
     return false;
   }
 </script>
