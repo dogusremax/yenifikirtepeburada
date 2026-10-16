@@ -2,12 +2,10 @@ name: Teslim takvimi
 
 # teslim-takvimi.json'u günceller; teslim-takvimi.html bu dosyayı okur.
 # Ayrıntı: .github/scripts/teslim_guncelle.py
-# Saatler UTC: 04:15, 09:15, 14:15 = TR 07:15, 12:15, 17:15.
+# Her saat başı (UTC 04-20 = TR 07-23); yeni program aynı gün içinde siteye düşer.
 on:
   schedule:
-    - cron: "15 4 * * *"
-    - cron: "15 9 * * *"
-    - cron: "15 14 * * *"
+    - cron: "15 4-20 * * *"
   workflow_dispatch:
 
 permissions:
