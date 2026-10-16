@@ -1,8 +1,10 @@
 /**
  * yenifikirtepeburada.com — Form telefon doğrulama (WhatsApp kodu ile)
  *
- * Müşteri formu gönderince ofis servisi numarasına WhatsApp'tan 4 haneli bir
- * kod yollar, sayfada kod kartı açılır. Kod doğru girilince talep danışmana
+ * Müşteri formu gönderince sayfada kod kartı açılır. 4 haneli kod WhatsApp'tan
+ * gelir: kod şablonu onaylıysa servis doğrudan yollar; değilse müşteri
+ * "WhatsApp'tan kodumu al" düğmesiyle 15 15'e hazır mesajı gönderir, kod aynı
+ * sohbetten döner. Kod doğru girilince talep danışmana
  * gider ve "Talebiniz alındı" ekranı açılır.
  * Servis: dogusremax/apps-script → dogus-whatsapp-service/Dogrulama.js
  *
@@ -41,9 +43,14 @@
       '.fd-onay:disabled{opacity:.6;cursor:default}' +
       '.fd-alt{display:flex;flex-direction:column;align-items:center;gap:10px;margin-top:18px}' +
       '.fd-alt button{background:none;border:0;color:var(--gray,#6b7280);font:inherit;font-size:.88rem;text-decoration:underline;cursor:pointer;padding:2px}' +
-      '.fd-alt button:disabled{text-decoration:none;cursor:default;opacity:.7}';
+      '.fd-alt button:disabled{text-decoration:none;cursor:default;opacity:.7}' +
+      '.fd-wa{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:15px;margin-bottom:22px;border-radius:12px;background:#1fb855;color:#fff;font-size:1.02rem;font-weight:600;text-decoration:none}' +
+      '.fd-wa:hover{background:#19a24a}' +
+      '.fd-wa svg{width:22px;height:22px;fill:#fff;flex:none}';
     document.head.appendChild(s);
   }
+
+  var WA_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.64.07-.3-.15-1.26-.46-2.39-1.47-.88-.79-1.48-1.76-1.65-2.06-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.67-1.61-.92-2.21-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48s1.07 2.88 1.21 3.08c.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.69.63.71.23 1.36.2 1.87.12.57-.09 1.76-.72 2.01-1.41.25-.69.25-1.29.17-1.41-.07-.12-.27-.2-.57-.35zM12.04 21.5a9.43 9.43 0 0 1-4.8-1.32l-.35-.21-3.57.94.95-3.48-.22-.36a9.4 9.4 0 0 1-1.44-5.02c0-5.2 4.23-9.43 9.44-9.43 2.52 0 4.89.98 6.67 2.77a9.37 9.37 0 0 1 2.76 6.67c0 5.2-4.24 9.44-9.43 9.44zm8.03-17.47A11.27 11.27 0 0 0 12.04.7C5.78.7.69 5.79.69 12.04c0 2 .52 3.95 1.52 5.67L.6 23.3l5.72-1.5a11.33 11.33 0 0 0 5.42 1.38c6.25 0 11.34-5.09 11.35-11.35 0-3.03-1.18-5.88-3.33-8.02z"/></svg>';
 
   function basari(o) {
     var k = document.getElementById('fd-kart');
@@ -78,10 +85,17 @@
     var k = document.createElement('div');
     k.className = 'card fd-kart';
     k.id = 'fd-kart';
+    var istek = c.yontem === 'istek';
+    var waLink = istek ? 'https://wa.me/' + c.numara + '?text=' +
+      encodeURIComponent('Merhaba, onay kodumu almak istiyorum. Talep no: ' + c.istekNo) : '';
     k.innerHTML =
       '<h2>Telefonunuzu doğrulayın</h2>' +
-      '<p><b class="fd-tel"></b> numarasına WhatsApp\'tan 4 haneli bir kod gönderdik. ' +
-      'Kodu aşağıya yazın.</p>' +
+      (istek
+        ? '<p>Aşağıdaki düğmeye basın, WhatsApp açılınca hazır mesajı <b>gönderin</b>. ' +
+          'Onay kodunuz WhatsApp\'tan hemen gelecek, kodu buraya yazın.</p>' +
+          '<a class="fd-wa" href="' + waLink + '" target="_blank" rel="noopener">' + WA_SVG + 'WhatsApp\'tan kodumu al</a>'
+        : '<p><b class="fd-tel"></b> numarasına WhatsApp\'tan 4 haneli bir kod gönderdik. ' +
+          'Kodu aşağıya yazın.</p>') +
       '<div class="fd-kutular">' +
         '<input inputmode="numeric" autocomplete="one-time-code" maxlength="4" aria-label="Kodun 1. hanesi">' +
         '<input inputmode="numeric" maxlength="1" aria-label="Kodun 2. hanesi">' +
@@ -94,7 +108,7 @@
         '<button type="button" class="fd-tekrar" disabled></button>' +
         '<button type="button" class="fd-atla">WhatsApp kullanmıyorum, talebimi kodsuz gönder</button>' +
       '</div>';
-    k.querySelector('.fd-tel').textContent = tel;
+    if (!istek) k.querySelector('.fd-tel').textContent = tel;
     o.formCard.style.display = 'none';
     o.formCard.parentNode.insertBefore(k, o.formCard.nextSibling);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -126,7 +140,7 @@
         if (e.key === 'Enter') gonder();
       });
     });
-    setTimeout(function () { kutular[0].focus(); }, 300);
+    if (!istek) setTimeout(function () { kutular[0].focus(); }, 300);
 
     function sayacBaslat() {
       var kalan = TEKRAR_SN;
@@ -194,7 +208,8 @@
       });
     });
 
-    if (c.ok) sayacBaslat();
+    if (istek) tekrar.style.display = 'none';      // düğmeye tekrar basmak kodu yeniden getirir
+    else if (c.ok) sayacBaslat();
     else {
       // Kod gönderilemedi (numarada WhatsApp yok ya da servis hatası)
       yaz('Bu numaraya WhatsApp\'tan kod gönderemedik. Numaranızı kontrol edin ya da talebinizi kodsuz gönderin.', true);
