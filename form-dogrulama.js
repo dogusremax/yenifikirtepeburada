@@ -1,5 +1,5 @@
 /**
- * yenifikirtepeburada.com — Form telefon doğrulama (WhatsApp kodu ile)
+ * yenifikirtepeburada.com — Form telefon doğrulama (SMS ya da WhatsApp kodu ile)
  *
  * Müşteri formu gönderince sayfada kod kartı açılır. 4 haneli kod WhatsApp'tan
  * gelir: kod şablonu onaylıysa servis doğrudan yollar; değilse müşteri
@@ -86,6 +86,7 @@
     k.className = 'card fd-kart';
     k.id = 'fd-kart';
     var istek = c.yontem === 'istek';
+    var sms = c.yontem === 'sms';
     var waLink = istek ? 'https://wa.me/' + c.numara + '?text=' +
       encodeURIComponent('Merhaba, onay kodumu almak istiyorum. Talep no: ' + c.istekNo) : '';
     k.innerHTML =
@@ -94,7 +95,7 @@
         ? '<p>Aşağıdaki düğmeye basın, WhatsApp açılınca hazır mesajı <b>gönderin</b>. ' +
           'Onay kodunuz WhatsApp\'tan hemen gelecek, kodu buraya yazın.</p>' +
           '<a class="fd-wa" href="' + waLink + '" target="_blank" rel="noopener">' + WA_SVG + 'WhatsApp\'tan kodumu al</a>'
-        : '<p><b class="fd-tel"></b> numarasına WhatsApp\'tan 4 haneli bir kod gönderdik. ' +
+        : '<p><b class="fd-tel"></b> numarasına ' + (sms ? 'SMS ile' : 'WhatsApp\'tan') + ' 4 haneli bir kod gönderdik. ' +
           'Kodu aşağıya yazın.</p>') +
       '<div class="fd-kutular">' +
         '<input inputmode="numeric" autocomplete="one-time-code" maxlength="4" aria-label="Kodun 1. hanesi">' +
@@ -106,7 +107,7 @@
       '<button type="button" class="fd-onay">Onayla</button>' +
       '<div class="fd-alt">' +
         '<button type="button" class="fd-tekrar" disabled></button>' +
-        '<button type="button" class="fd-atla">WhatsApp kullanmıyorum, talebimi kodsuz gönder</button>' +
+        '<button type="button" class="fd-atla">' + (sms ? 'Kod gelmedi, talebimi kodsuz gönder' : 'WhatsApp kullanmıyorum, talebimi kodsuz gönder') + '</button>' +
       '</div>';
     if (!istek) k.querySelector('.fd-tel').textContent = tel;
     o.formCard.style.display = 'none';
@@ -212,7 +213,7 @@
     else if (c.ok) sayacBaslat();
     else {
       // Kod gönderilemedi (numarada WhatsApp yok ya da servis hatası)
-      yaz('Bu numaraya WhatsApp\'tan kod gönderemedik. Numaranızı kontrol edin ya da talebinizi kodsuz gönderin.', true);
+      yaz('Bu numaraya kod gönderemedik. Numaranızı kontrol edin ya da talebinizi kodsuz gönderin.', true);
       tekrar.disabled = false;
       tekrar.textContent = 'Tekrar dene';
     }
