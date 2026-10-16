@@ -599,7 +599,8 @@ function guvenliJson(r){
       var card = document.getElementById('dutyCard');
       // Nöbetçi kartı 2,6 sn sonra açılır
       window.showDutyCard = function(){ canli.then(function(){ if(!ofisGunu) card.classList.add('show'); }); };
-      setTimeout(window.showDutyCard, 2600);
+      // Teslim duyurusu açıksa nöbetçi kartı duyuru kapanınca açılır
+      setTimeout(function(){ if(!window.tpAktif) window.showDutyCard(); }, 2600);
       document.getElementById('dutyClose').addEventListener('click', function(){
         card.classList.remove('show');
       });
@@ -625,5 +626,149 @@ function guvenliJson(r){
   </style>
   <a class="wa-fab" href="https://wa.me/905324724148" target="_blank" rel="noopener" aria-label="WhatsApp ile yazın"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.64.07-.3-.15-1.26-.46-2.39-1.47-.88-.79-1.48-1.76-1.65-2.06-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.67-1.61-.92-2.21-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48s1.07 2.88 1.21 3.08c.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.69.63.71.23 1.36.2 1.87.12.57-.09 1.76-.72 2.01-1.41.25-.69.25-1.29.17-1.41-.07-.12-.27-.2-.57-.35zM12.04 21.5h-.01a9.43 9.43 0 0 1-4.8-1.32l-.35-.21-3.57.94.95-3.48-.22-.36a9.4 9.4 0 0 1-1.44-5.02c0-5.2 4.23-9.43 9.44-9.43 2.52 0 4.89.98 6.67 2.77a9.37 9.37 0 0 1 2.76 6.67c0 5.2-4.24 9.44-9.43 9.44zm8.03-17.47A11.27 11.27 0 0 0 12.04.7C5.78.7.69 5.79.69 12.04c0 2 .52 3.95 1.52 5.67L.6 23.3l5.72-1.5a11.33 11.33 0 0 0 5.42 1.38h.01c6.25 0 11.34-5.09 11.35-11.35 0-3.03-1.18-5.88-3.33-8.02z""/></svg><span>Bize yazın</span></a>
 <script src="telif.js" defer></script>
+  <!-- 13. Etap teslim duyurusu (geri sayımlı). Veri: teslim-takvimi.json; teslimler bitince kendiliğinden gösterilmez -->
+  <style>
+    .tp-ov{position:fixed;inset:0;z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(2,8,22,.72);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);opacity:0;visibility:hidden;transition:opacity .35s,visibility .35s;font-family:'Archivo',sans-serif}
+    .tp-ov.show{opacity:1;visibility:visible}
+    .tp-k{position:relative;width:100%;max-width:420px;padding:26px 24px 22px;text-align:center;border-radius:22px;color:#fff;overflow:hidden;
+      background:radial-gradient(120% 90% at 100% 0%,rgba(226,35,26,.55) 0%,rgba(226,35,26,0) 55%),linear-gradient(160deg,#0d2350 0%,#071431 60%,#040B1C 100%);
+      border:1px solid rgba(255,255,255,.14);box-shadow:0 30px 80px -20px rgba(0,0,0,.7);transform:translateY(18px) scale(.97);transition:transform .45s cubic-bezier(.2,.8,.2,1)}
+    .tp-ov.show .tp-k{transform:none}
+    .tp-x{position:absolute;top:12px;right:12px;width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.08);color:#fff;font-size:22px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center}
+    .tp-x:hover{background:rgba(255,255,255,.18)}
+    .tp-ust{display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--red-soft)}
+    .tp-ust i{width:8px;height:8px;border-radius:50%;background:var(--red-soft);box-shadow:0 0 0 0 rgba(255,77,94,.7);animation:tpNab 1.8s infinite}
+    @keyframes tpNab{70%{box-shadow:0 0 0 9px rgba(255,77,94,0)}100%{box-shadow:0 0 0 0 rgba(255,77,94,0)}}
+    .tp-bas{margin:10px 0 6px;font-size:30px;font-weight:700;line-height:1.1;letter-spacing:-.01em}
+    .tp-bas em{font-style:normal;color:var(--red-soft)}
+    .tp-alt{font-size:14.5px;font-weight:300;color:rgba(255,255,255,.78);line-height:1.45}
+    .tp-sayac{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:20px 0 6px}
+    .tp-sayac div{padding:12px 0 9px;border-radius:12px;text-align:center;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12)}
+    .tp-sayac b{display:block;font-size:28px;font-weight:700;line-height:1;font-variant-numeric:tabular-nums}
+    .tp-sayac small{display:block;margin-top:6px;font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.6)}
+    .tp-ilk{font-size:12.5px;color:rgba(255,255,255,.6);text-align:center;margin-bottom:18px}
+    .tp-ozet{display:flex;justify-content:space-between;gap:8px;padding:12px 14px;margin-bottom:16px;border-radius:12px;background:rgba(0,0,0,.22);font-size:13px;color:rgba(255,255,255,.75)}
+    .tp-ozet b{display:block;font-size:15px;color:#fff;font-weight:600}
+    .tp-go{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:14px;border-radius:12px;background:var(--red);color:#fff;font-weight:600;font-size:15px;text-decoration:none;transition:background .2s}
+    .tp-go:hover{background:#c11c14}
+    .tp-wa{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:10px;padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,.2);color:#fff;font-size:14px;font-weight:500;text-decoration:none}
+    .tp-wa:hover{background:rgba(255,255,255,.08)}
+    .tp-wa svg{width:18px;height:18px;fill:#25D366}
+    @media (max-width:480px){
+      .tp-k{max-width:340px;padding:24px 18px 18px;border-radius:18px}
+      .tp-ust{font-size:10px;letter-spacing:.12em}
+      .tp-bas{font-size:25px}
+      .tp-alt{font-size:13.5px}
+      .tp-sayac{gap:6px;margin-top:16px}
+      .tp-sayac b{font-size:23px}
+      .tp-sayac small{font-size:9px;letter-spacing:.1em}
+      .tp-ozet{font-size:12px;padding:10px 12px}
+      .tp-ozet b{font-size:14px}
+    }
+    @media (prefers-reduced-motion:reduce){.tp-k,.tp-ov{transition:none}.tp-ust i{animation:none}}
+  </style>
+  <div class="tp-ov" id="tpOv" role="dialog" aria-modal="true" aria-labelledby="tpBas" aria-hidden="true">
+    <div class="tp-k">
+      <button type="button" class="tp-x" id="tpX" aria-label="Kapat">&times;</button>
+      <span class="tp-ust"><i></i><span id="tpUst">Resmi program açıklandı</span></span>
+      <h2 class="tp-bas" id="tpBas">13. Etap teslimleri <em>yaklaşıyor</em></h2>
+      <p class="tp-alt" id="tpAlt">Anahtar teslimleri başlıyor. Kapı numaranızla teslim gün ve saatinizi hemen öğrenin.</p>
+      <div class="tp-sayac" id="tpSayac" aria-live="off">
+        <div><b id="tpG">0</b><small>Gün</small></div>
+        <div><b id="tpS">00</b><small>Saat</small></div>
+        <div><b id="tpD">00</b><small>Dakika</small></div>
+        <div><b id="tpSn">00</b><small>Saniye</small></div>
+      </div>
+      <p class="tp-ilk" id="tpIlk">İlk teslim: 22 Ekim Perşembe, saat 09:00</p>
+      <div class="tp-ozet">
+        <span><b id="tpTarih">22 Ekim – 1 Aralık</b>Teslim dönemi</span>
+        <span><b id="tpDaire">486 daire</b>Programdaki</span>
+        <span><b id="tpBlok">9 blok</b>E, C, F, B2…</span>
+      </div>
+      <a class="tp-go" id="tpGo" href="teslim-takvimi.html#etap-13">Teslim günümü öğren &rsaquo;</a>
+      <a class="tp-wa" id="tpWa" target="_blank" rel="noopener" href="https://wa.me/902163151515?text=Merhaba%2C%2013.%20Etap%20teslimi%20hakk%C4%B1nda%20bilgi%20almak%20istiyorum."><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.64.07-.3-.15-1.26-.46-2.39-1.47-.88-.79-1.48-1.76-1.65-2.06-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.67-1.61-.92-2.21-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48s1.07 2.88 1.21 3.08c.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.69.63.71.23 1.36.2 1.87.12.57-.09 1.76-.72 2.01-1.41.25-.69.25-1.29.17-1.41-.07-.12-.27-.2-.57-.35zM12.04 21.5h-.01a9.43 9.43 0 0 1-4.8-1.32l-.35-.21-3.57.94.95-3.48-.22-.36a9.4 9.4 0 0 1-1.44-5.02c0-5.2 4.23-9.43 9.44-9.43 2.52 0 4.89.98 6.67 2.77a9.37 9.37 0 0 1 2.76 6.67c0 5.2-4.24 9.44-9.43 9.44zm8.03-17.47A11.27 11.27 0 0 0 12.04.7C5.78.7.69 5.79.69 12.04c0 2 .52 3.95 1.52 5.67L.6 23.3l5.72-1.5a11.33 11.33 0 0 0 5.42 1.38h.01c6.25 0 11.34-5.09 11.35-11.35 0-3.03-1.18-5.88-3.33-8.02z"/></svg>13. Etap için danışmana sor</a>
+    </div>
+  </div>
+  <script>
+    (function(){
+      var ETAP = '13';
+      // Yedek veri; teslim-takvimi.json gelince güncellenir
+      var V = {bas:'2026-10-22', saat:'09:00', bit:'2026-12-01', daire:486, blok:['E','C','F','B2','A1','A2','B1','D1','D2']};
+      var AY = ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
+      var GUN = ['Pazar','Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi'];
+      function tarih(s, saat){ var a = s.split('-'), t = (saat || '00:00').split(':'); return new Date(+a[0], +a[1]-1, +a[2], +t[0], +t[1]); }
+      function bitti(){ return new Date() > tarih(V.bit, '23:59'); }
+      var ov = document.getElementById('tpOv');
+      function track(n, p){ try { if (typeof gtag === 'function') gtag('event', n, p || {}); } catch(e){} }
+      var seen = false;
+      try { seen = sessionStorage.getItem('tp13') === '1'; } catch(e){}
+      if (seen || bitti()) return;
+      window.tpAktif = true;
+
+      function yaz(){
+        var b = tarih(V.bas, V.saat), z = tarih(V.bit);
+        document.getElementById('tpIlk').textContent = 'İlk teslim: ' + b.getDate() + ' ' + AY[b.getMonth()] + ' ' + GUN[b.getDay()] + ', saat ' + V.saat;
+        document.getElementById('tpTarih').textContent = b.getDate() + ' ' + AY[b.getMonth()] + ' – ' + z.getDate() + ' ' + AY[z.getMonth()];
+        document.getElementById('tpDaire').textContent = V.daire.toLocaleString('tr-TR') + ' daire';
+        document.getElementById('tpBlok').textContent = V.blok.length + ' blok';
+        document.getElementById('tpBlok').nextSibling.textContent = V.blok.slice(0, 4).join(', ') + (V.blok.length > 4 ? '…' : '');
+      }
+      function iki(n){ return (n < 10 ? '0' : '') + n; }
+      var zam;
+      function say(){
+        var kalan = tarih(V.bas, V.saat) - new Date();
+        if (kalan <= 0){
+          // Teslimler başladı: geri sayım yerine "başladı" mesajı
+          document.getElementById('tpSayac').style.display = 'none';
+          document.getElementById('tpIlk').style.display = 'none';
+          document.getElementById('tpBas').innerHTML = '13. Etap teslimleri <em>başladı</em>';
+          document.getElementById('tpUst').textContent = 'Teslimler sürüyor';
+          clearInterval(zam); return;
+        }
+        var s = Math.floor(kalan / 1000);
+        document.getElementById('tpG').textContent = Math.floor(s / 86400);
+        document.getElementById('tpS').textContent = iki(Math.floor(s % 86400 / 3600));
+        document.getElementById('tpD').textContent = iki(Math.floor(s % 3600 / 60));
+        document.getElementById('tpSn').textContent = iki(s % 60);
+      }
+      yaz(); say(); zam = setInterval(say, 1000);
+
+      fetch('teslim-takvimi.json?cb=' + Date.now(), {cache:'no-store'}).then(function(r){ if(!r.ok) throw 0; return r.json(); }).then(function(j){
+        var e = (j.etaplar || []).filter(function(x){ return x.id === ETAP; })[0];
+        if (!e || !e.bloklar || !e.bloklar.length) return;
+        var bas = null, bit = null;
+        e.bloklar.forEach(function(k){ if(!bas || k.bas < bas) bas = k.bas; if(!bit || k.bit > bit) bit = k.bit; });
+        var ilk = (e.randevu || []).filter(function(r){ return r[3] === bas && r[4]; }).map(function(r){ return r[4]; }).sort()[0];
+        V = {bas:bas, saat:ilk || '09:00', bit:bit, daire:e.daire || V.daire, blok:e.bloklar.map(function(k){ return k.b; })};
+        yaz(); say();
+        if (bitti()) kapat('bitti');
+      }).catch(function(){});
+
+      var kapandi = false;
+      function kapat(nasil){
+        if (kapandi) return; kapandi = true;
+        clearInterval(zam);
+        ov.classList.remove('show'); ov.setAttribute('aria-hidden', 'true');
+        document.removeEventListener('keydown', tus);
+        window.tpAktif = false;
+        if (nasil !== 'bitti') track('teslim13_popup_close', {method: nasil});
+        if (window.showDutyCard) setTimeout(window.showDutyCard, 700);
+      }
+      function tus(e){ if (e.key === 'Escape') kapat('esc'); }
+      document.getElementById('tpX').addEventListener('click', function(){ kapat('x'); });
+      ov.addEventListener('click', function(e){ if (e.target === ov) kapat('arkaplan'); });
+      document.getElementById('tpGo').addEventListener('click', function(){ track('teslim13_popup_sorgu'); });
+      document.getElementById('tpWa').addEventListener('click', function(){ track('teslim13_popup_whatsapp'); });
+
+      // Oturumda bir kez, açılıştan 1,8 sn sonra
+      setTimeout(function(){
+        if (kapandi) return;
+        ov.classList.add('show'); ov.setAttribute('aria-hidden', 'false');
+        document.addEventListener('keydown', tus);
+        try { sessionStorage.setItem('tp13', '1'); } catch(e){}
+        track('teslim13_popup_open');
+      }, 1800);
+    })();
+  </script>
 </body>
 </html>
