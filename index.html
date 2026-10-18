@@ -556,7 +556,7 @@ function guvenliJson(r){
           var im = new Image();
           // geç yüklenen eski fotoğraf, sonradan gelen danışmanın üstüne binmesin
           im.onload = function(){ if(cizilen === name) av.appendChild(im); };
-          im.src = 'https://drive.google.com/thumbnail?id=' + foto[name] + '&sz=w240';
+          im.src = 'assets/nobetci/' + foto[name] + '.jpg';   // Drive küçük resmi tarayıcıda engellenebiliyor; kopyası sitede
           im.alt = name;
         }
         waBtn.href = 'https://wa.me/902163151515?text=' +
