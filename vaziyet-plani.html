@@ -60,7 +60,7 @@
   /* sahne geçişi */
   .go{position:relative;width:44px;height:44px;border-radius:50%;cursor:pointer;
     background:var(--coral);border:3px solid #fff;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,.45)}
-  .go::before{content:'';position:absolute;inset:-3px;border-radius:50%;border:3px solid #fff;animation:gop 1.8s ease-out infinite;pointer-events:none}
+  .go::before{content:'';position:absolute;inset:-3px;border-radius:50%;border:3px solid #fff;animation:gop 1.8s ease-out 3;pointer-events:none}
   @keyframes gop{0%{transform:scale(1);opacity:.85}100%{transform:scale(1.9);opacity:0}}
   .go svg{width:22px;height:22px;fill:#fff;pointer-events:none}
   .go b{position:absolute;top:calc(100% + 6px);left:50%;transform:translateX(-50%);white-space:nowrap;font-size:12px;font-weight:800;
@@ -91,7 +91,7 @@
   .sh h3{font-size:1.3rem;font-weight:800;color:var(--navy);letter-spacing:-.02em;line-height:1.2}
   .badge{display:inline-flex;align-items:center;gap:6px;margin-top:4px;font-size:.72rem;font-weight:800;letter-spacing:.06em;color:var(--c);background:color-mix(in srgb,var(--c) 14%,#fff);padding:3px 9px;border-radius:999px}
   .badge i{width:7px;height:7px;border-radius:50%;background:var(--c)}
-  .badge.now i{animation:blink 1.2s infinite}
+  .badge.now i{animation:blink 1.2s 5}
   @keyframes blink{50%{opacity:.25}}
   .x{position:absolute;right:14px;top:14px;width:36px;height:36px;border-radius:50%;border:0;background:var(--soft);cursor:pointer;font-size:1.3rem;line-height:1;color:var(--navy)}
   .stl{margin:14px 0 4px;font-size:.95rem;color:#2c3543}
@@ -170,6 +170,12 @@
   .tgl svg{width:14px;height:14px}
   .night .tgl::before{transform:translateX(100%);background:var(--coral)}
   .night .tgl span.d{color:rgba(255,255,255,.8)}.night .tgl span.m{color:#fff}
+  /* işaretleri gizle / göster */
+  .pins{position:fixed;z-index:5;right:16px;top:calc(104px + env(safe-area-inset-top));display:flex;align-items:center;gap:6px;padding:7px 12px;border:0;border-radius:999px;
+    background:rgba(5,10,48,.55);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:#fff;font:inherit;font-size:.76rem;font-weight:700;cursor:pointer}
+  .pins svg{width:15px;height:15px}.pins .off{display:none}
+  .nopin .pins{background:var(--coral)}.nopin .pins .on{display:none}.nopin .pins .off{display:block}
+  .nopin .pnlm-hotspot-base,.nopin .hlsvg{visibility:hidden!important}
 </style>
 <script src="dil.js"></script>
 </head>
@@ -186,6 +192,12 @@
 <button class="tgl" id="tgl" type="button" aria-pressed="false" aria-label="Gündüz ve gece görünümü arasında geçiş yap">
   <span class="d"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="4.5"/><path d="M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3M4.6 4.6l2.1 2.1M17.3 17.3l2.1 2.1M4.6 19.4l2.1-2.1M17.3 6.7l2.1-2.1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Gündüz</span>
   <span class="m"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 14.6A8.5 8.5 0 0 1 9.4 3.5a8.5 8.5 0 1 0 11.1 11.1z"/></svg>Gece</span>
+</button>
+
+<button class="pins" id="pins" type="button" aria-pressed="true" aria-label="İşaretleri gizle veya göster">
+  <svg class="on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>
+  <svg class="off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><path d="M3 3l18 18"/></svg>
+  <span>İşaretler</span>
 </button>
 
 <div class="hint" id="hint">Sürükleyerek çevirin · Etap numarasına dokunun</div>
@@ -251,6 +263,7 @@
   }
   document.body.classList.toggle('night',night);$('tgl').setAttribute('aria-pressed',night);
   $('tgl').onclick=function(){setNight(!night);};
+  $('pins').onclick=function(){var off=document.body.classList.toggle('nopin');this.setAttribute('aria-pressed',!off);if(off&&card.classList.contains('on'))close();};
   v.on('mousedown',function(){$('hint').classList.add('off');});
   v.on('touchstart',function(){$('hint').classList.add('off');});
   setTimeout(function(){$('hint').classList.add('off');},5000);
@@ -328,7 +341,7 @@
     h+='<div class="acts"><a class="pri" href="teslim-takvimi.html#etap-'+hedef+'">'+(e.st==='ok'?'Etap ayrıntıları':'Teslim takvimi')+'</a><div class="row">'+
       (KAT.indexOf(n)>=0?'<a class="sec2" href="kat-planlari.html#etap-'+n+'">Kat planları</a>':'<a class="sec2" href="etaplar.html">Etap bilgisi</a>')+
       '<a class="wa" href="'+wa+'" target="_blank" rel="noopener" aria-label="WhatsApp"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="'+WAP+'"/></svg>WhatsApp</a></div></div>';
-    SELYP=yaw!==undefined?[yaw,pitch]:null;hl(n);card.innerHTML=h;card.classList.add('on');card.scrollTop=0;document.body.classList.add('carded');
+    SELYP=yaw!==undefined?[yaw,pitch]:null;hl(n);card.innerHTML=h;card.classList.add('on');loopOn();card.scrollTop=0;document.body.classList.add('carded');
     if(yaw!==undefined)zoomTo(yaw,pitch);
     countAll(card,250);
     var vl=card.querySelector('.val');if(vl)setTimeout(function(){vl.style.width=vl.getAttribute('data-w')+'%';},60);
@@ -355,12 +368,22 @@
     if(sel)mark(sel);}
   v.on('load',prune);
   // Safari (Retina) gece/gündüz geçişinden sonra görüntüyü 2 kat büyütüp sol alt köşeden çizebiliyor, numaralar yerinde kalıyor:
-  // tuval boyutu ekranla uyuşmazsa yeniden boyutlandır, WebGL görüş alanını her karede tuvale eşitle
-  (function vpFix(){try{var r=v.getRenderer(),c=r&&r.getCanvas();
+  // tuval boyutu ekranla uyuşmazsa yeniden boyutlandır, WebGL görüş alanını tuvale eşitle.
+  // Yalnız görüntü hareket ederken (sürükleme, yakınlaşma, sahne geçişi) çalışır; boşta döngü durur, bilgisayar yorulmaz.
+  var VPT=0,VPON=false;
+  function wake(){VPT=performance.now();if(!VPON){VPON=true;requestAnimationFrame(vpFix);}if(card.classList.contains('on'))loopOn();}
+  ['mousedown','touchstart','wheel','keydown'].forEach(function(ev){addEventListener(ev,wake,{passive:true,capture:true});});
+  addEventListener('mousemove',function(e){if(e.buttons)wake();},{passive:true});
+  addEventListener('touchmove',wake,{passive:true});
+  addEventListener('resize',wake);
+  v.on('animatefinished',function(){VPT=performance.now();});
+  function vpFix(){if(performance.now()-VPT>1500){VPON=false;return;}try{var r=v.getRenderer(),c=r&&r.getCanvas();
     if(c&&!document.querySelector('.pnlm-world')){var d=window.devicePixelRatio||1;
       if(c.clientWidth&&(Math.abs(c.width-c.clientWidth*d)>2||Math.abs(c.height-c.clientHeight*d)>2))v.resize();
       var g=c.getContext('webgl')||c.getContext('experimental-webgl');if(g)g.viewport(0,0,g.drawingBufferWidth,g.drawingBufferHeight);}}catch(e){}
-    requestAnimationFrame(vpFix);})();
+    requestAnimationFrame(vpFix);}
+  wake();
+  v.on('scenechange',wake);v.on('load',wake);
   v.on('scenechange',function(){setTimeout(function(){try{v.resize();}catch(e){}},50);});
   v.on('load',function(){try{v.resize();}catch(e){}});
   // diğer sayfalardan vaziyet-plani.html#etap-N ile gelinirse: o etabın göründüğü bakış noktasını açıp kartını göster
@@ -404,13 +427,21 @@
       EL.ln.push(mk('polygon',{fill:'none',stroke:c,'stroke-width':3.5,'stroke-linejoin':'round'},svg));
       EL.co.push(mk('polygon',{fill:'none',stroke:'#fff','stroke-width':1.2,'stroke-linejoin':'round',opacity:0},svg));}
   }
-  (function loop(){
+  // kart açıkken çalışır; giriş animasyonundan (≈4,7 sn) sonra yalnız görüntü değişince yeniden çizer
+  var LOOP=false,CAM='',TMAX=4.712;
+  function loopOn(){if(!LOOP){LOOP=true;CAM='';requestAnimationFrame(loop);}}
+  function loop(){
+    if(!card.classList.contains('on')){LOOP=false;return;}
+    var cam=v.getYaw().toFixed(3)+'/'+v.getPitch().toFixed(3)+'/'+v.getHfov().toFixed(3)+'/'+innerWidth+'/'+innerHeight+'/'+HL+'/'+cur+'/'+(DZ?1:0)+'/'+card.offsetHeight,
+      live=(performance.now()-T0)/1000<TMAX+.1;
+    if(!live&&cam===CAM&&(!HL||!DZ||svg&&svg.isConnected)){requestAnimationFrame(loop);return;}
+    CAM=cam;
     if(HL&&DZ){
       if(!svg||!svg.isConnected){var rc=document.querySelector('#pano .pnlm-render-container');if(rc){svg=mk('svg',{'class':'hlsvg'});rc.insertBefore(svg,rc.querySelector('canvas').nextSibling);KEY='';}}
       if(svg){var c=E[HL]?ST[E[HL].st][1]:'#FB5160',PS=[];
         (DZ.sc[cur].shapes||[]).forEach(function(sh){if(+sh.etap!==HL)return;var P=sh.p.map(function(q){return proj(q[0],q[1]);});if(!P.some(function(q){return !q;}))PS.push(P);});
         var k=HL+'/'+cur+'/'+PS.length;if(k!==KEY){KEY=k;hlBuild(PS.length,c);}
-        var t=(performance.now()-T0)/1000,e=Math.min(1,t/.9),ez=1-Math.pow(1-e,3),y0=1e9,y1=-1e9,pu=.5+.5*Math.sin(t*3);
+        var t=Math.min(TMAX,(performance.now()-T0)/1000),e=Math.min(1,t/.9),ez=1-Math.pow(1-e,3),y0=1e9,y1=-1e9,pu=.5+.5*Math.sin(t*3);
         PS.forEach(function(P,i){var s=P.map(function(q){if(q[1]<y0)y0=q[1];if(q[1]>y1)y1=q[1];return q[0].toFixed(1)+','+q[1].toFixed(1);}).join(' ');
           EL.cp[i].setAttribute('points',s);EL.gl[i].setAttribute('points',s);EL.ln[i].setAttribute('points',s);EL.co[i].setAttribute('points',s);
           var L=0;for(var j=0;j<P.length;j++){var a=P[j],b=P[(j+1)%P.length];L+=Math.hypot(b[0]-a[0],b[1]-a[1]);}
@@ -429,9 +460,9 @@
         else{var r=1-Math.pow(1-Math.min(1,t/1.3),3);EL.dim.setAttribute('opacity',.62*ez*dk);EL.fill.setAttribute('y',(y1-h*r).toFixed(1));EL.fill.setAttribute('height',(h*r+2).toFixed(1));EL.fill.setAttribute('opacity',(.32+(r>=1?.16*pu:0)).toFixed(3));}
       }
     }
-    if(card.classList.contains('on'))place();
+    place();
     requestAnimationFrame(loop);
-  })();
+  }
   // kartı etabın yanına yerleştir: geniş ekranda sağına (yer yoksa soluna), telefonda altına (yer yoksa üstüne)
   var BB=null;
   function place(){
