@@ -556,17 +556,18 @@ function guvenliJson(r){
           var im = new Image();
           // geç yüklenen eski fotoğraf, sonradan gelen danışmanın üstüne binmesin
           im.onload = function(){ if(cizilen === name) av.appendChild(im); };
-          im.src = 'https://drive.google.com/thumbnail?id=' + foto[name] + '&sz=w240';
+          im.src = 'assets/nobetci/' + foto[name] + '.jpg';   // Drive küçük resmi tarayıcıda engellenebiliyor; kopyası sitede
           im.alt = name;
         }
         waBtn.href = 'https://wa.me/902163151515?text=' +
           encodeURIComponent('Merhaba, nöbetçi danışman ' + name + ' ile görüşmek istiyorum.');
       }
       // Nöbetçi kaynağı sırası:
-      // 1) nobet-bugun.json — her gece GitHub Actions'ın takvimden yazdığı dosya (sitenin kendi içinde, anında açılır)
-      // 2) Nöbet uygulamasından canlı okuma (Google Takvim ile birebir)
+      // 1) nobet-bugun.json — her gece GitHub Actions'ın Doğuş Takvim'den yazdığı dosya (sitenin kendi içinde, anında açılır)
+      // 2) Doğuş Takvim'in herkese açık nöbet dosyasından canlı okuma (dogusportal.com/assets/takvim-genel.json)
       // 3) İkisi de olmazsa üstteki tablo/formül (12 sn sonra)
       // Kart tek sefer çizilir; önce tablodaki isim çizilip sonra takvimdekine geçilmez.
+      var takmaAd = {"İrem Tetik":"İrem Aleyna Tetik"};
       var canli = new Promise(function(coz){
         var tamam = false;
         function bitti(){ if(tamam) return; tamam = true; if(cizilen === null && !ofisGunu) render(name); coz(); }
@@ -574,16 +575,20 @@ function guvenliJson(r){
           if(!(j && j.date === key)) return false;
           if(!j.name){ ofisGunu = true; render('Ofis'); }   // takvimde kayıt yok: kart gösterme
           else {
-            var n = (j.name === 'Ofis') ? 'Ofis Nöbeti' : j.name;
+            var n = (j.name === 'Ofis') ? 'Ofis Nöbeti' : (takmaAd[j.name] || j.name);
             if(n !== cizilen){ name = n; render(name); }
           }
           return true;
         }
         function canliOku(){
           try{
-            fetch('https://script.google.com/macros/s/AKfycbzDMpgNZAhXFZfCbp3iuUxNAJwjq8pB2xt86eluuj2JPNU-J2sfeCHUsG1m0OrJjo7RvA/exec?action=today')
+            fetch('https://dogusportal.com/assets/takvim-genel.json?t=' + Date.now(), {cache:'no-store'})
               .then(guvenliJson)
-              .then(function(j){ if(j && j.ok) uygula(j); })
+              .then(function(d){
+                if(!(d && d.olaylar && d.kapsam && key >= d.kapsam[0] && key <= d.kapsam[1])) return;
+                var o = d.olaylar.filter(function(x){ return x.tur === 'nobet' && x.tarih === key; })[0];
+                uygula({date:key, name: o ? o.nobetci : null});
+              })
               .catch(function(){}).then(bitti);
           }catch(e){ console.warn('Sessiz hata:', e); bitti(); }
         }
