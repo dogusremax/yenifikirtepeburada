@@ -37,7 +37,7 @@ function check(s, label) {
     for (const [dev, opt] of [['masaüstü 2x', { viewport: { width: 1440, height: 900 }, deviceScaleFactor: 2 }],
                               ['telefon', name === 'webkit' ? pw.devices['iPhone 13'] : { ...pw.devices['iPhone 13'], defaultBrowserType: undefined }]]) {
       console.log(`[${name} · ${dev}]`);
-      const o = { ...opt }; delete o.defaultBrowserType;
+      const o = { ...opt }; delete o.defaultBrowserType; if (name === 'firefox') delete o.isMobile;
       const c = await b.newContext(o); const p = await c.newPage(); const errs = [];
       p.on('pageerror', e => errs.push(e.message));
       await p.addInitScript(HOOK);
