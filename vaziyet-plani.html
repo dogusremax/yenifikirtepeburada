@@ -244,11 +244,14 @@
   });});
   function sid(k){return 's'+k+(night?'n':'');}
 
-  var v=pannellum.viewer('pano',{default:{firstScene:sid(1),sceneFadeDuration:600,autoLoad:true,showControls:false,compass:false,mouseZoom:true,keyboardZoom:true},scenes:scenes});
+  // WebGL bağlamı düşüp sayfa yeniden açıldıysa kaldığı bakışa dön
+  var BAK=null;try{BAK=JSON.parse(sessionStorage.getItem('vzBak')||'null');sessionStorage.removeItem('vzBak');}catch(e){}
+  if(BAK&&scenes['s'+BAK[0]]){night=!!BAK[4];cur=BAK[0]-1;var s0=scenes[sid(BAK[0])];s0.pitch=BAK[1];s0.yaw=BAK[2];s0.hfov=BAK[3];}else BAK=null;
+  var v=pannellum.viewer('pano',{default:{firstScene:sid(cur+1),sceneFadeDuration:600,autoLoad:true,showControls:false,compass:false,mouseZoom:true,keyboardZoom:true},scenes:scenes});
 
   // sahne şeridi
   var bar=$('scenes');
-  SC.forEach(function(s,i){var b=document.createElement('button');b.type='button';b.className='sc'+(i?'':' on');b.dataset.k=i+1;
+  SC.forEach(function(s,i){var b=document.createElement('button');b.type='button';b.className='sc'+(i===cur?' on':'');b.dataset.k=i+1;
     b.innerHTML='<img src="assets/vr/thumb/w'+(i+1)+'.jpg" alt="" loading="lazy"><span>'+(i<6?(i+1)+'. ':'')+NAMES[i]+'</span>';
     b.onclick=function(){if(v.getScene()!==sid(i+1))v.loadScene(sid(i+1));};bar.appendChild(b);});
   v.on('scenechange',function(id){cur=parseInt(id.slice(1),10)-1;
@@ -385,7 +388,21 @@
     return bad;}
   // her karede çizmeden hemen önce düzelt: boştayken karo yüklenip yeniden çizilse de görüntü kaymaz (döngü gerekmez)
   function patch(){try{var r=v.getRenderer();if(!r||r.__vp)return r;var o=r.render;r.__vp=1;
-    r.render=function(){try{fit(r);}catch(e){}return o.apply(r,arguments);};return r;}catch(e){}}
+    // WebGL bağlamı düşerse (Mac'te ekran kartı geçişinde olabilir) sayfayı aynı bakış noktası ve açıyla yeniden aç
+    var cv=r.getCanvas();cv.addEventListener('webglcontextlost',function(e){e.preventDefault();rep('baglam');},false);
+    cv.addEventListener('webglcontextrestored',function(){try{sessionStorage.setItem('vzBak',JSON.stringify([cur+1,v.getPitch(),v.getYaw(),v.getHfov(),night]));}catch(e){}location.reload();},false);
+    r.render=function(){try{if(fit(r))rep('cizim');}catch(e){}return o.apply(r,arguments);};return r;}catch(e){}}
+  // bekçi: 2 sn'de bir (sekme görünürken) tuvali denetler; boştayken bozulursa düzeltip yeniden çizer.
+  // Düzeltme olursa Analytics'e bir kez "vaziyet_duzeltme" olayı gider: gerçek ziyaretçilerde olup olmadığını görürüz.
+  var REP=false;
+  function rep(t){if(REP)return;REP=true;try{window.gtag&&gtag('event','vaziyet_duzeltme',{tur:t,ua:navigator.userAgent.slice(0,90)});}catch(e){}window.__vpDuzeltme=(window.__vpDuzeltme||0)+1;}
+  // başka pencereye geçip dönünce, sekme değişince, sayfa geri gelince: tuvali baştan kurup yeniden çiz
+  // (Safari/Firefox pencere odağı değişince eski çizimi büyütülmüş gösterebiliyor)
+  var TZ=0;
+  function tazele(){clearTimeout(TZ);try{var r=patch();fit(r);v.resize();}catch(e){}wake();TZ=setTimeout(function(){try{v.resize();}catch(e){}},350);}
+  addEventListener('focus',tazele);addEventListener('blur',tazele);addEventListener('pageshow',tazele);
+  document.addEventListener('visibilitychange',function(){if(!document.hidden)tazele();});
+  setInterval(function(){if(document.hidden)return;try{var r=patch();if(r&&fit(r)){rep('bekci');v.resize();}}catch(e){}},2000);
   function vpFix(){patch();if(performance.now()-VPT>1500){VPON=false;return;}try{if(fit(v.getRenderer()))v.resize();}catch(e){}
     requestAnimationFrame(vpFix);}
   // ekran çözünürlüğü değişirse (pencere Retina/harici ekran arasında taşınınca, tarayıcı yakınlaştırması) tuvali yenile
