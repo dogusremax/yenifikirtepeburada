@@ -22,11 +22,12 @@ const STATE = () => { const v = window.__v; if (!v) return { err: 'viewer yok' }
   const g = c.getContext('webgl') || c.getContext('experimental-webgl'); if (!g) return { err: 'webgl yok' };
   const q = g.getParameter(g.VIEWPORT);
   return { cw: c.width, ch: c.height, kw: c.clientWidth, kh: c.clientHeight, d, vp: [...q], bw: g.drawingBufferWidth, bh: g.drawingBufferHeight,
-    pins: document.querySelectorAll('.pin').length, duz: window.__vpDuzeltme || 0 }; };
+    ff: /Firefox\//.test(navigator.userAgent) && !/Mobile|Android/.test(navigator.userAgent), d0: window.__dpr0 || 1, pins: document.querySelectorAll('.pin').length, duz: window.__vpDuzeltme || 0 }; };
 
 function check(s, label) {
   if (s.err) return bad(label + ': ' + s.err);
   const tuval = Math.abs(s.cw - s.kw * s.d) <= 2 && Math.abs(s.ch - s.kh * s.d) <= 2;
+  if (s.ff && s.d0 > 1 && s.cw > s.kw + 2) bad(label + ': Firefox tuvali 1x değil (' + s.cw + ' / ' + s.kw + ')');
   const vp = s.vp[0] === 0 && s.vp[1] === 0 && s.vp[2] === s.bw && s.vp[3] === s.bh;
   if (tuval && vp) ok(label); else bad(label + ' ' + JSON.stringify(s));
 }
