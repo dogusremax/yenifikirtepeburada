@@ -25,7 +25,7 @@ jobs:
         run: |
           npm i --no-save playwright@1.56.1
           npx playwright install webkit chromium
-      - name: Test (değişiklik: depodaki dosya; zamanlı: canlı site)
+      - name: Test (değişiklikte depodaki dosya, zamanlıda canlı site)
         run: |
           mkdir -p shots
           if [ "${{ github.event_name }}" = "schedule" ]; then
