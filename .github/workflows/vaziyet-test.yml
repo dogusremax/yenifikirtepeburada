@@ -1,6 +1,6 @@
 name: Vaziyet planı testi
 
-# vaziyet-plani.html'i Safari (WebKit, Mac) ve Chrome'da Retina ve telefon boyutunda açar;
+# vaziyet-plani.html'i Safari (WebKit, Mac), Chrome ve Firefox'da Retina ve telefon boyutunda açar;
 # gündüz/gece, sahne geçişi, pencere değişimi ve ekran kartı bağlamı düşmesinden sonra
 # 360° görüntünün kaymadığını denetler. Ayrıntı: .github/scripts/vaziyet_test.js
 # Her değişiklikte depodaki dosyayı, her sabah 07:30 TR canlı siteyi test eder; hata olursa GitHub e-posta atar.
@@ -24,7 +24,7 @@ jobs:
       - name: Playwright kur
         run: |
           npm i --no-save playwright@1.56.1
-          npx playwright install webkit chromium
+          npx playwright install webkit chromium firefox
       - name: Test (değişiklikte depodaki dosya, zamanlıda canlı site)
         run: |
           mkdir -p shots
@@ -35,7 +35,7 @@ jobs:
             sleep 2
             URL="http://localhost:8811/vaziyet-plani.html"
           fi
-          SHOTS=shots node .github/scripts/vaziyet_test.js "$URL" chromium,webkit
+          SHOTS=shots node .github/scripts/vaziyet_test.js "$URL" chromium,webkit,firefox
       - uses: actions/upload-artifact@v4
         if: always()
         with:
