@@ -247,6 +247,10 @@
   // WebGL bağlamı düşüp sayfa yeniden açıldıysa kaldığı bakışa dön
   var BAK=null;try{BAK=JSON.parse(sessionStorage.getItem('vzBak')||'null');sessionStorage.removeItem('vzBak');}catch(e){}
   if(BAK&&scenes['s'+BAK[0]]){night=!!BAK[4];cur=BAK[0]-1;var s0=scenes[sid(BAK[0])];s0.pitch=BAK[1];s0.yaw=BAK[2];s0.hfov=BAK[3];}else BAK=null;
+  // Firefox masaüstü: retina'da (dpr 2) pencere değişince tuvalin gerçek belleği küçük kalıp görüntü 2 kat büyük/bulanık çiziliyordu;
+  // tuvali 1x yoğunlukta tut (gerçek dpr window.__dpr0'da)
+  window.__dpr0=window.devicePixelRatio||1;
+  if(/Firefox\//.test(navigator.userAgent)&&!/Mobile|Tablet|Android/.test(navigator.userAgent)&&window.__dpr0>1)try{Object.defineProperty(window,'devicePixelRatio',{get:function(){return 1;},configurable:true});}catch(e){}
   var v=pannellum.viewer('pano',{default:{firstScene:sid(cur+1),sceneFadeDuration:600,autoLoad:true,showControls:false,compass:false,mouseZoom:true,keyboardZoom:true},scenes:scenes});
 
   // sahne şeridi
@@ -433,7 +437,7 @@
     ['focus','blur','resize','pageshow'].forEach(function(n){addEventListener(n,function(){lg(n);});});
     document.addEventListener('visibilitychange',function(){lg('visibility '+document.visibilityState);});
     function up(){try{var r=v.getRenderer(),c=r&&r.getCanvas(),g=c&&(c.getContext('webgl')||c.getContext('experimental-webgl')),w=document.querySelector('.pnlm-world');
-      var o=['UA: '+navigator.userAgent,'dpr '+devicePixelRatio+' · pencere '+innerWidth+'x'+innerHeight+' · ekran '+screen.width+'x'+screen.height+' · vv '+(window.visualViewport?visualViewport.scale:'-'),
+      var o=['UA: '+navigator.userAgent,'dpr '+devicePixelRatio+' (gerçek '+window.__dpr0+') · pencere '+innerWidth+'x'+innerHeight+' · ekran '+screen.width+'x'+screen.height+' · vv '+(window.visualViewport?visualViewport.scale:'-'),
         'mod: '+(w?'CSS YEDEK (WebGL yok)':'WebGL')+' · sahne '+v.getScene()+' · hfov '+v.getHfov().toFixed(1)];
       if(c)o.push('tuval '+c.width+'x'+c.height+' · css '+c.clientWidth+'x'+c.clientHeight);
       if(g)o.push('viewport '+[].join.call(g.getParameter(g.VIEWPORT),',')+' · buffer '+g.drawingBufferWidth+'x'+g.drawingBufferHeight+' · lost '+g.isContextLost()+' · maxRB '+g.getParameter(g.MAX_RENDERBUFFER_SIZE));
