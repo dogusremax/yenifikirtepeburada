@@ -18,6 +18,10 @@ log = {}
 log['1-acilis'] = d.execute_script(JS); shot('1-acilis')
 d.execute_script("document.querySelector('.sc[data-k=\"5\"]').click()"); time.sleep(8)
 log['2-sahne5'] = d.execute_script(JS); shot('2-sahne5')
+log['pins'] = d.execute_script("var o={};document.querySelectorAll('.pnlm-hotspot-base').forEach(function(h){var r=h.getBoundingClientRect();o[(h.textContent||'').trim().slice(0,12)]=[Math.round(r.x+r.width/2),Math.round(r.y+r.height/2)];});return o;")
+try:
+    log['tuval'] = d.execute_script("var c=document.querySelector('.pnlm-render-container canvas');return c.toDataURL('image/jpeg',0.6).length;")
+except Exception as e: log['tuval']=str(e)
 for i in range(3):
     osa('tell application "Finder" to activate'); osa('tell application "Finder" to make new Finder window'); time.sleep(3); shot(f'3-finder{i}')
     osa('tell application "Safari" to activate'); time.sleep(4)

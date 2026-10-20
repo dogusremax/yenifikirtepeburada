@@ -4,7 +4,7 @@ name: Vaziyet planı gerçek Safari denemesi
 on:
   push:
     branches: ["claude/**"]
-    paths: [".github/scripts/vaziyet_repro.py", ".github/workflows/vaziyet-repro.yml", "vaziyet-plani.html"]
+    paths: [".github/scripts/vaziyet_repro.py", ".github/scripts/vaziyet_karsilastir.js", ".github/workflows/vaziyet-repro.yml", "vaziyet-plani.html"]
   workflow_dispatch:
 
 jobs:
@@ -18,6 +18,13 @@ jobs:
           sudo safaridriver --enable
           pip3 install --break-system-packages selenium || pip3 install selenium
           system_profiler SPDisplaysDataType | head -30
+      - name: Tarayıcı karşılaştırması
+        continue-on-error: true
+        run: |
+          npm i --no-save playwright@1.56.1 && npx playwright install webkit chromium firefox
+          mkdir -p shots/kars
+          node .github/scripts/vaziyet_karsilastir.js "https://yenifikirtepeburada.com/vaziyet-plani.html" shots/kars
+          HEADED=1 node .github/scripts/vaziyet_karsilastir.js "https://yenifikirtepeburada.com/vaziyet-plani.html" shots/kars
       - name: Canlı site
         continue-on-error: true
         run: python3 .github/scripts/vaziyet_repro.py "https://yenifikirtepeburada.com/vaziyet-plani.html" shots/canli
