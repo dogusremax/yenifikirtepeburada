@@ -400,8 +400,21 @@
   // (Safari/Firefox pencere odağı değişince eski çizimi büyütülmüş gösterebiliyor)
   var TZ=0;
   function tazele(){clearTimeout(TZ);try{var r=patch();fit(r);v.resize();}catch(e){}wake();TZ=setTimeout(function(){try{v.resize();}catch(e){}},350);}
-  addEventListener('focus',tazele);addEventListener('blur',tazele);addEventListener('pageshow',tazele);
-  document.addEventListener('visibilitychange',function(){if(!document.hidden)tazele();});
+  // Mac'te (Retina) pencere arkaya düşüp geri gelince tarayıcı WebGL tuvalini yarım çözünürlükte bırakıp
+  // görüntüyü 2 kat büyütülmüş, sol alta kaymış gösterebiliyor; bu hâl JavaScript'ten okunamıyor.
+  // Bu yüzden pencereye/sekmeye dönülünce çizim belleğini baştan ayırıp yeniden çiz.
+  var GIT=0;
+  function arkada(){GIT=Date.now();}
+  function yenidenKur(){
+    if(!GIT||Date.now()-GIT<250)return;GIT=0;
+    // tuvali önce 1x1'e küçült (tarayıcı eski çizim belleğini atar), bir kare sonra tam boyutta yeniden ayır ve çiz
+    try{var r=v.getRenderer(),c=r&&r.getCanvas();if(!c)return tazele();c.width=c.height=1;window.__vzKurulum=(window.__vzKurulum||0)+1;
+      requestAnimationFrame(function(){requestAnimationFrame(tazele);});}catch(e){tazele();}
+  }
+  addEventListener('blur',function(){arkada();tazele();});
+  addEventListener('focus',function(){tazele();yenidenKur();});
+  addEventListener('pageshow',function(e){if(e.persisted){GIT=1;yenidenKur();}else tazele();});
+  document.addEventListener('visibilitychange',function(){if(document.hidden)arkada();else{tazele();yenidenKur();}});
   setInterval(function(){if(document.hidden)return;try{var r=patch();if(r&&fit(r)){rep('bekci');v.resize();}}catch(e){}},2000);
   function vpFix(){patch();if(performance.now()-VPT>1500){VPON=false;return;}try{if(fit(v.getRenderer()))v.resize();}catch(e){}
     requestAnimationFrame(vpFix);}

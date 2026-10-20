@@ -51,8 +51,13 @@ function check(s, label) {
         await p.click(sel); await sleep(w); check(await p.evaluate(STATE), label + ' sonrası');
       }
       // başka pencereye geçip dönme
-      await p.evaluate(() => { dispatchEvent(new Event('blur')); document.dispatchEvent(new Event('visibilitychange')); dispatchEvent(new Event('focus')); });
-      await sleep(1500); check(await p.evaluate(STATE), 'pencere değişip dönünce');
+      await p.evaluate(() => { dispatchEvent(new Event('blur')); });
+      await sleep(800);
+      await p.evaluate(() => { window.__k0 = window.__vzKurulum || 0; dispatchEvent(new Event('focus')); });
+      await sleep(4000); check(await p.evaluate(STATE), 'pencere değişip dönünce');
+      if (!(await p.evaluate(() => (window.__vzKurulum || 0) > window.__k0))) bad('pencereye dönünce çizim belleği yeniden kurulmadı');
+      else ok('pencereye dönünce çizim belleği yeniden kuruldu');
+      const pz = await p.evaluate(() => document.querySelectorAll('.pin').length); if (pz < 5) bad('dönüşten sonra etap numaraları eksik: ' + pz);
       if (SHOTS) await p.screenshot({ path: `${SHOTS}/${name}-${dev.replace(/\W+/g, '')}.png` });
       // hatayı taklit et: görüş alanı 2 kat; sonraki çizimde düzelmeli
       await p.evaluate(() => { const g = __v.getRenderer().getCanvas().getContext('webgl'); g.viewport(0, 0, g.drawingBufferWidth * 2, g.drawingBufferHeight * 2); __v.setYaw(__v.getYaw() + 0.5, false); });
