@@ -424,6 +424,24 @@
   v.on('scenechange',wake);v.on('load',wake);
   v.on('scenechange',function(){setTimeout(function(){try{v.resize();}catch(e){}},50);});
   v.on('load',function(){try{v.resize();}catch(e){}});
+  // tanı paneli: ?tani=1 ile açılır; tuval/WebGL durumunu ve son olayları canlı gösterir (hata ayıklama için)
+  if(/[?&]tani=1/.test(location.search))(function(){
+    var box=document.createElement('pre'),ev=[];box.style.cssText='position:fixed;left:8px;top:70px;z-index:99;max-width:min(560px,90vw);margin:0;padding:8px 10px;background:rgba(0,0,0,.82);color:#7CFC00;font:11px/1.35 ui-monospace,Menlo,monospace;border-radius:8px;white-space:pre-wrap;pointer-events:none';
+    document.body.appendChild(box);
+    function lg(t){ev.unshift(new Date().toTimeString().slice(0,8)+' '+t);ev.length=Math.min(ev.length,10);}
+    var ol=console.log;console.log=function(){try{lg('log: '+[].join.call(arguments,' ').slice(0,80));}catch(e){}return ol.apply(console,arguments);};
+    ['focus','blur','resize','pageshow'].forEach(function(n){addEventListener(n,function(){lg(n);});});
+    document.addEventListener('visibilitychange',function(){lg('visibility '+document.visibilityState);});
+    function up(){try{var r=v.getRenderer(),c=r&&r.getCanvas(),g=c&&(c.getContext('webgl')||c.getContext('experimental-webgl')),w=document.querySelector('.pnlm-world');
+      var o=['UA: '+navigator.userAgent,'dpr '+devicePixelRatio+' · pencere '+innerWidth+'x'+innerHeight+' · ekran '+screen.width+'x'+screen.height+' · vv '+(window.visualViewport?visualViewport.scale:'-'),
+        'mod: '+(w?'CSS YEDEK (WebGL yok)':'WebGL')+' · sahne '+v.getScene()+' · hfov '+v.getHfov().toFixed(1)];
+      if(c)o.push('tuval '+c.width+'x'+c.height+' · css '+c.clientWidth+'x'+c.clientHeight);
+      if(g)o.push('viewport '+[].join.call(g.getParameter(g.VIEWPORT),',')+' · buffer '+g.drawingBufferWidth+'x'+g.drawingBufferHeight+' · lost '+g.isContextLost()+' · maxRB '+g.getParameter(g.MAX_RENDERBUFFER_SIZE));
+      if(w){var f=w.querySelector('.pnlm-face');o.push('world '+w.style.transform.slice(0,90));if(f)o.push('yüz '+f.width+'x'+f.height+' '+f.style.width);}
+      o.push('düzeltme '+(window.__vpDuzeltme||0)+' · yeniden kurulum '+(window.__vzKurulum||0)+' · odak '+document.hasFocus());
+      box.textContent=o.concat(['— olaylar —']).concat(ev).join('\n');}catch(e){box.textContent='tanı hatası '+e;}}
+    setInterval(up,500);up();
+  })();
   // diğer sayfalardan vaziyet-plani.html#etap-N ile gelinirse: o etabın göründüğü bakış noktasını açıp kartını göster
   var HQ=0;
   function openHash(){
