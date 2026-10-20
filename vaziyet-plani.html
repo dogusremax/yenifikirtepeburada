@@ -377,11 +377,19 @@
   addEventListener('touchmove',wake,{passive:true});
   addEventListener('resize',wake);
   v.on('animatefinished',function(){VPT=performance.now();});
-  function vpFix(){if(performance.now()-VPT>1500){VPON=false;return;}try{var r=v.getRenderer(),c=r&&r.getCanvas();
-    if(c&&!document.querySelector('.pnlm-world')){var d=window.devicePixelRatio||1;
-      if(c.clientWidth&&(Math.abs(c.width-c.clientWidth*d)>2||Math.abs(c.height-c.clientHeight*d)>2))v.resize();
-      var g=c.getContext('webgl')||c.getContext('experimental-webgl');if(g)g.viewport(0,0,g.drawingBufferWidth,g.drawingBufferHeight);}}catch(e){}
+  // tuval/görüş alanı uyuşmazlığını düzelt; true dönerse yeniden çizim gerekir
+  function fit(r){var c=r&&r.getCanvas&&r.getCanvas();if(!c||document.querySelector('.pnlm-world'))return false;var d=window.devicePixelRatio||1,bad=false;
+    if(c.clientWidth&&(Math.abs(c.width-c.clientWidth*d)>2||Math.abs(c.height-c.clientHeight*d)>2)){r.resize();bad=true;}
+    var g=r.__gl||(r.__gl=c.getContext('webgl')||c.getContext('experimental-webgl'));
+    if(g){var q=g.getParameter(g.VIEWPORT);if(q[0]||q[1]||q[2]!==g.drawingBufferWidth||q[3]!==g.drawingBufferHeight){g.viewport(0,0,g.drawingBufferWidth,g.drawingBufferHeight);bad=true;}}
+    return bad;}
+  // her karede çizmeden hemen önce düzelt: boştayken karo yüklenip yeniden çizilse de görüntü kaymaz (döngü gerekmez)
+  function patch(){try{var r=v.getRenderer();if(!r||r.__vp)return r;var o=r.render;r.__vp=1;
+    r.render=function(){try{fit(r);}catch(e){}return o.apply(r,arguments);};return r;}catch(e){}}
+  function vpFix(){patch();if(performance.now()-VPT>1500){VPON=false;return;}try{if(fit(v.getRenderer()))v.resize();}catch(e){}
     requestAnimationFrame(vpFix);}
+  // ekran çözünürlüğü değişirse (pencere Retina/harici ekran arasında taşınınca, tarayıcı yakınlaştırması) tuvali yenile
+  (function dpr(){try{var m=matchMedia('(resolution: '+(window.devicePixelRatio||1)+'dppx)'),f=function(){m.removeEventListener('change',f);try{v.resize();}catch(e){}wake();dpr();};m.addEventListener('change',f);}catch(e){}})();
   wake();
   v.on('scenechange',wake);v.on('load',wake);
   v.on('scenechange',function(){setTimeout(function(){try{v.resize();}catch(e){}},50);});
