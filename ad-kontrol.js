@@ -5,12 +5,12 @@
 (function(){
   if (window.__adKontrol) return; window.__adKontrol = 1;
   var MESAJ = {
-    tr: 'Size isminizle hitap edebilmemiz için lütfen adınızı ve soyadınızı tam yazın (örn. Ayşe Yılmaz).',
-    en: 'So we can address you properly, please enter your full first and last name (e.g. Jane Smith).',
-    ru: 'Чтобы мы могли обращаться к вам по имени, пожалуйста, укажите имя и фамилию полностью (например, Анна Иванова).',
-    fa: 'لطفاً نام و نام خانوادگی خود را کامل بنویسید تا بتوانیم شما را با نامتان خطاب کنیم (مثلاً سارا احمدی).',
-    de: 'Damit wir Sie persönlich ansprechen können, geben Sie bitte Ihren vollständigen Vor- und Nachnamen ein (z. B. Anna Schmidt).',
-    pl: 'Abyśmy mogli zwracać się do Pana/Pani po imieniu, prosimy wpisać pełne imię i nazwisko (np. Anna Kowalska).'
+    tr: 'Lütfen adınızı ve soyadınızı eksiksiz giriniz.',
+    en: 'Please enter your full first and last name.',
+    ru: 'Пожалуйста, укажите полностью имя и фамилию.',
+    fa: 'لطفاً نام و نام خانوادگی خود را به‌طور کامل وارد کنید.',
+    de: 'Bitte geben Sie Ihren vollständigen Vor- und Nachnamen ein.',
+    pl: 'Prosimy podać pełne imię i nazwisko.'
   };
   var HARF;
   try { HARF = new RegExp('\\p{L}', 'gu'); } catch (e) { HARF = /[A-Za-zÀ-ɏͰ-ϿЀ-ӿ؀-ۿ]/g; }
