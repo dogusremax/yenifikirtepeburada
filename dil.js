@@ -14,7 +14,8 @@
   function pick(){
     try { var q = (new URLSearchParams(location.search).get('lang') || '').toLowerCase(); if (LANGS.indexOf(q) > -1) return q; } catch(e){}
     try { var s = localStorage.getItem(KEY); if (LANGS.indexOf(s) > -1) return s; } catch(e){}
-    var ls = navigator.languages || [navigator.language || ''];
+    if (/bot|crawl|spider|slurp|inspectiontool|lighthouse/i.test(navigator.userAgent || '')) return 'tr';
+   var ls = navigator.languages || [navigator.language || ''];
     for (var i = 0; i < ls.length; i++) { var p = String(ls[i]).slice(0,2).toLowerCase(); if (LANGS.indexOf(p) > -1) return p; }
     return 'tr';
   }
