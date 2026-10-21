@@ -280,9 +280,11 @@
         <h2>Mesaj Gönderin</h2>
         <p class="sub">Sorularınız için formu doldurun, en kısa sürede size dönüş yapalım.</p>
         <div class="frow">
-          <div class="group"><label>Ad Soyad</label><input type="text" name="ad_soyad" required placeholder="Adınız ve soyadınız"></div>
-          <div class="group"><label>Telefon</label><input type="tel" name="telefon" required placeholder="05XX XXX XX XX"></div>
+          <div class="group"><label>Ad</label><input type="text" name="ad" required placeholder="Adınız" autocomplete="given-name"></div>
+          <div class="group"><label>Soyad</label><input type="text" name="soyad" required placeholder="Soyadınız" autocomplete="family-name"></div>
         </div>
+        <input type="hidden" name="ad_soyad">
+        <div class="group"><label>Telefon</label><input type="tel" name="telefon" required placeholder="05XX XXX XX XX"></div>
         <div class="group"><label>E-posta</label><input type="email" name="eposta" placeholder="ornek@eposta.com"></div>
         <div class="group"><label>Mesajınız</label><textarea name="mesaj" placeholder="Size nasıl yardımcı olabiliriz?"></textarea></div>
         <button type="submit" class="submit">Mesajı Gönder</button>
