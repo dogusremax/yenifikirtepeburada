@@ -28,6 +28,33 @@
     if (!s || /\d/.test(s)) return false;
     return s.split(/\s+/).some(function(x){ return harfSay(x) >= 2; });
   }
+  // Baş harf büyük (23 Eki 2026, Umut): her kelimenin ilk harfi yazarken büyür; Türkçe sayfada i→İ, ı→I.
+  // Yalnız ilk harf değişir, kalanına dokunulmaz; imleç yerinde kalır.
+  function buyut(h){
+    var l = String(document.documentElement.lang || 'tr').slice(0, 2).toLowerCase();
+    if (l === 'tr' && h === 'i') return 'İ';   // tarayıcı yerel ayarına güvenmeden
+    if (h === 'ı') return 'I';
+    return h.toUpperCase();
+  }
+  function basHarf(v){
+    return String(v || '').replace(/(^|[\s\-'’.])([^\s\-'’.])/g, function(m, a, h){
+      var b = buyut(h); return a + (b.length === h.length ? b : h);
+    });
+  }
+  function basHarfBagla(inp){
+    function duzelt(){
+      var v = inp.value, y = basHarf(v);
+      if (y === v) return;
+      var bas = inp.selectionStart, son = inp.selectionEnd;
+      inp.value = y;
+      try { if (document.activeElement === inp) inp.setSelectionRange(bas, son); } catch (e) {}
+    }
+    inp.addEventListener('input', duzelt);
+    inp.addEventListener('change', duzelt);
+    inp.__basHarf = duzelt;
+    inp.setAttribute('autocapitalize', 'words');
+    duzelt();
+  }
   function mesaj(i){
     var l = String(document.documentElement.lang || 'tr').slice(0, 2).toLowerCase();
     return (MESAJ[l] || MESAJ.tr)[i];
@@ -66,10 +93,11 @@
     document.querySelectorAll('form').forEach(function(f){
       var tam = f.querySelector('input[name="ad_soyad"]');
       var ad = f.querySelector('input[name="ad"]'), soyad = f.querySelector('input[name="soyad"]');
+      [ad, soyad, tam].forEach(function(x){ if (x && x.type !== 'hidden') basHarfBagla(x); });
       if (ad && soyad) {
         // Ad ve Soyad ayrı kutu (21 Eki 2026, Umut); servis ve Formspree için ad_soyad (gizli) birleşik gider
         bagla(ad, parcaGecerli, 1); bagla(soyad, parcaGecerli, 2);
-        var birlestir = function(){ if (tam) tam.value = (ad.value.trim() + ' ' + soyad.value.trim()).trim(); };
+        var birlestir = function(){ if (ad.__basHarf) { ad.__basHarf(); soyad.__basHarf(); } if (tam) tam.value = (ad.value.trim() + ' ' + soyad.value.trim()).trim(); };
         ad.addEventListener('input', birlestir); soyad.addEventListener('input', birlestir);
         f.addEventListener('submit', birlestir, true);
         birlestir();
