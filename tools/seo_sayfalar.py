@@ -232,16 +232,8 @@ for e in ETAP:
     made.append(page(slug(n), ttl, dsc, f'Yeni Fikirtepe {n}. Etap', lead, body, [faq_schema(qa)],
                      [hom, ('Etaplar', SITE + 'etaplar.html'), (f'{n}. Etap', SITE + slug(n))]))
 
-# etaplar.html tablosunda etap adlarını sayfalara bağla
-et = src
-for e in ETAP:
-    if f'href="{slug(e["n"])}"' in et: continue
-    et = et.replace(f'<tr><td class="ep">{e["n"]}. Etap</td>', f'<tr><td class="ep"><a href="{slug(e["n"])}" style="color:inherit;text-decoration:none">{e["n"]}. Etap</a></td>')
+# Umut 25 Eki: sitenin kendi sayfalarından bu sayfalara bağlantı verilmez (yalnız Google'dan gelinir).
 assert len(ETAP) == 18, len(ETAP)
-if 'fikirtepe-satilik-daire.html' not in et:
-    et = et.replace('    <div class="cta">\n      <h2>Hangi etaptaki',
-        '    <section class="intro"><p>Ayrıca bakın: <a href="fikirtepe-satilik-daire.html" style="color:var(--blue);font-weight:600">Fikirtepe satılık daire</a> · <a href="fikirtepe-kiralik-daire.html" style="color:var(--blue);font-weight:600">Fikirtepe kiralık daire</a></p></section>\n    <div class="cta">\n      <h2>Hangi etaptaki', 1)
-(ROOT / 'etaplar.html').write_text(et, encoding='utf8')
 
 # sitemap
 sm = (ROOT / 'sitemap.xml').read_text(encoding='utf8')
