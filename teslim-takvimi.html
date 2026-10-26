@@ -265,6 +265,15 @@
   .yk.okp .badge{color:#7ee2a8;background:rgba(37,211,102,.12);border-color:rgba(37,211,102,.4)}
   .yk.okp .badge i{background:#2bdc6c;animation:none}
   .sc.active small{background:rgba(255,255,255,.15);color:#fff}
+  /* Toprak sahibi teslim duyurusu (teslim-takvimi.json → toprakSahibi) */
+  .tsn{display:flex;align-items:center;gap:16px;padding:16px 20px;margin-bottom:18px;border-radius:16px;background:#fff4f3;border:1.5px solid rgba(226,35,26,.35);color:var(--ink)}
+  .tsn[hidden]{display:none}
+  .tsn .tg{flex:none;text-align:center;min-width:64px;padding:8px 6px;border-radius:12px;background:var(--red);color:#fff;line-height:1.05}
+  .tsn .tg b{display:block;font-size:1.7rem;font-weight:700}
+  .tsn .tg small{font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase}
+  .tsn h3{font-size:1.08rem;font-weight:700;line-height:1.3;margin:0 0 3px}
+  .tsn p{font-size:.92rem;color:var(--gray);line-height:1.45;margin:0}
+  @media(max-width:520px){.tsn{padding:14px;gap:12px}.tsn .tg{min-width:56px}.tsn .tg b{font-size:1.45rem}.tsn h3{font-size:1rem}}
   .yk{position:relative;overflow:hidden;border-radius:22px;padding:34px 28px;color:#fff;margin-bottom:18px;text-align:center;
     background:radial-gradient(120% 90% at 100% 0%,rgba(226,35,26,.3),transparent 55%),radial-gradient(90% 80% at 0% 100%,rgba(20,61,130,.9),transparent 60%),linear-gradient(160deg,#071640,#050a30 70%);box-shadow:0 18px 50px rgba(5,10,48,.28)}
   .yk .orb{position:absolute;border-radius:50%;filter:blur(50px);opacity:.45;pointer-events:none}
@@ -487,6 +496,7 @@
     <section id="etap">
       <div class="ehead"><h2 id="etitle"></h2><span class="meta" id="emeta"></span></div>
       <div class="yk" id="yk" hidden></div>
+      <div class="tsn" id="tsn" hidden></div>
 
       <div class="viz" id="viz">
         <div class="orb o1"></div><div class="orb o2"></div>
@@ -569,7 +579,7 @@
     function fromJson(j){
       return j.etaplar.map(function(x){
         var runs=x.randevu||[],saatli=runs.some(function(r){return r[4];});
-        var e={id:x.id,ad:x.ad,kapi:runs.length>0,runs:runs,
+        var e={id:x.id,ad:x.ad,kapi:runs.length>0,runs:runs,ts:x.toprakSahibi&&x.toprakSahibi.bas||null,
           src:'Resmi teslim programına göredir'+(x.guncelleme?' · Son güncelleme: '+fmt(x.guncelleme)+' '+x.guncelleme.slice(0,4):'')+'.',
           b:x.bloklar.map(function(k){return [k.b,k.bas,k.bit,k.daire];}),saatli:saatli};
         e.find=function(blok,kapi){
@@ -595,7 +605,7 @@
       return {bas:bas,bit:bit,now:now,done:done,st:st};
     }
     function $(id){return document.getElementById(id);}
-    var cur=0,res=$('res'),SIRA={now:0,next:1,done:2};
+    var cur=0,yid=null,res=$('res'),SIRA={now:0,next:1,done:2};
 
     // Animasyonlu grafik
     var DAY=864e5;
@@ -790,7 +800,7 @@
       var t=document.querySelector('.tab[data-k="p'+n+'"]')||document.querySelector('.tab[data-k="y'+n+'"]')||(n==='3'&&document.querySelector('.tab[data-k="p3-2"]'));if(t)t.click();});
     var kRz;window.addEventListener('resize',function(){clearTimeout(kRz);kRz=setTimeout(function(){if(knSon&&!$('konum').hidden){$('knCam').style.transition='none';kKamera(knSon,false);setTimeout(function(){$('knCam').style.transition='';},50);}},150);});
     function renderYakin(y){
-      cur=-1;gorunum(true);clearInterval(cdTimer);
+      cur=-1;yid=String(y[0]);gorunum(true);clearInterval(cdTimer);$('tsn').hidden=true;
       var ok=teslimEdildi(y[0]),ad=y[0]+'. Etap'+(y[0]===3?' (diğer kısımlar)':''),wa='https://wa.me/902163151515?text='+encodeURIComponent('Merhaba, Yeni Fikirtepe '+ad+(ok?' hakkında':' teslim durumu hakkında')+' bilgi almak istiyorum.');
       $('etitle').textContent=ad+(ok?'':' Teslim Takvimi');$('emeta').textContent=ok?'Teslimler tamamlandı':'Program bekleniyor';
       $('yk').classList.toggle('okp',ok);konum(y[0],ok?'ok':'soon',ad);
@@ -804,8 +814,17 @@
       isaretle('y'+y[0]);
       var a=$('yk').querySelector('.wa');a.addEventListener('click',function(){track('teslim_yakinda_whatsapp',{etap:ad});});
     }
+    // Toprak sahibi teslim başlangıcı: Emlak Konut programının (aşağıdaki grafik) yanında ayrı duyuru
+    function toprak(e){
+      var el=$('tsn');if(!e.ts){el.hidden=true;return;}
+      var d=P(e.ts),g=Math.round((d-today)/DAY),bas=today>=d;
+      el.innerHTML='<div class="tg"><b>'+d.getDate()+'</b><small>'+AY[d.getMonth()]+'</small></div><div><h3>'+esc(e.ad)+' toprak sahibi teslimleri '+(bas?'başladı':esc(fmt(e.ts,1))+' günü başlıyor')+'</h3>'+
+        '<p>'+(bas?'Toprak sahiplerinin anahtar teslimleri '+fmt(e.ts)+' '+e.ts.slice(0,4)+' tarihinde başladı.':'Toprak sahiplerinin anahtar teslimleri '+fmt(e.ts)+' '+e.ts.slice(0,4)+' tarihinde başlıyor'+(g>0?', '+g+' gün kaldı.':'.'))+
+        ' Aşağıdaki gün ve saatler Emlak Konut\'un yayımladığı programdır.</p></div>';
+      el.hidden=false;
+    }
     function render(i){
-      cur=i;var e=ETAP[i],o=ozet(e);gorunum(false);konum(parseInt(e.id,10),o.st,e.ad);
+      cur=i;var e=ETAP[i],o=ozet(e);gorunum(false);konum(parseInt(e.id,10),o.st,e.ad);toprak(e);
       viz(e,o);
       $('src').innerHTML=e.src;
       $('etitle').textContent=e.ad+' Teslim Takvimi';
@@ -868,11 +887,13 @@
     sekmeler();ac(secili||(ETAP[0]&&ETAP[0].id));
     fetch('teslim-takvimi.json?cb='+Date.now(),{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(j){
       var yeni=fromJson(j);if(!yeni.length)return;
-      var id=cur<0?null:ETAP[cur]&&ETAP[cur].id,kullanici=res.classList.contains('show')||cur<0;
+      // Yedek veride olmayan etap (ör. #etap-13) "Yakında" kartıyla açıldıysa, programı gelince asıl görünüme geç
+      var yeniGeldi=cur<0&&yeni.some(function(e){return e.id===yid;});
+      var id=cur<0?(yeniGeldi?yid:null):ETAP[cur]&&ETAP[cur].id,kullanici=res.classList.contains('show')||(cur<0&&!yeniGeldi);
       // Otomatik listede olmayan etapları (elle girilen) koru
       ETAP.forEach(function(f){if(!yeni.some(function(e){return e.id===f.id;}))yeni.push(f);});
       ETAP=yeni;sekmeler();
-      if(!kullanici)ac(secili||id);else if(cur>=0){ETAP.forEach(function(e,j){if(e.id===id)cur=j;});isaretle('p'+id);}else{var h=/etap-(\d+)/.exec(location.hash);if(h)isaretle('y'+h[1]);}
+      if(!kullanici)ac(yeniGeldi?id:(secili||id));else if(cur>=0){ETAP.forEach(function(e,j){if(e.id===id)cur=j;});isaretle('p'+id);}else{var h=/etap-(\d+)/.exec(location.hash);if(h)isaretle('y'+h[1]);}
     }).catch(function(){});
   })();
   </script>

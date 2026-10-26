@@ -698,7 +698,7 @@ function guvenliJson(r){
     (function(){
       var ETAP = '13';
       // Yedek veri; teslim-takvimi.json gelince güncellenir
-      var V = {bas:'2026-10-22', saat:'09:00', bit:'2026-12-01', daire:486, blok:['E','C','F','B2','A1','A2','B1','D1','D2']};
+      var V = {bas:'2026-10-22', saat:'09:00', bit:'2026-12-01', daire:486, blok:['E','C','F','B2','A1','A2','B1','D1','D2'], ts:'2026-11-04'};
       var AY = ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
       var GUN = ['Pazar','Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi'];
       function tarih(s, saat){ var a = s.split('-'), t = (saat || '00:00').split(':'); return new Date(+a[0], +a[1]-1, +a[2], +t[0], +t[1]); }
@@ -706,14 +706,27 @@ function guvenliJson(r){
       var ov = document.getElementById('tpOv');
       function track(n, p){ try { if (typeof gtag === 'function') gtag('event', n, p || {}); } catch(e){} }
       var seen = false;
-      try { seen = sessionStorage.getItem('tp13') === '1'; } catch(e){}
+      try { seen = sessionStorage.getItem('tp13ts') === '1'; } catch(e){}
       if (seen || bitti()) return;
       window.tpAktif = true;
 
+      // Toprak sahibi teslim başlangıcı (teslim-takvimi.json → toprakSahibi.bas): geri sayım bu güne
+      function hedef(){ return V.ts ? tarih(V.ts) : tarih(V.bas, V.saat); }
       function yaz(){
         var b = tarih(V.bas, V.saat), z = tarih(V.bit);
+        if (V.ts){
+          var t = tarih(V.ts);
+          document.getElementById('tpUst').textContent = 'Yeni tarih açıklandı';
+          document.getElementById('tpBas').innerHTML = '13. Etap toprak sahibi teslimleri <em>' + t.getDate() + ' ' + AY[t.getMonth()] + '\'da</em>';
+          document.getElementById('tpAlt').textContent = 'Toprak sahiplerinin anahtar teslimleri ' + t.getDate() + ' ' + AY[t.getMonth()] + ' ' + t.getFullYear() + ' ' + GUN[t.getDay()] + ' günü başlıyor.';
+          document.getElementById('tpIlk').textContent = 'Emlak Konut programındaki teslimler sürüyor: ' + b.getDate() + ' ' + AY[b.getMonth()] + ' – ' + z.getDate() + ' ' + AY[z.getMonth()];
+          document.getElementById('tpTarih').textContent = t.getDate() + ' ' + AY[t.getMonth()];
+          document.getElementById('tpTarih').nextSibling.textContent = 'Toprak sahipleri';
+          document.getElementById('tpDaire').nextSibling.textContent = 'Emlak Konut programı';
+        } else {
         document.getElementById('tpIlk').textContent = 'İlk teslim: ' + b.getDate() + ' ' + AY[b.getMonth()] + ' ' + GUN[b.getDay()] + ', saat ' + V.saat;
         document.getElementById('tpTarih').textContent = b.getDate() + ' ' + AY[b.getMonth()] + ' – ' + z.getDate() + ' ' + AY[z.getMonth()];
+        }
         document.getElementById('tpDaire').textContent = V.daire.toLocaleString('tr-TR') + ' daire';
         document.getElementById('tpBlok').textContent = V.blok.length + ' blok';
         document.getElementById('tpBlok').nextSibling.textContent = V.blok.slice(0, 4).join(', ') + (V.blok.length > 4 ? '…' : '');
@@ -721,12 +734,12 @@ function guvenliJson(r){
       function iki(n){ return (n < 10 ? '0' : '') + n; }
       var zam;
       function say(){
-        var kalan = tarih(V.bas, V.saat) - new Date();
+        var kalan = hedef() - new Date();
         if (kalan <= 0){
           // Teslimler başladı: geri sayım yerine "başladı" mesajı
           document.getElementById('tpSayac').style.display = 'none';
-          document.getElementById('tpIlk').style.display = 'none';
-          document.getElementById('tpBas').innerHTML = '13. Etap teslimleri <em>başladı</em>';
+          if (!V.ts) document.getElementById('tpIlk').style.display = 'none';
+          document.getElementById('tpBas').innerHTML = '13. Etap ' + (V.ts ? 'toprak sahibi ' : '') + 'teslimleri <em>başladı</em>';
           document.getElementById('tpUst').textContent = 'Teslimler sürüyor';
           clearInterval(zam); return;
         }
@@ -744,7 +757,7 @@ function guvenliJson(r){
         var bas = null, bit = null;
         e.bloklar.forEach(function(k){ if(!bas || k.bas < bas) bas = k.bas; if(!bit || k.bit > bit) bit = k.bit; });
         var ilk = (e.randevu || []).filter(function(r){ return r[3] === bas && r[4]; }).map(function(r){ return r[4]; }).sort()[0];
-        V = {bas:bas, saat:ilk || '09:00', bit:bit, daire:e.daire || V.daire, blok:e.bloklar.map(function(k){ return k.b; })};
+        V = {bas:bas, saat:ilk || '09:00', bit:bit, daire:e.daire || V.daire, blok:e.bloklar.map(function(k){ return k.b; }), ts:(e.toprakSahibi && e.toprakSahibi.bas) || null};
         yaz(); say();
         if (bitti()) kapat('bitti');
       }).catch(function(){});
@@ -770,7 +783,7 @@ function guvenliJson(r){
         if (kapandi) return;
         ov.classList.add('show'); ov.setAttribute('aria-hidden', 'false');
         document.addEventListener('keydown', tus);
-        try { sessionStorage.setItem('tp13', '1'); } catch(e){}
+        try { sessionStorage.setItem('tp13ts', '1'); } catch(e){}
         track('teslim13_popup_open');
       }, 1800);
     })();
