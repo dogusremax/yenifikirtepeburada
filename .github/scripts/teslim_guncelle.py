@@ -15,6 +15,7 @@ from datetime import datetime, timezone, timedelta
 
 SAYFA = "https://www.emlakkonut.com.tr/tr-TR/teslim-islemleri"
 DOSYA = sys.argv[1] if len(sys.argv) > 1 else "teslim-takvimi.json"
+ELLE = ("toprakSahibi",)
 UA = {"User-Agent": "Mozilla/5.0 (yenifikirtepeburada.com teslim takvimi)"}
 AYLAR = {"ocak": 1, "şubat": 2, "subat": 2, "mart": 3, "nisan": 4, "mayıs": 5, "mayis": 5,
          "haziran": 6, "temmuz": 7, "ağustos": 8, "agustos": 8, "eylül": 9, "eylul": 9,
@@ -160,6 +161,10 @@ def main():
         bloklar, randevu = etap_verisi(satirlar)
         # Herkese açık dosyaya kaynak bilgisi (başlık, PDF adresi) yazılmaz
         e = {"id": eid, "ad": ad, "daire": len(satirlar), "bloklar": bloklar, "randevu": randevu}
+        # Elle girilen alanlar PDF'te yok, korunur: toprakSahibi = {"bas": tarih} (toprak sahibi teslim başlangıcı)
+        for k in ELLE:
+            if e_eski and k in e_eski:
+                e[k] = e_eski[k]
         icerik = lambda x: {k: v for k, v in (x or {}).items() if k != "guncelleme"}
         e["guncelleme"] = e_eski.get("guncelleme", simdi) if icerik(e_eski) == icerik(e) else simdi
         yeni.append(e)

@@ -199,6 +199,9 @@ for e in ETAP:
         bas, bit = tr_tarih(tes['bloklar'][0]['bas']), tr_tarih(max(b['bit'] for b in tes['bloklar']))
         tes_html = (f'<h2>{tes["ad"]} teslim takvimi</h2><p>Emlak Konut\'un programına göre {tes["ad"]}\'ta {tes["daire"]} dairenin anahtar teslimi '
                     f'{bas} ile {bit} arasında, {bloklar} bloklarında yapılıyor. Kapı numaranızla randevu gün ve saatinizi <a href="teslim-takvimi.html">Teslim Takvimi</a> sayfasında öğrenebilirsiniz.</p>')
+        ts = (tes.get('toprakSahibi') or {}).get('bas')
+        if ts:
+            tes_html += f'<p>{tes["ad"]}\'ta toprak sahiplerinin anahtar teslimleri {tr_tarih(ts)} tarihinde başlıyor.</p>'
     kat_html = (f'<p>{n}. Etap\'ın daire planlarını <a href="kat-planlari.html#etap-{n}">Kat Planları</a> sayfamızda 3D olarak inceleyebilirsiniz.</p>' if n in KAT
                 else f'<p>{n}. Etap\'ın kat planları Emlak Konut tarafından yayımlandığında <a href="kat-planlari.html">Kat Planları</a> sayfamıza eklenecek.</p>')
     qa = []
@@ -208,7 +211,9 @@ for e in ETAP:
     else:
         qa.append((f'Yeni Fikirtepe {n}. Etap konut mu, ofis mi?', f'{n}. Etap ofis etabıdır ve {e["tic"]} bulunur.'))
     if tes:
-        qa.append((f'{n}. Etap teslimleri ne zaman?', f'Program {bas} ile {bit} arasını kapsıyor. Kendi randevunuzu Teslim Takvimi sayfamızda kapı numaranızla sorgulayabilirsiniz.'))
+        qa.append((f'{n}. Etap teslimleri ne zaman?', f'Program {bas} ile {bit} arasını kapsıyor.'
+                   + (f' Toprak sahiplerinin teslimleri {tr_tarih(ts)} tarihinde başlıyor.' if ts else '')
+                   + ' Kendi randevunuzu Teslim Takvimi sayfamızda kapı numaranızla sorgulayabilirsiniz.'))
     else:
         qa.append((f'{n}. Etap teslim tarihi belli mi?', 'Emlak Konut teslim programını açıkladığında Teslim Takvimi sayfamızda blok ve kapı numarasına göre yayımlıyoruz.'))
     qa.append((f'{n}. Etap\'ta satılık veya kiralık daire nasıl bulurum?', f'Aradığınız daire tipini ve bütçenizi formumuza bırakın; {n}. Etap\'ta uygun daire çıktığında RE/MAX Doğuş danışmanı sizi arasın.'))

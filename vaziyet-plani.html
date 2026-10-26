@@ -304,7 +304,7 @@
     var bas=null,bit=null,top=0,tes=0,now=[],sir=null;
     j.bloklar.forEach(function(b){var a=P(b.bas),z=P(b.bit);if(!bas||a<bas)bas=a;if(!bit||z>bit)bit=z;top+=b.daire||0;
       if(today>z)tes+=b.daire||0;else if(today>=a)now.push(b.b);else if(!sir||a<P(sir.bas))sir=b;});
-    return {id:j.id,ad:j.ad,bas:bas,bit:bit,top:top,tes:tes,now:now,sir:sir,st:today>bit?'ok':today>=bas?'now':'next'};
+    return {id:j.id,ad:j.ad,bas:bas,bit:bit,top:top,tes:tes,now:now,sir:sir,st:today>bit?'ok':today>=bas?'now':'next',ts:j.toprakSahibi&&j.toprakSahibi.bas?P(j.toprakSahibi.bas):null};
   }
   function build(json){
     var prg={};(json&&json.etaplar||[]).forEach(function(j){var n=parseInt(j.id,10);if(INFO[n]&&j.bloklar&&j.bloklar.length)prg[n]=program(j);});
@@ -338,6 +338,7 @@
     else if(e.st==='next'&&p){var g=Math.round((p.bas-today)/DAY);s='Anahtar teslimleri <b>'+fmt(p.bas)+'</b> tarihinde başlıyor'+(g>0?', <b>'+g+' gün</b> kaldı':'')+'. İlk blok: <b>'+esc(p.sir?p.sir.b:'')+'</b>.';}
     else if(e.st==='ok')s='Bu etapta anahtarlar sahiplerine teslim edildi. Satılık ya da kiralık daire için bize ulaşın.';
     else s=(n===3?'3. Etap 2. Kısım dışındaki bölümlerin':'Bu etabın')+' teslim programı henüz açıklanmadı. Açıklandığı gün teslim takviminde yayınlanır.';
+    if(p&&p.ts&&e.st!=='ok')s+=' Toprak sahibi teslimleri <b>'+fmt(p.ts)+'</b> tarihinde '+(today>=p.ts?'başladı.':'başlıyor.');
     h+='<p class="stl">'+s+'</p>';
     h+='<div class="tiles"><div class="tile"><b data-to="'+inf[0]+'">0</b><span>'+(ofis?'ofis':'konut')+'</span></div>'+
       (ofis?'<div class="tile t"><b>Ticari</b><span>etap türü</span></div>':'<div class="tile"><b data-to="'+inf[1]+'">0</b><span>ticari ünite</span></div>')+
