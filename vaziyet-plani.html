@@ -48,7 +48,12 @@
   .ttl{flex:1;min-width:0}
   .ttl b{display:block;font-size:15px;font-weight:800;letter-spacing:.2px}
   .ttl span{display:block;font-size:12px;opacity:.8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .logo{height:34px;width:auto;border-radius:8px;background:#fff;padding:4px 8px}
+  .logo{height:30px;width:auto;filter:drop-shadow(0 1px 3px rgba(0,0,0,.55))}
+  /* İstanbul saati (gece görünümü buna göre kendiliğinden açılır) */
+  .saat{position:fixed;z-index:5;left:16px;top:calc(66px + env(safe-area-inset-top));display:flex;align-items:center;gap:6px;padding:7px 12px;border-radius:999px;
+    background:rgba(5,10,48,.8);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:#fff;font-family:Arial,Helvetica,sans-serif;font-size:1.25rem;font-weight:700;
+    letter-spacing:.5px;font-variant-numeric:tabular-nums;text-shadow:0 1px 2px rgba(0,0,0,.5);box-shadow:0 4px 14px rgba(0,0,0,.35);pointer-events:none}
+  .saat svg{width:18px;height:18px}.saat small{font-size:.8rem;font-weight:700}
 
   /* etap pini: resmi VR'daki görünür konumla aynı olsun diye noktanın 20/25 px sağ altında durur */
   .pin{width:30px;height:30px;margin:0;border-radius:50%;background:var(--navy);color:#fff;
@@ -205,6 +210,8 @@
   <img class="logo" src="assets/dogus-logo.png?v=4" alt="RE/MAX Doğuş">
 </div>
 
+<div class="saat" aria-live="off"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span id="saat">--:--</span><small>İstanbul</small></div>
+
 <button class="tgl" id="tgl" type="button" aria-pressed="false" aria-label="Gündüz ve gece görünümü arasında geçiş yap">
   <span class="d"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="4.5"/><path d="M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3M4.6 4.6l2.1 2.1M17.3 17.3l2.1 2.1M4.6 19.4l2.1-2.1M17.3 6.7l2.1-2.1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Gündüz</span>
   <span class="m"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 14.6A8.5 8.5 0 0 1 9.4 3.5a8.5 8.5 0 1 0 11.1 11.1z"/></svg>Gece</span>
@@ -251,7 +258,17 @@
   function goEl(div,a){div.classList.add('go');div.title=NAMES[a[0]-1]+' bakış noktasına git';div.innerHTML=EYE+'<b>'+NAMES[a[0]-1]+'</b>';}
 
   // gece: her sahnenin gece karoları assets/vr/sNn (tools/vr/night_tiles.py)
-  var night=/[?&]gece=1/.test(location.search);
+  // adreste ?gece=1 / ?gece=0 yoksa ve ziyaretçi düğmeyle seçmediyse İstanbul'da güneş batınca gece görünümü kendiliğinden açılır
+  var GQ=/[?&]gece=([01])/.exec(location.search),EL=null;try{EL=sessionStorage.getItem('vzGece');}catch(e){}
+  var AUTO=!GQ&&EL===null;
+  // güneşin İstanbul'daki yüksekliği (derece); -4°'nin altı gece sayılır (gün batımından ~20 dk sonra)
+  function gunes(t){var d=(t/864e5)-10957.5,g=(357.529+.98560028*d)*Math.PI/180,q=280.459+.98564736*d,
+    L=(q+1.915*Math.sin(g)+.02*Math.sin(2*g))*Math.PI/180,e=(23.439-3.6e-7*d)*Math.PI/180,
+    ra=Math.atan2(Math.cos(e)*Math.sin(L),Math.cos(L)),dc=Math.asin(Math.sin(e)*Math.sin(L)),
+    H=((280.46061837+360.98564736629*d+29.03)%360)*Math.PI/180-ra,la=41.0*Math.PI/180;
+    return Math.asin(Math.sin(la)*Math.sin(dc)+Math.cos(la)*Math.cos(dc)*Math.cos(H))*180/Math.PI;}
+  function gecemi(){return gunes(Date.now())<-4;}
+  var night=GQ?GQ[1]==='1':EL!==null?EL==='1':gecemi();
   var scenes={};
   ['','n'].forEach(function(nx){SC.forEach(function(s,i){
     var k=i+1,hs=[];
@@ -281,13 +298,23 @@
     $('sname').textContent=NAMES[cur]+' · Etap numarasına dokunun';
     if(sel)mark(sel);});
   // gündüz / gece: aynı bakış açısında sahneyi gece karolarıyla değiştir (yumuşak geçiş)
+  // WebGL'i olmayan bilgisayarlarda (görüntü CSS ile çiziliyor) sahne değiştirmek görüntüyü kaydırabiliyor: sayfayı aynı bakışla yeniden aç
+  var NOGL=!(function(){try{var c=document.createElement('canvas');return c.getContext('webgl')||c.getContext('experimental-webgl');}catch(e){}})();
   function setNight(on){
+    if(NOGL&&on!==night){try{sessionStorage.setItem('vzBak',JSON.stringify([cur+1,v.getPitch(),v.getYaw(),v.getHfov(),on]));}catch(e){}
+      location.replace(location.pathname+(on?'?gece=1':''));return;}
     night=on;document.body.classList.toggle('night',on);$('tgl').setAttribute('aria-pressed',on);
     var id=sid(cur+1);if(v.getScene()!==id)v.loadScene(id,v.getPitch(),v.getYaw(),v.getHfov());
-    try{history.replaceState(null,'',on?'?gece=1':location.pathname);}catch(e){}
+    if(!AUTO)try{history.replaceState(null,'',on?'?gece=1':location.pathname);}catch(e){}
   }
   document.body.classList.toggle('night',night);$('tgl').setAttribute('aria-pressed',night);
-  $('tgl').onclick=function(){setNight(!night);};
+  $('tgl').onclick=function(){AUTO=false;try{sessionStorage.setItem('vzGece',night?'0':'1');}catch(e){}setNight(!night);};
+  // saat her dakika başında güncellenir; otomatik moddaysa gün batınca / doğunca görünüm kendiliğinden değişir
+  var SF=null;try{SF=new Intl.DateTimeFormat('tr-TR',{timeZone:'Europe/Istanbul',hour:'2-digit',minute:'2-digit'});}catch(e){}
+  function saat(){var n=new Date();$('saat').textContent=SF?SF.format(n):('0'+n.getHours()).slice(-2)+':'+('0'+n.getMinutes()).slice(-2);
+    if(AUTO&&gecemi()!==night&&!card.classList.contains('on'))setNight(!night);
+    setTimeout(saat,60500-n.getSeconds()*1000-n.getMilliseconds());}
+  saat();
   $('pins').onclick=function(){var off=document.body.classList.toggle('nopin');this.setAttribute('aria-pressed',!off);if(off&&card.classList.contains('on'))close();};
   v.on('mousedown',function(){$('hint').classList.add('off');});
   v.on('touchstart',function(){$('hint').classList.add('off');});

@@ -39,7 +39,7 @@
   '.ep-pan{position:fixed;right:0;top:50%;z-index:10002;width:min(372px,calc(100vw - 28px));max-height:calc(100% - 28px);overflow-y:auto;overscroll-behavior:contain;'+
     'transform:translate(calc(100% + 30px),-50%);background:#fff;color:#0f1722;border-radius:22px 0 0 22px;padding:18px 18px 16px;'+
     'box-shadow:-24px 0 60px -20px rgba(5,10,48,.55);visibility:hidden;transition:transform .45s cubic-bezier(.2,.9,.25,1),visibility 0s .45s;font-family:"Archivo","Plus Jakarta Sans",system-ui,sans-serif;line-height:1.35;text-align:left}'+
-  '.ep-on .ep-scrim{opacity:1;visibility:visible}.ep-on .ep-pan{transform:translate(0,-50%);visibility:visible;transition-delay:0s}.ep-on .ep-tab{opacity:0;pointer-events:none}'+
+  '.ep-on .ep-scrim{opacity:1;visibility:visible}.ep-on .ep-pan{transform:translate(0,-50%);visibility:visible;transition-delay:0s}.ep-on .ep-tab{opacity:0;pointer-events:none}body:has(.topnav.open) .ep-tab,body:has(.menu-toggle.open) .ep-tab{opacity:0;pointer-events:none}'+
   '.ep-pan *{box-sizing:border-box}'+
   '.ep-hd{display:flex;align-items:flex-start;gap:10px;margin-bottom:12px}'+
   '.ep-hd .ep-ic{width:34px;height:34px;flex:none;color:#0a2a5e}'+
