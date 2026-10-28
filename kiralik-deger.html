@@ -423,6 +423,7 @@
     var data = new FormData(form);
     // Analytics: gönderilen form sayılsın (generate_lead, önemli etkinlik). 28 Eki: reklamın kaç talep getirdiği görünsün.
     try { if (window.gtag) gtag('event', 'generate_lead', { form_name: form.getAttribute('name') || '', transport_type: 'beacon' }); } catch (err) {}
+    if (window.metaLead) metaLead(form.getAttribute('name') || 'kiralik-deger');
 
     // Ofis servisine bildir — müşteriye WhatsApp, nöbetçi danışmana e-posta gider.
     // Hata verirse form yine Formspree'ye gönderilir, akış kesilmez.
