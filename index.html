@@ -213,7 +213,7 @@ h1 .h1sub{display:block;font-size:clamp(1rem,3.8vw,1.35rem);font-weight:600;line
 
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none!important;transition:none!important}
-  /* video gizlenmez: oynatılmaz, ilk karesi (poster) sabit arka plan olarak kalır */
+  /* arka plan videosu bu ayarda da oynar */
   .balloon-lane{opacity:1}
 }
 </style>
@@ -404,8 +404,7 @@ function guvenliJson(r){
     (function(){
       var v = document.querySelector('.bg video');
       if(!v) return;
-      // iPhone'da "Hareketi Azalt" açıksa video oynatılmaz, poster sabit arka plan olarak görünür
-      if(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches){ v.removeAttribute('autoplay'); v.autoplay = false; v.pause(); return; }
+      // "Hareketi Azalt" açık olsa da arka plan videosu oynar (Umut'un isteği); diğer animasyonlar azaltılır
       function kick(){ var p = v.play(); if(p && p.catch) p.catch(function(){}); }
       kick();
       document.addEventListener('touchstart', kick, {once:true, passive:true});
