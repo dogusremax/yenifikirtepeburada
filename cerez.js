@@ -12,6 +12,15 @@
   /* Meta Pikseli (Dogus Performans). Yalnızca "Kabul et" ile yüklenir; form gönderiminde Lead olayı. */
   var META = me.getAttribute('data-meta') || '2386105761921849';
 
+  /* Reklam kaynağı: ilk girişteki utm_* bu sekmede saklanır (çerez değil, sekme kapanınca silinir).
+     Formlar kaynak alanına window.reklamKaynak() ekler, ör. " · reklam: ig/paid/reels_v3_ekim26". */
+  try{
+    var q = new URLSearchParams(location.search), u = [q.get('utm_source'), q.get('utm_medium'), q.get('utm_campaign')];
+    if (u[0] || u[2]) sessionStorage.setItem('reklamKaynak', u.filter(Boolean).join('/').slice(0, 80));
+    else if (q.get('fbclid') && !sessionStorage.getItem('reklamKaynak')) sessionStorage.setItem('reklamKaynak', 'fbclid');
+  }catch(e){}
+  window.reklamKaynak = function(){ try{ var r = sessionStorage.getItem('reklamKaynak'); return r ? ' \u00b7 reklam: ' + r : ''; }catch(e){ return ''; } };
+
   var M = {
     tr:{ga:'Ziyaretleri ve reklam sonuçlarını ölçmek için çerez kullanıyoruz.',
         yok:'Bu sayfa yalnızca çalışması için gerekli kayıtları (dil seçimi, hesap tercihleri) tutar. İsteğe bağlı ölçüm çerezleri yalnızca onayınızla çalışır.',
