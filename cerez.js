@@ -1,4 +1,5 @@
 /* Çerez onayı: küçük alt şerit (Kabul et / Reddet) + Google Consent Mode v2.
+   Meta Pikseli de yalnızca onayla yüklenir (window.metaLead ile form Lead olayı).
    Onay yokken Analytics çerez bırakmaz, yalnızca çerezsiz sinyal gönderir; "Kabul et" ile çerezler açılır.
    Seçim 12 ay hatırlanır. gtag config'inden ÖNCE, defer'sız yüklenmeli:
    <script src="cerez.js" data-ga="G-XXXX"></script> */
@@ -8,12 +9,14 @@
   var GA = me.getAttribute('data-ga') || '';
   var POL = me.getAttribute('data-politika') || 'cerez-politikasi.html';
   var KEY = 'cerezOnay', YIL = 365*864e5;
+  /* Meta Pikseli (Dogus Performans). Yalnızca "Kabul et" ile yüklenir; form gönderiminde Lead olayı. */
+  var META = me.getAttribute('data-meta') || '2386105761921849';
 
   var M = {
-    tr:{ga:'Ziyaretleri ölçmek için çerez kullanıyoruz.',
+    tr:{ga:'Ziyaretleri ve reklam sonuçlarını ölçmek için çerez kullanıyoruz.',
         yok:'Bu sayfa yalnızca çalışması için gerekli kayıtları (dil seçimi, hesap tercihleri) tutar. İsteğe bağlı ölçüm çerezleri yalnızca onayınızla çalışır.',
         pol:'Çerez Politikası',kabul:'Kabul et',red:'Reddet',ayar:'Çerez tercihleri'},
-    en:{ga:'We use cookies to measure visits.',
+    en:{ga:'We use cookies to measure visits and ad results.',
         yok:'This page only stores what it needs to work (language, calculator settings). Optional analytics cookies only run with your consent.',
         pol:'Cookie Policy',kabul:'Accept',red:'Reject',ayar:'Cookie settings'},
     ru:{ga:'Мы используем файлы cookie Google Analytics, чтобы считать посещения и популярные страницы. Они работают только с вашего согласия.',
@@ -45,6 +48,14 @@
     gs.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(GA);
     document.head.appendChild(gs);
   }
+  function metaYukle(){
+    if (!META || window.fbq) return;
+    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', META); fbq('track', 'PageView');
+  }
+  if (oku() === 'kabul') metaYukle();
+  /* Formlar çağırır: onay varsa Meta'ya Lead gider */
+  window.metaLead = function(ad){ try { if (window.fbq) fbq('track', 'Lead', {content_name: ad || ''}); } catch(e){} };
   function gaIzin(v){ if (GA && window.gtag) gtag('consent', 'update', {analytics_storage: v ? 'granted' : 'denied'}); }
   function gaSil(){
     document.cookie.split(';').forEach(function(c){
@@ -92,7 +103,7 @@
       serit = document.createElement('div'); serit.className = 'cerez'; serit.setAttribute('role','dialog');
       serit.innerHTML = '<p></p><div class="cb"><button type="button" class="red"></button><button type="button" class="kabul"></button></div>';
       serit.querySelector('.red').onclick = function(){ yaz('red'); gaIzin(false); gaSil(); kapat(); };
-      serit.querySelector('.kabul').onclick = function(){ yaz('kabul'); gaIzin(true); kapat(); };
+      serit.querySelector('.kabul').onclick = function(){ yaz('kabul'); gaIzin(true); metaYukle(); kapat(); };
       document.body.appendChild(serit);
       /* Telefonda WhatsApp düğmesinin üstünü kapatmasın */
       var wa = document.querySelector('.wa-fab');
