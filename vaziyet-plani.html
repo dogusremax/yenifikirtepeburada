@@ -176,6 +176,22 @@
   .pins svg{width:15px;height:15px}.pins .off{display:none}
   .nopin .pins{background:var(--coral)}.nopin .pins .on{display:none}.nopin .pins .off{display:block}
   .nopin .pnlm-hotspot-base,.nopin .hlsvg{visibility:hidden!important}
+  /* teslim filtresi: renk lejantı da olur; seçilen durum dışındaki etap numaraları gizlenir */
+  .flt{position:fixed;z-index:5;left:50%;transform:translateX(-50%);bottom:calc(100px + env(safe-area-inset-bottom));display:flex;gap:4px;padding:4px;
+    border-radius:999px;background:rgba(5,10,48,.62);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 8px 24px -10px rgba(0,0,0,.5);
+    max-width:calc(100vw - 20px);overflow-x:auto;scrollbar-width:none;transition:opacity .3s}
+  .flt::-webkit-scrollbar{display:none}
+  .flt button{flex:none;display:flex;align-items:center;gap:6px;border:0;border-radius:999px;padding:7px 11px;background:none;color:rgba(255,255,255,.85);
+    font:inherit;font-size:.74rem;font-weight:700;cursor:pointer;white-space:nowrap;transition:background .2s,color .2s}
+  .flt button i{width:9px;height:9px;border-radius:50%;background:var(--c);box-shadow:0 0 0 2px rgba(255,255,255,.25)}
+  .flt button b{font-variant-numeric:tabular-nums;opacity:.7;font-weight:800}
+  .flt button.on{background:#fff;color:var(--navy)}
+  .flt button.on b{opacity:1;color:var(--c,var(--navy))}
+  .flt button[data-f="now"] i{animation:blink 1.2s infinite}
+  @media (max-width:430px){.flt{gap:0;padding:3px}.flt button{padding:6px 7px;font-size:.66rem;gap:4px}.flt button i{width:7px;height:7px}}
+  body.carded .flt,.nopin .flt{opacity:0;pointer-events:none}
+  body[data-f] .pin.hide{display:none}
+  @media (prefers-reduced-motion:reduce){.flt button[data-f="now"] i{animation:none}}
 </style>
 <script src="dil.js"></script>
 </head>
@@ -201,6 +217,8 @@
 </button>
 
 <div class="hint" id="hint">Sürükleyerek çevirin · Etap numarasına dokunun</div>
+
+<div class="flt" id="flt" role="group" aria-label="Teslim durumuna göre filtrele"></div>
 
 <nav class="scenes" id="scenes" aria-label="Bakış noktaları"></nav>
 
@@ -229,7 +247,7 @@
   // Marzipano dikey görüş açısını Pannellum yatay görüş açısına çevir
   function hfov(v){var a=innerWidth/innerHeight,h=2*Math.atan(Math.tan(v*Math.PI/360)*a)*180/Math.PI;return Math.max(40,Math.min(120,h));}
 
-  function pinEl(div,a){var n=a[0];div.classList.add('pin');if(window.__E&&__E[n])div.style.setProperty('--c',__ST[__E[n].st][1]);div.dataset.n=n;div.innerHTML='<span>'+n+'</span>';}
+  function pinEl(div,a){var n=a[0];div.classList.add('pin');if(window.__E&&__E[n]){div.style.setProperty('--c',__ST[__E[n].st][1]);if(window.__gizle)div.classList.toggle('hide',__gizle(n));}div.dataset.n=n;div.innerHTML='<span>'+n+'</span>';}
   function goEl(div,a){div.classList.add('go');div.title=NAMES[a[0]-1]+' bakış noktasına git';div.innerHTML=EYE+'<b>'+NAMES[a[0]-1]+'</b>';}
 
   // gece: her sahnenin gece karoları assets/vr/sNn (tools/vr/night_tiles.py)
@@ -311,7 +329,21 @@
     Object.keys(INFO).forEach(function(k){var n=+k,p=prg[n];E[n]={n:n,info:INFO[n],prog:p||null,st:p?p.st:TESLIM.indexOf(n)>=0?'ok':'soon'};});
     paint();
   }
-  function paint(){[].forEach.call(document.querySelectorAll('.pin'),function(p){var e=E[+p.dataset.n];if(e)p.style.setProperty('--c',ST[e.st][1]);});}
+  function paint(){[].forEach.call(document.querySelectorAll('.pin'),function(p){var e=E[+p.dataset.n];if(e){p.style.setProperty('--c',ST[e.st][1]);p.classList.toggle('hide',gizle(+p.dataset.n));}});flt();}
+  // teslim filtresi: Tümü / Teslim edildi / Teslimde / Yakında (Yaklaşıyor da Yakında'ya sayılır)
+  var F='';
+  function grp(st){return st==='next'?'soon':st;}
+  function gizle(n){return !!F&&!!E[n]&&grp(E[n].st)!==F;}
+  window.__gizle=gizle;
+  function flt(){
+    var c={'':0,ok:0,now:0,soon:0};Object.keys(E).forEach(function(k){c['']++;c[grp(E[k].st)]++;});
+    var h='<button type="button" data-f="" class="'+(F?'':'on')+'" style="--c:var(--navy)">Tümü <b>'+c['']+'</b></button>';
+    ['ok','now','soon'].forEach(function(k){if(c[k])h+='<button type="button" data-f="'+k+'" class="'+(F===k?'on':'')+'" style="--c:'+ST[k][1]+'"><i></i>'+ST[k][0]+' <b>'+c[k]+'</b></button>';});
+    $('flt').innerHTML=h;
+  }
+  $('flt').onclick=function(ev){var b=ev.target.closest('button');if(!b)return;F=b.dataset.f;
+    if(F)document.body.dataset.f=F;else delete document.body.dataset.f;
+    if(sel&&gizle(sel))close();paint();try{gtag('event','vaziyet_filtre',{durum:F||'tumu'});}catch(e){}};
   build(YEDEK);
   fetch('teslim-takvimi.json?cb='+Date.now(),{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.json();}).then(build).catch(function(){});
   v.on('load',paint);
