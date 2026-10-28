@@ -254,7 +254,7 @@
       p.append('ad',     data.get('ad_soyad') || '');
       p.append('tel',    data.get('telefon')  || '');
       p.append('tur',    'kiralamak');
-      p.append('kaynak', 'yenifikirtepeburada.com \u00b7 Kiralık Daire Arıyorum');
+      p.append('kaynak', 'yenifikirtepeburada.com \u00b7 Kiralık Daire Arıyorum' + (window.reklamKaynak ? reklamKaynak() : ''));
       p.append('waIzin', data.get('wa_izin') ? '1' : '0');
       p.append('bolge',  data.get('site_bolge') || '');
       p.append('oda',    data.get('oda_sayisi') || '');

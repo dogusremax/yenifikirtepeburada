@@ -437,7 +437,7 @@
       p.append('ad',     data.get('ad_soyad') || '');
       p.append('tel',    data.get('telefon')  || '');
       p.append('tur',    'satilik');
-      p.append('kaynak', 'yenifikirtepeburada.com · Satılık Değerleme');
+      p.append('kaynak', 'yenifikirtepeburada.com · Satılık Değerleme' + (window.reklamKaynak ? reklamKaynak() : ''));
       p.append('waIzin', data.get('wa_izin') ? '1' : '0');
       p.append('bolge', [data.get('site'), data.get('etap')].filter(Boolean).join(' '));
       p.append('oda',   data.get('oda_sayisi') || '');
