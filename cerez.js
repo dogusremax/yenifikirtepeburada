@@ -51,7 +51,7 @@
   if (GA) {
     window.dataLayer = window.dataLayer || [];
     window.gtag = window.gtag || function(){ dataLayer.push(arguments); };
-    var izin = oku() === 'kabul' ? 'granted' : 'denied';
+    var izin = oku() === 'red' ? 'denied' : 'granted'; /* 29.10.2026 Umut: şerit kaldırıldı, varsayılan açık */
     gtag('consent', 'default', {analytics_storage: izin, ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied', wait_for_update: 500});
     var gs = document.createElement('script'); gs.async = true;
     gs.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(GA);
@@ -62,7 +62,7 @@
     !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
     fbq('init', META); fbq('track', 'PageView');
   }
-  if (oku() === 'kabul') metaYukle();
+  if (oku() !== 'red') metaYukle();
   /* Formlar çağırır: onay varsa Meta'ya Lead gider */
   window.metaLead = function(ad){ try { if (window.fbq) fbq('track', 'Lead', {content_name: ad || ''}); } catch(e){} };
   function gaIzin(v){ if (GA && window.gtag) gtag('consent', 'update', {analytics_storage: v ? 'granted' : 'denied'}); }
@@ -138,8 +138,7 @@
   function basla(){
     css();
     var s = oku();
-    if (!s) goster();
-    ayarLinki(); setTimeout(ayarLinki, 600);
+    /* 29.10.2026 Umut: çerez şeridi ve "Çerez tercihleri" bağlantısı kaldırıldı */
     /* Kıbrıs sayfasında dil değişince metni güncelle */
     if (window.MutationObserver) new MutationObserver(function(){
       metin(); var a = document.querySelector('.cerez-ayar'); if (a) a.textContent = T().ayar;
