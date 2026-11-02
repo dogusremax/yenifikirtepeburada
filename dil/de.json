@@ -1376,5 +1376,10 @@
 "^Programın son günü (\\d+) Aralık( \\d{4})?\\.$",
 "Das Programm endet am $1. Dezember$2."
 ]
-]
+],
+"Hesaplama Araçları": "Rechner",
+"Proje": "Projekt",
+"Rehber ve Araçlar": "Ratgeber & Tools",
+"Satış Sonrası": "Nach dem Kauf",
+"Fikirtepe Rehberi": "Fikirtepe-Ratgeber"
 }

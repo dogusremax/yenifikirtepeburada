@@ -1376,5 +1376,10 @@
 "^Programın son günü (\\d+) Aralık( \\d{4})?\\.$",
 "پایان برنامه: $1 دسامبر$2."
 ]
-]
+],
+"Hesaplama Araçları": "ماشین‌حساب‌ها",
+"Proje": "پروژه",
+"Rehber ve Araçlar": "راهنماها و ابزارها",
+"Satış Sonrası": "خدمات پس از فروش",
+"Fikirtepe Rehberi": "راهنمای فیکیرتپه"
 }
