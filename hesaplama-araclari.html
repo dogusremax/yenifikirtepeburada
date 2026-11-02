@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hesaplama Araçları: Kira Artışı, Tapu Harcı, Değer Artış Vergisi, Konut Kredisi | RE/MAX Doğuş</title>
+<meta name="description" content="Kira artış oranı (TÜFE), tapu harcı ve döner sermaye, 5 yıl dolmadan satışta değer artış kazancı vergisi, kira çarpanı ve konut kredisi taksiti: 2026 oranlarıyla ücretsiz hesaplayın.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://yenifikirtepeburada.com/hesaplama-araclari.html">
+<link rel="icon" type="image/png" href="favicon.png">
+<meta name="theme-color" content="#0a2a5e">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Yeni Fikirtepe">
+<meta property="og:locale" content="tr_TR">
+<meta property="og:title" content="Hesaplama Araçları: Kira Artışı, Tapu Harcı, Değer Artış Vergisi, Konut Kredisi | RE/MAX Doğuş">
+<meta property="og:description" content="Kira artış oranı (TÜFE), tapu harcı ve döner sermaye, 5 yıl dolmadan satışta değer artış kazancı vergisi, kira çarpanı ve konut kredisi taksiti: 2026 oranlarıyla ücretsiz hesaplayın.">
+<meta property="og:url" content="https://yenifikirtepeburada.com/hesaplama-araclari.html">
+<meta property="og:image" content="https://yenifikirtepeburada.com/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Hesaplama Araçları: Kira Artışı, Tapu Harcı, Değer Artış Vergisi, Konut Kredisi | RE/MAX Doğuş">
+<meta name="twitter:description" content="Kira artış oranı (TÜFE), tapu harcı ve döner sermaye, 5 yıl dolmadan satışta değer artış kazancı vergisi, kira çarpanı ve konut kredisi taksiti: 2026 oranlarıyla ücretsiz hesaplayın.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  @view-transition{navigation:auto}
+  ::view-transition-old(root),::view-transition-new(root){animation-duration:.28s}
+  body{animation:fadein .35s ease both}
+  @keyframes fadein{from{opacity:0}to{opacity:1}}
+  :root{--blue:#0a2a5e;--blue-mid:#143d82;--red:#e2231a;--ink:#0f1722;--gray:#5b6473;--line:#e6e9ef;--bg:#ffffff;--soft:#f5f7fb}
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:'DIN Neuzeit Grotesk','Archivo',sans-serif;color:var(--ink);background:var(--bg);line-height:1.7;-webkit-font-smoothing:antialiased;position:relative;overflow-x:hidden}
+  a{color:inherit}
+
+  .topnav{width:100%;display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:8px 30px;padding:22px 24px;background:var(--blue);border-bottom:1px solid rgba(255,255,255,.12);position:relative;z-index:2}
+  .topnav a{text-decoration:none;color:#fff;font-size:.95rem;font-weight:500;letter-spacing:.01em;position:relative;padding:4px 0;opacity:.88;transition:.18s}
+  .topnav a::after{content:'';position:absolute;left:0;bottom:-2px;width:0;height:2px;background:var(--red);transition:.2s}
+  .topnav a:hover{opacity:1} .topnav a:hover::after{width:100%}
+  .topnav a.active{opacity:1} .topnav a.active::after{width:100%}
+
+  .bg{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+  .bg .balloon{position:absolute;right:-70px;top:90px;width:420px;height:auto;opacity:.06;filter:saturate(.85);animation:float 9s ease-in-out infinite}
+  .bg .ghost{position:absolute;left:50%;bottom:5vh;transform:translateX(-50%);font-size:17vw;font-weight:700;letter-spacing:-.03em;white-space:nowrap;color:rgba(10,42,94,.06);user-select:none}
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-16px)}}
+
+  .wrap{max-width:840px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
+  .back{display:inline-flex;align-items:center;gap:8px;text-decoration:none;color:var(--gray);font-size:.92rem;font-weight:500;margin-top:30px}
+  .back:hover{color:var(--blue)}
+
+  .phead{text-align:left;padding:46px 0 10px}
+  .phead h1{font-size:clamp(2.2rem,5.4vw,3.4rem);color:var(--blue);font-weight:700;letter-spacing:-.02em;line-height:1.08}
+  .phead h1 .sq{display:inline-block;width:.13em;height:.13em;background:var(--red);border-radius:.02em;margin-left:.04em;vertical-align:baseline}
+  .phead .lead{margin:18px 0 0;color:var(--gray);font-size:1.1rem;font-weight:300;max-width:680px}
+
+  .grp{margin:30px 0}
+  .gtitle{font-size:1.15rem;color:var(--blue);font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:12px}
+  .gtitle::after{content:'';flex:1;height:1px;background:var(--line)}
+
+  .faq{border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.8);backdrop-filter:blur(2px);margin-bottom:12px;overflow:hidden;transition:.2s}
+  .faq[open]{border-color:rgba(10,42,94,.25);box-shadow:0 10px 28px rgba(10,42,94,.08)}
+  .faq summary{list-style:none;cursor:pointer;padding:20px 22px;font-size:1.04rem;font-weight:600;color:var(--ink);display:flex;justify-content:space-between;align-items:center;gap:16px}
+  .faq summary::-webkit-details-marker{display:none}
+  .faq[open] summary{color:var(--blue)}
+  .chev{flex-shrink:0;font-size:1.4rem;color:var(--red);transition:transform .25s;line-height:1}
+  .faq[open] .chev{transform:rotate(180deg)}
+  .ans{padding:0 22px 20px}
+  .ans p{color:#3a4453;font-weight:300;font-size:.98rem}
+
+  .cta{background:var(--blue);color:#fff;border-radius:18px;text-align:center;padding:44px 30px;margin:34px 0 60px}
+  .cta h2{font-size:clamp(1.4rem,2.8vw,1.9rem);font-weight:700;margin-bottom:10px}
+  .cta p{color:#bcc8de;font-weight:300;margin-bottom:24px}
+  .cta .btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+  .cta a{text-decoration:none;font-weight:600;padding:14px 28px;border-radius:10px;transition:.2s}
+  .cta .pri{background:#fff;color:var(--blue)} .cta .pri:hover{background:var(--red);color:#fff}
+  .cta .sec{border:1px solid rgba(255,255,255,.5);color:#fff} .cta .sec:hover{background:rgba(255,255,255,.12)}
+
+  /* Mobil hamburger menü */
+  .navbar{position:relative}
+  .menu-toggle{display:none}
+  @media(max-width:760px){
+    .navbar{background:var(--blue);position:relative;z-index:20}
+    .menu-toggle{display:block;position:absolute;top:14px;right:18px;
+      width:44px;height:44px;border:none;background:transparent;cursor:pointer;z-index:40;padding:0}
+    .menu-toggle span{display:block;width:26px;height:3px;background:#fff;margin:5px auto;transition:.3s;border-radius:2px}
+    .menu-toggle.open span:nth-child(1){transform:translateY(8px) rotate(45deg)}
+    .menu-toggle.open span:nth-child(2){opacity:0}
+    .menu-toggle.open span:nth-child(3){transform:translateY(-8px) rotate(-45deg)}
+    /* kapalı bar: sadece logo alanı + hamburger; linkler gizli */
+    .navbar{min-height:64px}
+    .topnav{flex-direction:column;flex-wrap:nowrap;align-items:stretch;gap:0;max-height:0;overflow:hidden;
+      transition:max-height .35s ease;padding:0 24px}
+    .topnav.open{max-height:900px;padding-top:8px;padding-bottom:16px;overflow-y:auto}
+    .topnav a{width:100%;padding:14px 2px;font-size:1.05rem;border-bottom:1px solid rgba(255,255,255,.12);opacity:1}
+    .topnav a:last-child{border-bottom:none}
+    .topnav a::after{display:none}
+  }
+
+
+  /* Devir rehberi adım kartları */
+  .step{display:flex;gap:18px;align-items:flex-start;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.85);backdrop-filter:blur(2px);padding:22px 22px;margin-bottom:14px;transition:.2s}
+  .step:hover{border-color:rgba(10,42,94,.22);box-shadow:0 10px 28px rgba(10,42,94,.08);transform:translateY(-2px)}
+  .snum{flex-shrink:0;width:44px;height:44px;border-radius:12px;background:var(--blue);color:#fff;display:grid;place-items:center;font-size:1.2rem;font-weight:700}
+  .step:hover .snum{background:var(--red)}
+  .sbody b{display:block;color:var(--blue);font-size:1.06rem;font-weight:700;margin-bottom:5px}
+  .sbody p{color:var(--gray);font-weight:300;font-size:.98rem;margin:0}
+  .sbody p+p{margin-top:6px}
+  .notebox{background:var(--soft);border:1px solid var(--line);border-left:4px solid var(--blue);border-radius:12px;padding:20px 22px;margin:22px 0;color:var(--ink);font-weight:300}
+  .notebox b{color:var(--blue);font-weight:700}
+  .doclist{list-style:none;margin:10px 0 0;padding:0}
+  .doclist li{padding:8px 0 8px 26px;position:relative;color:var(--gray);font-weight:300;border-bottom:1px solid var(--line)}
+  .doclist li:last-child{border-bottom:none}
+  .doclist li::before{content:'📄';position:absolute;left:0;top:7px;font-size:.9rem}
+  .warn{background:#fff6f5;border:1px solid #f5c6c2;border-left:4px solid var(--red);border-radius:12px;padding:18px 22px;margin:22px 0;color:#7a1c16;font-weight:400;font-size:.96rem}
+  .cta{background:var(--blue);color:#fff;border-radius:18px;text-align:center;padding:40px 30px;margin:34px 0 60px}
+  .cta h2{font-size:clamp(1.4rem,2.8vw,1.9rem);font-weight:700;margin-bottom:10px}
+  .cta p{color:#bcc8de;font-weight:300;margin-bottom:24px}
+  .cta a{text-decoration:none;font-weight:600;padding:14px 26px;border-radius:10px;background:#fff;color:var(--blue);transition:.2s;display:inline-block;margin:0 6px}
+  .cta a:hover{background:var(--red);color:#fff}
+
+  .step .sbody ul{list-style:none;margin:8px 0 0;padding:0}
+  .step .sbody li{position:relative;padding:6px 0 6px 18px;color:var(--gray);font-weight:300;font-size:.98rem}
+  .step .sbody li::before{content:'';position:absolute;left:2px;top:15px;width:7px;height:7px;border-radius:2px;background:var(--red)}
+  .step .sbody li b{display:inline;font-size:inherit;margin:0;color:var(--ink);font-weight:600}
+  .ex{margin-top:10px;background:var(--soft);border-radius:10px;padding:10px 14px;font-size:.93rem;color:var(--ink);font-weight:400}
+  .step .sbody a,.notebox a{color:var(--blue);font-weight:600}
+  .cta a{margin:6px}
+  .disc{color:var(--gray);font-size:.86rem;font-weight:300;margin:-30px 0 60px;text-align:center}
+</style>
+<style id="hesaplama">
+.hes{--text:#0f1722;--dim:#5b6473;--green:#0f7a43;--soft:#eef1f6;--line:#e3e7ee;font-family:Arial,Helvetica,sans-serif;color:var(--text);line-height:1.35;margin:26px 0 10px}
+.hes *{box-sizing:border-box}
+
+/* araç seçici */
+.araclar{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.arac{appearance:none;-webkit-appearance:none;border:1px solid var(--line);background:#fff;border-radius:16px;padding:10px 6px 9px;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;font:700 12.5px Arial,sans-serif;color:var(--text);line-height:1.2;text-align:center;width:100%;-webkit-tap-highlight-color:transparent}
+.arac svg{width:26px;height:26px;color:var(--blue)}
+.arac.on{background:var(--blue);border-color:var(--blue);color:#fff}
+.arac.on svg{color:#fff}
+@media(min-width:700px){.araclar{grid-template-columns:repeat(6,1fr)}.ikili{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}.ikili .sonuc{margin-top:0}}
+.bolum{display:none}
+.bolum.on{display:block}
+.kart{background:#fff;border:1px solid var(--line);border-radius:20px;padding:18px;box-shadow:0 6px 20px -12px rgba(19,26,38,.18)}
+.kart h2{font-size:18px;font-weight:700;margin-bottom:4px}
+.kart .acik{font-size:13px;color:var(--dim);line-height:1.45;margin-bottom:14px}
+.alan{margin-bottom:14px}
+.alan:last-child{margin-bottom:0}
+.hes label,.hes .lbl{display:block;font-size:13px;font-weight:700;color:var(--dim);margin-bottom:7px}
+.giris{position:relative}
+.giris input,.giris select{width:100%;height:56px;border:2px solid var(--line);border-radius:14px;background:#fff;padding:0 50px 0 14px;font:700 22px Arial,sans-serif;color:var(--text);outline:none;-webkit-appearance:none;appearance:none}
+.giris select{font-size:17px;padding-right:40px}
+.giris input[type=date]{font-size:16px;padding:0 10px;min-width:0;max-width:100%;display:block;line-height:52px;text-align:left}
+.giris input[type=date]::-webkit-date-and-time-value{text-align:left}
+.giris input:focus,.giris select:focus{border-color:var(--blue);box-shadow:0 0 0 4px rgba(0,61,165,.10)}
+.giris span{position:absolute;right:16px;top:50%;transform:translateY(-50%);font:700 20px Arial,sans-serif;color:var(--dim);pointer-events:none}
+.yanyana{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}
+.yanyana>*{min-width:0}
+.hes .sec{display:grid;grid-template-columns:1fr 1fr;gap:6px;background:var(--soft);border-radius:14px;padding:4px}
+.hes .sec.uc{grid-template-columns:1fr 1fr 1fr}
+.hes .sec button{appearance:none;-webkit-appearance:none;border:0;background:transparent;border-radius:11px;padding:11px 4px;font:700 14px Arial,sans-serif;color:var(--dim);cursor:pointer;width:100%}
+.hes .sec button.on{background:#fff;color:var(--blue);box-shadow:0 2px 8px -3px rgba(0,0,0,.18)}
+.cips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.cips button{appearance:none;-webkit-appearance:none;border:1px solid var(--line);background:#fff;border-radius:11px;padding:8px 12px;font:700 14px Arial,sans-serif;color:var(--text);cursor:pointer}
+.cips button.on{border-color:var(--red);background:var(--red);color:#fff}
+.sonuc{margin-top:14px;display:grid;gap:10px}
+.satir{display:flex;justify-content:space-between;align-items:center;gap:12px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:13px 16px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.satir .ad{font-size:14px;font-weight:700;color:var(--dim);line-height:1.3}
+.satir .ad small{display:block;font-size:12px;font-weight:400;margin-top:2px}
+.satir .tut{font:700 21px Arial,sans-serif;color:var(--text);text-align:right;white-space:nowrap}
+.satir.kirmizi .tut{color:var(--red)}
+.satir.yesil .tut{color:var(--green)}
+.satir.top{background:var(--blue);border-color:var(--blue)}
+.satir.top .ad{color:rgba(255,255,255,.82)}
+.satir.top .tut{color:#fff;font-size:25px}
+.durum{border-radius:16px;padding:13px 16px;font-size:14px;font-weight:700;line-height:1.45}
+.durum.iyi{background:#e7f6ee;color:#0b5e33;border:1px solid #bfe5cf}
+.durum.uyari{background:#fff4e5;color:#8a4b00;border:1px solid #f6d6a8}
+.durum.bilgi{background:#eaf0fb;color:#0b3277;border:1px solid #c9d8f3}
+.hes .not{font-size:12px;color:var(--dim);line-height:1.5;margin-top:12px}
+.hes .not b{color:var(--text)}
+.ipucu{font-size:12px;color:var(--dim);text-align:center;margin-top:10px}
+.temizle{display:block;margin:12px auto 0;appearance:none;-webkit-appearance:none;border:0;background:none;font:700 14px Arial,sans-serif;color:var(--blue);cursor:pointer;padding:6px 10px}
+.hes details{margin-top:12px;background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.hes summary{padding:13px 16px;font:700 14px Arial,sans-serif;color:var(--blue);cursor:pointer;list-style:none}
+.hes summary::-webkit-details-marker{display:none}
+.tablo{max-height:360px;overflow:auto;-webkit-overflow-scrolling:touch;border-top:1px solid var(--line)}
+.hes table{width:100%;border-collapse:collapse;font:700 13px Arial,sans-serif}
+.hes th{position:sticky;top:0;background:var(--soft);color:var(--dim);font-size:12px;text-align:right;padding:8px 10px}
+.hes td{padding:8px 10px;text-align:right;border-top:1px solid var(--line);white-space:nowrap}
+.hes th:first-child,.hes td:first-child{text-align:left}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translate(-50%,20px);background:#131a26;color:#fff;font:700 14px Arial,sans-serif;padding:11px 18px;border-radius:12px;opacity:0;transition:.2s;pointer-events:none;z-index:9}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+.gizli{display:none!important}
+</style>
+<script src="dil.js"></script>
+<style id="menu-tasarim">/* Menü: kalın yazı, aktif sayfa kırmızı kutu, üzerine gelince ince kırmızı çerçeve (Umut onayı 29.10.2026) */
+.topnav{gap:6px 2px;padding:16px 24px}
+.topnav a{font-size:.92rem;font-weight:600;letter-spacing:.01em;padding:7px 12px;border-radius:999px;opacity:.9;border:1px solid transparent}
+.topnav a::after{display:none}
+.topnav a:hover{opacity:1;color:#fff;background:rgba(220,28,46,.18);border-color:rgba(220,28,46,.55)}
+.topnav a.active{opacity:1;color:#fff;background:#DC1C2E;border-color:#DC1C2E;box-shadow:0 6px 18px rgba(220,28,46,.4)}
+@media(max-width:760px){
+  .topnav{gap:0;padding:0 18px}
+  .topnav a{font-size:1.02rem;padding:15px 12px;border-radius:12px;border:none;border-bottom:1px solid rgba(255,255,255,.08)}
+  .topnav a.active{box-shadow:none;border-left:3px solid #fff}
+}
+</style>
+</head>
+<body>
+  <div class="bg">
+    <img class="balloon" src="balloon.png" alt="">
+    <div class="ghost">Yeni Fikirtepe</div>
+  </div>
+
+    <div class="navbar">
+  <button class="menu-toggle" id="menuToggle" aria-label="Menü" onclick="this.classList.toggle('open');document.getElementById('mainNav').classList.toggle('open')">
+    <span></span><span></span><span></span>
+  </button>
+  <nav class="topnav" id="mainNav">
+    <a href="index.html">Anasayfa</a>
+    <a href="hakkimizda.html">Hakkımızda</a>
+    <a href="hizmetlerimiz.html">Hizmetlerimiz</a>
+    <a href="etaplar.html">Etaplar</a>
+    <a href="vaziyet-plani.html">Vaziyet Planı</a>
+    <a href="teslim-takvimi.html">Teslim Takvimi</a>
+    <a href="kat-planlari.html">Kat Planları</a>
+    <a href="ekibimiz.html">Ekibimiz</a>
+    <a href="satis-sonrasi.html">Satış Sonrası Hizmetler</a>
+    <a href="kiralama-asamalari.html">Kiralama Aşamaları</a>
+    <a href="videolar.html">Videolar</a>
+    <a href="fikirtepe-rehberi.html">Fikirtepe Rehberi</a>
+    <a href="devir-rehberi.html">Devir Rehberi</a>
+    <a href="daire-satis-masraflari.html">Satış Masrafları</a>
+    <a href="hesaplama-araclari.html" class="active">Hesaplama Araçları</a>
+    <a href="sorulariniz.html">Sorularınız</a>
+    <a href="sosyal-medya.html">Sosyal Medya Hesaplarımız</a>
+    <a href="iletisim.html">Bize Ulaşın</a>
+    <a href="kariyer.html" target="_blank" rel="noopener">Doğuş Kariyer</a>
+     <a href="ilan-rehberi.html" target="_blank" rel="noopener">EİDS Rehberi</a>
+  </nav>
+  </div>
+
+  <div class="wrap">
+    <a href="index.html" class="back">← Ana sayfa</a>
+
+    <div class="phead">
+      <h1>Hesaplama Araçları<span class="sq"></span></h1>
+      <p class="lead">Kira artışı, tapu harcı, değer artış kazancı vergisi, kira çarpanı, konut kredisi ve KDV. 2026'nın güncel oranlarıyla saniyeler içinde hesaplayın.</p>
+    </div>
+
+    <div class="hes">
+<nav class="araclar" id="araclar">
+    <button type="button" class="arac" data-b="kira"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="3"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/><polyline points="8 16 11 13 13 15 16 11"/></svg>Kira Artışı</button>
+    <button type="button" class="arac" data-b="tapu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h9l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg>Tapu Harcı</button>
+    <button type="button" class="arac" data-b="deger"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="15 7 21 7 21 13"/></svg>Değer Artış Vergisi</button>
+    <button type="button" class="arac" data-b="carpan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-5h4v5"/></svg>Kira Çarpanı</button>
+    <button type="button" class="arac" data-b="kredi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10l9-6 9 6"/><line x1="4" y1="21" x2="20" y2="21"/><line x1="6" y1="10" x2="6" y2="18"/><line x1="10" y1="10" x2="10" y2="18"/><line x1="14" y1="10" x2="14" y2="18"/><line x1="18" y1="10" x2="18" y2="18"/></svg>Konut Kredisi</button>
+    <button type="button" class="arac" data-b="kdv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>KDV</button>
+  </nav>
+
+  <!-- ============ KİRA ARTIŞI ============ -->
+  <section class="bolum" id="b-kira">
+   <div class="ikili">
+    <div class="kart">
+      <h2>Kira Artış Hesaplama</h2>
+      <p class="acik">Konut ve iş yeri kirasında yasal üst sınır: kontratın yenilendiği aydan önceki ayın TÜFE 12 aylık ortalaması.</p>
+      <div class="alan"><label for="kMevcut">Mevcut aylık kira</label><div class="giris"><input id="kMevcut" class="para" type="text" inputmode="decimal" autocomplete="off" placeholder="0"><span>₺</span></div></div>
+      <div class="alan"><label for="kAy">Kontratın yenilendiği ay</label><div class="giris"><select id="kAy"></select></div></div>
+      <div class="alan"><label for="kOran">Artış oranı</label><div class="giris"><input id="kOran" type="text" inputmode="decimal" autocomplete="off" placeholder="0"><span>%</span></div>
+        <div class="cips" id="kCips"><button type="button" data-x="tavan" class="on">Yasal üst sınır</button><button type="button" data-x="elle">Anlaşılan oranı yazın</button></div></div>
+    </div>
+    <div class="sonuc">
+      <div class="durum bilgi" id="kDurum"></div>
+      <div class="satir kirmizi" data-c="kArtis"><span class="ad" id="kArtisAd">Artış tutarı</span><span class="tut" id="kArtis">0,00 ₺</span></div>
+      <div class="satir top" data-c="kYeni"><span class="ad">Yeni aylık kira</span><span class="tut" id="kYeni">0,00 ₺</span></div>
+      <div class="satir" data-c="kYillik"><span class="ad">Yeni yıllık kira</span><span class="tut" id="kYillik">0,00 ₺</span></div>
+      <p class="not">Taraflar daha düşük oranda anlaşabilir, daha yükseği yazılamaz. 5 yılı dolduran kontratlarda kira, dava ya da anlaşmayla emsal kira seviyesine çekilebilir. Kaynak: TÜİK TÜFE, Türk Borçlar Kanunu md. 344.</p>
+    </div>
+   </div>
+  </section>
+
+  <!-- ============ TAPU HARCI ============ -->
+  <section class="bolum" id="b-tapu">
+   <div class="ikili">
+    <div class="kart">
+      <h2>Tapu Harcı Hesaplama</h2>
+      <p class="acik">Satışta tapu harcı satış bedelinin %4'ü: alıcı %2, satıcı %2. Üstüne tapu müdürlüğünün döner sermaye ücreti eklenir.</p>
+      <div class="alan"><label for="tBedel">Tapuda gösterilecek satış bedeli</label><div class="giris"><input id="tBedel" class="para" type="text" inputmode="decimal" autocomplete="off" placeholder="0"><span>₺</span></div></div>
+      <div class="alan"><span class="lbl">Harcı kim ödüyor?</span><div class="sec" id="tKim"><button type="button" class="on" data-v="ayri">Yarı yarıya</button><button type="button" data-v="alici">Hepsi alıcıda</button></div></div>
+      <div class="alan"><label for="tDoner">Döner sermaye ücreti (2026)</label><div class="giris"><input id="tDoner" class="para" type="text" inputmode="decimal" autocomplete="off" value="6.681"><span>₺</span></div></div>
+    </div>
+    <div class="sonuc">
+      <div class="satir" data-c="tAlici"><span class="ad">Alıcının harcı<small id="tAliciNot">%2</small></span><span class="tut" id="tAlici">0,00 ₺</span></div>
+      <div class="satir" data-c="tSatici"><span class="ad">Satıcının harcı<small id="tSaticiNot">%2</small></span><span class="tut" id="tSatici">0,00 ₺</span></div>
+      <div class="satir" data-c="tDonerS"><span class="ad">Döner sermaye<small>alıcı öder</small></span><span class="tut" id="tDonerS">0,00 ₺</span></div>
+      <div class="satir kirmizi" data-c="tAliciTop"><span class="ad">Alıcının toplam ödemesi</span><span class="tut" id="tAliciTop">0,00 ₺</span></div>
+      <div class="satir top" data-c="tTop"><span class="ad">Tapu masrafı toplamı</span><span class="tut" id="tTop">0,00 ₺</span></div>
+      <p class="not">Satış bedeli, taşınmazın emlak vergisi değerinin altında gösterilemez. Döner sermaye, 2025 ücretinin %25,49 yeniden değerlemesiyle 6.681 TL'dir; yetki dışı işlemde 2 katı alınır. Kesin tutar için e-Devlet "Tapu Harç ve Döner Sermaye Sorgulama".</p>
+    </div>
+   </div>
+  </section>
+
+  <!-- ============ DEĞER ARTIŞ ============ -->
+  <section class="bolum" id="b-deger">
+   <div class="ikili">
+    <div class="kart">
+      <h2>Değer Artış Kazancı Vergisi</h2>
+      <p class="acik">Satın alınan konut 5 yıl dolmadan satılırsa, kazancın istisnayı aşan kısmı gelir vergisine tabidir.</p>
+      <div class="alan"><span class="lbl">Ev nasıl edinildi?</span><div class="sec" id="dSekil"><button type="button" class="on" data-v="alim">Satın alındı</button><button type="button" data-v="miras">Miras / bağış</button></div></div>
+      <div class="yanyana">
+        <div class="alan"><label for="dAlTar">Alış tarihi</label><div class="giris"><input id="dAlTar" type="date"></div></div>
+        <div class="alan"><label for="dSatTar">Satış tarihi</label><div class="giris"><input id="dSatTar" type="date"></div></div>
+      </div>
+      <div class="alan"><label for="dAlis">Alış bedeli (tapudaki)</label><div class="giris"><input id="dAlis" class="para" type="text" inputmode="decimal" autocomplete="off" placeholder="0"><span>₺</span></div></div>
+      <div class="alan"><label for="dSatis">Satış bedeli (tapudaki)</label><div class="giris"><input id="dSatis" class="para" type="text" inputmode="decimal" autocomplete="off" placeholder="0"><span>₺</span></div></div>
+      <div class="alan"><label for="dGider">Satıcının giderleri <small style="font-weight:400">(alışta ödenen tapu harcı, satış harcı, emlakçı)</small></label><div class="giris"><input id="dGider" class="para" type="text" inputmode="decimal" autocomplete="off" placeholder="0"><span>₺</span></div></div>
+    </div>
+    <div class="sonuc">
+      <div class="durum" id="dDurum"></div>
+      <div id="dDetay">
+        <div class="satir" data-c="dEndeks"><span class="ad">Endekslenmiş alış bedeli<small id="dEndeksNot"></small></span><span class="tut" id="dEndeks">0,00 ₺</span></div>
+        <div class="satir" style="margin-top:10px" data-c="dKazanc"><span class="ad">Kazanç</span><span class="tut" id="dKazanc">0,00 ₺</span></div>
+        <div class="satir yesil" style="margin-top:10px" data-c="dIstisna"><span class="ad" id="dIstisnaAd">İstisna</span><span class="tut" id="dIstisna">0,00 ₺</span></div>
+        <div class="satir" style="margin-top:10px" data-c="dMatrah"><span class="ad">Vergiye tabi kazanç</span><span class="tut" id="dMatrah">0,00 ₺</span></div>
+      </div>
+      <div class="satir top" data-c="dVergi"><span class="ad">Ödenecek gelir vergisi<small id="dOranNot" style="color:rgba(255,255,255,.8)"></small></span><span class="tut" id="dVergi">0,00 ₺</span></div>
+      <p class="not">Hesap; başka geliri olmayan kişi için yapılır. Başka beyan edilen gelir varsa dilim yükselebilir. Yİ-ÜFE artışı %10'u geçerse alış bedeli, alış ayından ve satış ayından önceki aylar arası Yİ-ÜFE ile endekslenir. Beyan: satıştan sonraki yılın Mart ayı. Kesin hesap için mali müşavirinize danışın.</p>
+    </div>
+   </div>
+  </section>
+
+  <!-- ============ KİRA ÇARPANI ============ -->
+  <section class="bolum" id="b-carpan">
+   <div class="ikili">
+    <div class="kart">
+      <h2>Kira Çarpanı / Amortisman</h2>
+      <p class="acik">Ev kendini kaç yılda geri öder? Fiyat ile kira arasındaki dengeyi görün.</p>
+      <div class="alan"><label for="cFiyat">Satış fiyatı</label><div class="giris"><input id="cFiyat" class="para" type="text" inputmode="decimal" autocomplete="off" placeholder="0"><span>₺</span></div></div>
+      <div class="alan"><label for="cKira">Aylık kira getirisi</label><div class="giris"><input id="cKira" class="para" type="text" inputmode="decimal" autocomplete="off" placeholder="0"><span>₺</span></div></div>
+      <div class="alan"><label for="cArtis">Kira her yıl ne kadar artar? <small style="font-weight:400">(isteğe bağlı)</small></label><div class="giris"><input id="cArtis" type="text" inputmode="decimal" autocomplete="off" placeholder="0"><span>%</span></div>
+        <div class="cips" id="cCips"><button type="button" data-v="0">Artışsız</button><button type="button" data-v="20">%20</button><button type="button" data-v="31,49">%31,49</button></div></div>
+    </div>
+    <div class="sonuc">
+      <div class="satir top" data-c="cYil"><span class="ad">Amortisman süresi<small style="color:rgba(255,255,255,.8)">kira artmazsa</small></span><span class="tut" id="cYil">0 yıl</span></div>
+      <div class="satir" data-c="cCarpan"><span class="ad">Kira çarpanı<small>fiyat ÷ aylık kira</small></span><span class="tut" id="cCarpan">0 ay</span></div>
+      <div class="satir yesil" data-c="cGetiri"><span class="ad">Yıllık brüt kira getirisi</span><span class="tut" id="cGetiri">%0,00</span></div>
+      <div class="satir kirmizi gizli" id="cArtisliSatir" data-c="cArtisli"><span class="ad">Kira artışıyla geri dönüş<small id="cArtisliNot"></small></span><span class="tut" id="cArtisli">0 yıl</span></div>
+      <div class="durum bilgi" id="cYorum"></div>
+      <p class="not">Brüt hesaptır; aidat, emlak vergisi, boş kalan aylar ve kira geliri vergisi düşülmemiştir.</p>
+    </div>
+   </div>
+  </section>
+
+  <!-- ============ KONUT KREDİSİ ============ -->
+  <section class="bolum" id="b-kredi">
+   <div class="ikili">
+    <div class="kart">
+      <h2>Konut Kredisi Hesaplama</h2>
+      <p class="acik">Aylık taksit ve toplam geri ödeme. Konut kredisinde BSMV ve KKDF alınmaz.</p>
+      <div class="alan"><label for="rTutar">Kredi tutarı</label><div class="giris"><input id="rTutar" class="para" type="text" inputmode="decimal" autocomplete="off" placeholder="0"><span>₺</span></div></div>
+      <div class="alan"><label for="rVade">Vade</label><div class="giris"><input id="rVade" type="text" inputmode="numeric" autocomplete="off" value="120"><span>ay</span></div>
+        <div class="cips" id="rVadeCips"><button type="button" data-v="36">36</button><button type="button" data-v="60">60</button><button type="button" data-v="120" class="on">120</button><button type="button" data-v="180">180</button></div></div>
+      <div class="alan"><label for="rFaiz">Aylık faiz oranı</label><div class="giris"><input id="rFaiz" type="text" inputmode="decimal" autocomplete="off" value="2,89"><span>%</span></div>
+        <p class="not" style="margin-top:6px">1 Kasım 2026'da bankalarda 120 ay için aylık <b>%2,69 – %3,45</b> arası (kampanyalı oranlar dahil).</p></div>
+    </div>
+    <div class="sonuc">
+      <div class="satir top" data-c="rTaksit"><span class="ad">Aylık taksit</span><span class="tut" id="rTaksit">0,00 ₺</span></div>
+      <div class="satir" data-c="rToplam"><span class="ad">Toplam geri ödeme</span><span class="tut" id="rToplam">0,00 ₺</span></div>
+      <div class="satir kirmizi" data-c="rFaizTop"><span class="ad">Toplam faiz</span><span class="tut" id="rFaizTop">0,00 ₺</span></div>
+      <div class="satir" data-c="rGelir"><span class="ad">Önerilen en az aylık gelir<small>taksit gelirin %50'sini geçmesin</small></span><span class="tut" id="rGelir">0,00 ₺</span></div>
+      <details id="rPlanKutu"><summary>Ödeme planını göster</summary><div class="tablo"><table><thead><tr><th>Ay</th><th>Taksit</th><th>Faiz</th><th>Anapara</th><th>Kalan</th></tr></thead><tbody id="rPlan"></tbody></table></div></details>
+      <p class="not">Bankanın dosya masrafı, ekspertiz, DASK ve hayat sigortası dahil değildir. Kredi, ekspertiz değerinin en fazla %80'i kadar verilebilir (enerji sınıfına göre daha düşük olabilir).</p>
+    </div>
+   </div>
+  </section>
+
+  <!-- ============ KDV ============ -->
+  <section class="bolum" id="b-kdv">
+   <div class="ikili">
+    <div class="kart">
+      <h2>KDV Hesaplama</h2>
+      <p class="acik">Tutarı yaz, KDV ve toplam anında çıksın.</p>
+      <div class="alan"><div class="sec" id="vMod"><button type="button" class="on" data-v="haric">KDV hariç tutar</button><button type="button" data-v="dahil">KDV dahil tutar</button></div></div>
+      <div class="alan"><label for="vTutar" id="vEtiket">KDV hariç tutar</label><div class="giris"><input id="vTutar" class="para" type="text" inputmode="decimal" autocomplete="off" placeholder="0"><span>₺</span></div></div>
+      <div class="alan"><span class="lbl">KDV oranı</span><div class="sec uc" id="vOran"><button type="button" data-v="1">%1</button><button type="button" data-v="10">%10</button><button type="button" class="on" data-v="20">%20</button></div></div>
+    </div>
+    <div class="sonuc">
+      <div class="satir" data-c="vNet"><span class="ad">KDV hariç</span><span class="tut" id="vNet">0,00 ₺</span></div>
+      <div class="satir kirmizi" data-c="vKdv"><span class="ad" id="vKdvAd">KDV (%20)</span><span class="tut" id="vKdv">0,00 ₺</span></div>
+      <div class="satir top" data-c="vTop"><span class="ad">KDV dahil toplam</span><span class="tut" id="vTop">0,00 ₺</span></div>
+    </div>
+   </div>
+  </section>
+
+  <div class="ipucu">Sonuç rakamına dokunursanız kopyalanır.</div>
+  <button type="button" class="temizle" id="temizle">Bu aracı temizle</button>
+
+    </div>
+
+    <div class="cta">
+      <h2>Rakamları birlikte netleştirelim</h2>
+      <p>Yeni Fikirtepe’de dairenizin bugünkü değerini ücretsiz öğrenin; kira, masraf ve vergiyi sizin için birlikte hesaplayalım.</p>
+      <a href="satilik-deger.html">Ücretsiz değer öğren</a>
+      <a href="https://wa.me/902163151515" target="_blank" rel="noopener">WhatsApp’tan yazın</a>
+    </div>
+    <p class="disc">Hesaplamalar 2 Kasım 2026 itibarıyla TÜİK, TCMB ve Gelir İdaresi oranlarıyla genel bilgilendirme amacıyla yapılır; vergi veya hukuki danışmanlık yerine geçmez.</p>
+  </div>
+
+<style>
+  .wa-fab{position:fixed;right:22px;bottom:22px;z-index:9999;display:flex;align-items:center;height:52px;padding:0 13px;border-radius:26px;background:linear-gradient(140deg,#2bdc6c,#1fb855);color:#fff;text-decoration:none;font-family:inherit;font-size:14px;font-weight:600;letter-spacing:.01em;box-shadow:0 12px 28px -10px rgba(18,140,126,.65),0 2px 6px rgba(0,0,0,.1),inset 0 1px 0 rgba(255,255,255,.25);transition:transform .35s cubic-bezier(.2,.8,.2,1),box-shadow .35s}
+  .wa-fab svg{width:26px;height:26px;flex:none;fill:#fff}
+  .wa-fab span{max-width:0;opacity:0;overflow:hidden;white-space:nowrap;transition:max-width .4s cubic-bezier(.2,.8,.2,1),opacity .25s,margin .4s}
+  .wa-fab::before{content:"";position:absolute;inset:-5px;border-radius:inherit;border:1.5px solid rgba(37,211,102,.5);opacity:0;animation:waRing 3s ease-out 1.5s 3}
+  .wa-fab:hover,.wa-fab:focus-visible{transform:translateY(-2px);box-shadow:0 18px 34px -12px rgba(18,140,126,.75),0 2px 6px rgba(0,0,0,.1),inset 0 1px 0 rgba(255,255,255,.25)}
+  .wa-fab:hover span,.wa-fab:focus-visible span{max-width:120px;opacity:1;margin:0 4px 0 9px}
+  @keyframes waRing{0%{opacity:.9;transform:scale(.92)}80%,100%{opacity:0;transform:scale(1.25)}}
+  @media(max-width:600px){.wa-fab{right:16px;bottom:16px}}
+  @media(prefers-reduced-motion:reduce){.wa-fab,.wa-fab span{transition:none}.wa-fab::before{animation:none}}
+  </style>
+  <a class="wa-fab" href="https://wa.me/902163151515" target="_blank" rel="noopener" aria-label="WhatsApp ile yazın"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.64.07-.3-.15-1.26-.46-2.39-1.47-.88-.79-1.48-1.76-1.65-2.06-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.67-1.61-.92-2.21-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48s1.07 2.88 1.21 3.08c.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.69.63.71.23 1.36.2 1.87.12.57-.09 1.76-.72 2.01-1.41.25-.69.25-1.29.17-1.41-.07-.12-.27-.2-.57-.35zM12.04 21.5h-.01a9.43 9.43 0 0 1-4.8-1.32l-.35-.21-3.57.94.95-3.48-.22-.36a9.4 9.4 0 0 1-1.44-5.02c0-5.2 4.23-9.43 9.44-9.43 2.52 0 4.89.98 6.67 2.77a9.37 9.37 0 0 1 2.76 6.67c0 5.2-4.24 9.44-9.43 9.44zm8.03-17.47A11.27 11.27 0 0 0 12.04.7C5.78.7.69 5.79.69 12.04c0 2 .52 3.95 1.52 5.67L.6 23.3l5.72-1.5a11.33 11.33 0 0 0 5.42 1.38h.01c6.25 0 11.34-5.09 11.35-11.35 0-3.03-1.18-5.88-3.33-8.02z""/></svg><span>Bize yazın</span></a>
+  <script>
+    // mobilde bir linke tıklayınca menü kapansın
+    document.querySelectorAll('#mainNav a').forEach(function(a){
+      a.addEventListener('click', function(){
+        document.getElementById('mainNav').classList.remove('open');
+        document.getElementById('menuToggle').classList.remove('open');
+      });
+    });
+  </script>
+<script src="telif.js" defer></script>
+<script src="etap-pusulasi.js" defer></script>
+<div class="toast" id="toast">Kopyalandı</div>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id);};
+  var f2=new Intl.NumberFormat('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2});
+  var f1=new Intl.NumberFormat('tr-TR',{minimumFractionDigits:1,maximumFractionDigits:1});
+  function tl(n){return f2.format(n)+' ₺';}
+  function oku(s){s=String(s||'').replace(/\./g,'').replace(',','.');var n=parseFloat(s);return isFinite(n)?n:0;}
+  function okuOran(s){s=String(s||'').replace(',','.');var n=parseFloat(s);return isFinite(n)?n:0;}
+  function bicim(v){
+    v=v.replace(/[^\d,]/g,'');
+    var i=v.indexOf(',');
+    if(i>-1)v=v.slice(0,i+1)+v.slice(i+1).replace(/,/g,'').slice(0,2);
+    var p=v.split(','),tam=p[0].replace(/^0+(?=\d)/,'');
+    tam=tam.replace(/\B(?=(\d{3})+(?!\d))/g,'.');
+    return p.length>1?tam+','+p[1]:tam;
+  }
+  function y2(n){return Math.round(n*100)/100;}
+  function yaz(id,t){$(id).textContent=t;}
+  var AYLAR=['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
+  var kopya={};
+
+  /* ---------- VERİLER ---------- */
+  // TÜFE 12 aylık ortalama değişim (%), anahtar = TÜFE ayı (YYYY-AA). Kaynak: TÜİK.
+  var TUFE12={'2025-08':39.62,'2025-09':38.36,'2025-10':37.15,'2025-11':35.91,'2025-12':34.88,'2026-01':33.98,'2026-02':33.39,'2026-03':32.82,'2026-04':32.43,'2026-05':32.24,'2026-06':32.03,'2026-07':31.9,'2026-08':31.79,'2026-09':31.49};
+  // Yİ-ÜFE zincir endeksi (TCMB/TÜİK aylık değişimlerinden; yalnız oranlar kullanılır).
+  var YIUFE={2020:[109.321,109.846,110.802,112.22,113.948,114.734,115.905,118.628,121.772,126.095,131.239,134.337],2021:[137.91,139.593,145.358,151.666,157.612,163.932,167.965,172.617,175.293,184.478,202.907,241.622],2022:[266.872,286.14,312.436,336.4,365.869,390.638,410.834,420.735,440.846,475.364,478.882,477.733],2023:[497.559,505.321,507.544,511.655,514.981,548.455,593.592,628.555,649.926,662.534,681.152,688.917],2024:[717.438,744.27,768.757,796.432,812.042,823.248,839.219,853.318,865.008,876.167,881.95,885.478],2025:[912.573,931.92,949.44,975.644,999.84,1024.436,1042.159,1068.005,1094.918,1112.766,1122.113,1130.529],2026:[1160.714,1188.919,1216.264,1254.82,1289.327,1312.535,1332.486,1366.731,1395.022]};
+  // Değer artış kazancı istisnası (satış yılı) ve ücret dışı gelir vergisi tarifesi
+  var ISTISNA={2024:87000,2025:120000,2026:150000};
+  var TARIFE={
+    2025:[[158000,.15],[330000,.20],[800000,.27],[4300000,.35],[Infinity,.40]],
+    2026:[[190000,.15],[400000,.20],[1000000,.27],[5300000,.35],[Infinity,.40]]
+  };
+
+  /* ---------- ARAÇ SEÇİMİ ---------- */
+  var aktif='kira';
+  function goster(b){
+    if(!$('b-'+b))b='kira';
+    aktif=b;
+    document.querySelectorAll('.arac').forEach(function(x){x.classList.toggle('on',x.getAttribute('data-b')===b);});
+    document.querySelectorAll('.bolum').forEach(function(x){x.classList.toggle('on',x.id==='b-'+b);});
+    if(location.hash!=='#'+b)history.replaceState(null,'','#'+b);
+  }
+  document.querySelectorAll('.arac').forEach(function(x){x.onclick=function(){goster(x.getAttribute('data-b'));};});
+  window.addEventListener('hashchange',function(){goster(location.hash.slice(1));});
+
+  document.querySelectorAll('input.para').forEach(function(inp){inp.addEventListener('input',function(){inp.value=bicim(inp.value);});});
+  function secGrup(id,cb){
+    var el=$(id);
+    el.querySelectorAll('button').forEach(function(b){b.onclick=function(){
+      el.querySelectorAll('button').forEach(function(x){x.classList.toggle('on',x===b);});
+      cb(b.getAttribute('data-v')||b.getAttribute('data-x'));
+    };});
+  }
+  function deger(id){var b=$(id).querySelector('button.on');return b?(b.getAttribute('data-v')||b.getAttribute('data-x')):null;}
+
+  /* ---------- KİRA ARTIŞI ---------- */
+  var kSel=$('kAy'), bugun=new Date();
+  (function(){
+    // yenileme ayı: bugünden 3 ay sonrasından 14 ay geriye
+    var d=new Date(bugun.getFullYear(),bugun.getMonth()+2,1);
+    for(var i=0;i<16;i++){
+      var y=d.getFullYear(),m=d.getMonth();
+      var o=document.createElement('option');o.value=y+'-'+(m+1);o.textContent=AYLAR[m]+' '+y;
+      kSel.appendChild(o);d=new Date(y,m-1,1);
+    }
+    kSel.value=bugun.getFullYear()+'-'+(bugun.getMonth()+1);
+  })();
+  function tufeAnahtar(v){var p=v.split('-'),y=+p[0],m=+p[1]-1;if(m===0){y--;m=12;}return {k:y+'-'+String(m).padStart(2,'0'),ad:AYLAR[m-1]+' '+y};}
+  function kHesap(){
+    var mod=deger('kCips'), t=tufeAnahtar(kSel.value), tavan=TUFE12[t.k];
+    var d=$('kDurum');
+    if(mod==='tavan'){
+      $('kOran').readOnly=true;
+      if(tavan!=null){$('kOran').value=String(tavan).replace('.',',');d.className='durum bilgi';d.innerHTML='Yasal üst sınır <b>%'+String(tavan).replace('.',',')+'</b> ('+t.ad+' TÜFE 12 aylık ortalaması).';}
+      else{$('kOran').value='';d.className='durum uyari';d.innerHTML=t.ad+' TÜFE verisi TÜİK tarafından henüz açıklanmadı (her ayın 3\'ünde açıklanır). Oranı biliyorsanız "Anlaşılan oranı yazın" ile girin.';}
+    }else{
+      $('kOran').readOnly=false;
+      var o=okuOran($('kOran').value);
+      if(tavan!=null&&o>tavan){d.className='durum uyari';d.innerHTML='Yazdığınız oran yasal üst sınır olan <b>%'+String(tavan).replace('.',',')+'</b> oranını aşıyor.';}
+      else{d.className='durum bilgi';d.innerHTML=tavan!=null?('Bu ay için yasal üst sınır <b>%'+String(tavan).replace('.',',')+'</b>.'):(t.ad+' TÜFE verisi henüz açıklanmadı.');}
+    }
+    var kira=oku($('kMevcut').value), oran=okuOran($('kOran').value)/100;
+    var artis=y2(kira*oran), yeni=y2(kira+artis);
+    kopya.kArtis=artis;kopya.kYeni=yeni;kopya.kYillik=y2(yeni*12);
+    yaz('kArtisAd','Artış tutarı (%'+f2.format(oran*100)+')');
+    yaz('kArtis',tl(artis));yaz('kYeni',tl(yeni));yaz('kYillik',tl(kopya.kYillik));
+  }
+  secGrup('kCips',function(v){if(v==='elle'){$('kOran').focus();$('kOran').select&&$('kOran').select();}kHesap();});
+  ['kMevcut','kOran'].forEach(function(id){$(id).addEventListener('input',kHesap);});
+  kSel.addEventListener('change',kHesap);
+
+  /* ---------- TAPU ---------- */
+  function tHesap(){
+    var b=oku($('tBedel').value), doner=oku($('tDoner').value), kim=deger('tKim');
+    var harc=y2(b*0.04), al, sat;
+    if(kim==='alici'){al=harc;sat=0;yaz('tAliciNot','%4 (tamamı)');yaz('tSaticiNot','alıcı üstlendi');}
+    else{al=y2(b*0.02);sat=y2(harc-al);yaz('tAliciNot','%2');yaz('tSaticiNot','%2');}
+    kopya.tAlici=al;kopya.tSatici=sat;kopya.tDonerS=doner;kopya.tAliciTop=y2(al+doner);kopya.tTop=y2(harc+doner);
+    yaz('tAlici',tl(al));yaz('tSatici',tl(sat));yaz('tDonerS',tl(doner));yaz('tAliciTop',tl(kopya.tAliciTop));yaz('tTop',tl(kopya.tTop));
+  }
+  secGrup('tKim',tHesap);
+  ['tBedel','tDoner'].forEach(function(id){$(id).addEventListener('input',tHesap);});
+
+  /* ---------- DEĞER ARTIŞ ---------- */
+  $('dSatTar').value=bugun.toISOString().slice(0,10);
+  function oncekiAy(dt){var y=dt.getFullYear(),m=dt.getMonth();if(m===0){y--;m=12;}return {y:y,m:m};}
+  function endeks(o){var a=YIUFE[o.y];return a&&a[o.m-1]!=null?a[o.m-1]:null;}
+  function vergiHesap(matrah,yil){
+    var t=TARIFE[yil]||TARIFE[2026], v=0, alt=0, son=0;
+    for(var i=0;i<t.length;i++){var ust=t[i][0];if(matrah>alt){v+=(Math.min(matrah,ust)-alt)*t[i][1];son=t[i][1];}alt=ust;}
+    return {v:y2(v),oran:son};
+  }
+  function dHesap(){
+    var sekil=deger('dSekil'), d=$('dDurum');
+    var at=$('dAlTar').value?new Date($('dAlTar').value+'T12:00:00'):null, st=$('dSatTar').value?new Date($('dSatTar').value+'T12:00:00'):null;
+    var alis=oku($('dAlis').value), satis=oku($('dSatis').value), gider=oku($('dGider').value);
+    function sifirla(){['dEndeks','dKazanc','dIstisna','dMatrah','dVergi'].forEach(function(k){kopya[k]=0;yaz(k,tl(0));});yaz('dOranNot','');yaz('dEndeksNot','');}
+    $('dDetay').classList.remove('gizli');
+    if(sekil==='miras'){sifirla();$('dDetay').classList.add('gizli');d.className='durum iyi';d.innerHTML='Miras ya da bağışla edinilen evin satışında değer artış kazancı vergisi <b>doğmaz</b>.';return;}
+    if(!at||!st){sifirla();d.className='durum bilgi';d.innerHTML='Alış ve satış tarihini girin.';return;}
+    var bes=new Date(at.getFullYear()+5,at.getMonth(),at.getDate());
+    if(st>bes){sifirla();$('dDetay').classList.add('gizli');d.className='durum iyi';d.innerHTML='5 yıl dolmuş (dolduğu gün: <b>'+bes.toLocaleDateString('tr-TR')+'</b>). Vergi <b>yok</b>.';return;}
+    if(st<at){sifirla();d.className='durum uyari';d.innerHTML='Satış tarihi alış tarihinden önce olamaz.';return;}
+    var kalanGun=Math.ceil((bes-st)/864e5);
+    // endeksleme
+    var o2=oncekiAy(st), e1=endeks(oncekiAy(at)), e2=endeks(o2), endAlis=alis, not='', sonNot='';
+    if(e1&&!e2){var ly=Math.max.apply(null,Object.keys(YIUFE).map(Number)),la=YIUFE[ly];if(o2.y>ly||(o2.y===ly&&o2.m>la.length)){e2=la[la.length-1];sonNot=', son açıklanan '+AYLAR[la.length-1]+' '+ly+' verisiyle';}}
+    if(e1&&e2){var art=e2/e1-1;if(art>=0.10){endAlis=y2(alis*e2/e1);not='Yİ-ÜFE artışı %'+f2.format(art*100)+' (endekslendi'+sonNot+')';}else{not='Yİ-ÜFE artışı %'+f2.format(art*100)+' (%10 altı, endekslenmez)';}}
+    else{not='Yİ-ÜFE verisi yok, endekslenmedi';}
+    var yil=st.getFullYear(), ist=ISTISNA[yil]||ISTISNA[2026];
+    var kazanc=Math.max(0,y2(satis-endAlis-gider)), matrah=Math.max(0,y2(kazanc-ist)), vh=vergiHesap(matrah,yil);
+    kopya.dEndeks=endAlis;kopya.dKazanc=kazanc;kopya.dIstisna=ist;kopya.dMatrah=matrah;kopya.dVergi=vh.v;
+    yaz('dEndeks',tl(endAlis));yaz('dEndeksNot',not);yaz('dKazanc',tl(kazanc));yaz('dIstisnaAd',yil+' istisnası');yaz('dIstisna',tl(ist));yaz('dMatrah',tl(matrah));yaz('dVergi',tl(vh.v));
+    yaz('dOranNot',vh.v>0?('en üst dilim %'+Math.round(vh.oran*100)+' · etkin %'+f2.format(vh.v/matrah*100)):'');
+    var ay=Math.floor(kalanGun/30.44);
+    d.className=vh.v>0?'durum uyari':'durum iyi';
+    d.innerHTML='5 yıl dolmamış. Dolmasına <b>'+(ay>=1?ay+' ay':kalanGun+' gün')+'</b> var ('+bes.toLocaleDateString('tr-TR')+').'+(vh.v>0?' O tarihten sonra satılırsa vergi çıkmaz.':' Kazanç istisnanın altında, vergi çıkmıyor.');
+  }
+  secGrup('dSekil',dHesap);
+  ['dAlTar','dSatTar','dAlis','dSatis','dGider'].forEach(function(id){$(id).addEventListener('input',dHesap);$(id).addEventListener('change',dHesap);});
+
+  /* ---------- KİRA ÇARPANI ---------- */
+  function cHesap(){
+    var fiyat=oku($('cFiyat').value), kira=oku($('cKira').value), art=okuOran($('cArtis').value)/100;
+    var yillik=kira*12, yil=yillik>0?fiyat/yillik:0, carpan=kira>0?fiyat/kira:0, getiri=fiyat>0?yillik/fiyat*100:0;
+    kopya.cYil=f1.format(yil);kopya.cCarpan=Math.round(carpan);kopya.cGetiri=f2.format(getiri);
+    yaz('cYil',f1.format(yil)+' yıl');yaz('cCarpan',Math.round(carpan).toLocaleString('tr-TR')+' ay');yaz('cGetiri','%'+f2.format(getiri));
+    document.querySelectorAll('#cCips button').forEach(function(b){b.classList.toggle('on',okuOran(b.getAttribute('data-v'))===art*100&&$('cArtis').value!=='');});
+    var sat=$('cArtisliSatir');
+    if(art>0&&yillik>0&&fiyat>0){
+      var top=0,n=0,k=yillik;while(top<fiyat&&n<200){top+=k;k*=1+art;n++;}
+      var onceki=top-k/(1+art), kesir=(fiyat-onceki)/(k/(1+art));
+      var sonuc=n-1+kesir;
+      kopya.cArtisli=f1.format(sonuc);sat.classList.remove('gizli');yaz('cArtisli',f1.format(sonuc)+' yıl');yaz('cArtisliNot','kira her yıl %'+f2.format(art*100)+' artarsa');
+    }else{sat.classList.add('gizli');}
+    var y=$('cYorum');
+    if(!yil){y.innerHTML='Fiyat ve kirayı girin.';y.className='durum bilgi';}
+    else if(yil<=15){y.className='durum iyi';y.innerHTML='Kira getirisi <b>güçlü</b>: ev kendini 15 yıldan kısa sürede ödüyor.';}
+    else if(yil<=22){y.className='durum bilgi';y.innerHTML='İstanbul ortalamasına <b>yakın</b> bir amortisman.';}
+    else{y.className='durum uyari';y.innerHTML='Kira getirisi <b>düşük</b>: yatırımın değeri daha çok fiyat artışına bağlı.';}
+  }
+  $('cCips').querySelectorAll('button').forEach(function(b){b.onclick=function(){$('cArtis').value=b.getAttribute('data-v')==='0'?'':b.getAttribute('data-v');cHesap();};});
+  ['cFiyat','cKira','cArtis'].forEach(function(id){$(id).addEventListener('input',cHesap);});
+
+  /* ---------- KONUT KREDİSİ ---------- */
+  function rHesap(){
+    var P=oku($('rTutar').value), n=Math.max(0,Math.round(okuOran($('rVade').value))), r=okuOran($('rFaiz').value)/100;
+    document.querySelectorAll('#rVadeCips button').forEach(function(b){b.classList.toggle('on',+b.getAttribute('data-v')===n);});
+    var taksit=0;
+    if(P>0&&n>0){taksit=r>0?P*r*Math.pow(1+r,n)/(Math.pow(1+r,n)-1):P/n;}
+    taksit=y2(taksit);
+    var toplam=y2(taksit*n);
+    kopya.rTaksit=taksit;kopya.rToplam=toplam;kopya.rFaizTop=y2(Math.max(0,toplam-P));kopya.rGelir=y2(taksit*2);
+    yaz('rTaksit',tl(taksit));yaz('rToplam',tl(toplam));yaz('rFaizTop',tl(kopya.rFaizTop));yaz('rGelir',tl(kopya.rGelir));
+    planCiz(P,n,r,taksit);
+  }
+  function planCiz(P,n,r,taksit){
+    var kutu=$('rPlanKutu');if(!kutu.open){kutu._kirli=true;return;}
+    var h='',kalan=P;
+    for(var i=1;i<=n&&i<=600;i++){var fz=y2(kalan*r),ana=y2(i===n?kalan:taksit-fz);kalan=y2(Math.max(0,kalan-ana));
+      h+='<tr><td>'+i+'</td><td>'+f2.format(i===n?ana+fz:taksit)+'</td><td>'+f2.format(fz)+'</td><td>'+f2.format(ana)+'</td><td>'+f2.format(kalan)+'</td></tr>';}
+    $('rPlan').innerHTML=h;kutu._kirli=false;
+  }
+  $('rPlanKutu').addEventListener('toggle',function(){if(this.open)rHesap();});
+  $('rVadeCips').querySelectorAll('button').forEach(function(b){b.onclick=function(){$('rVade').value=b.getAttribute('data-v');rHesap();};});
+  ['rTutar','rVade','rFaiz'].forEach(function(id){$(id).addEventListener('input',rHesap);});
+
+  /* ---------- KDV ---------- */
+  function vHesap(){
+    var mod=deger('vMod'), oran=+deger('vOran'), t=oku($('vTutar').value), r=oran/100, net, kdv, top;
+    if(mod==='haric'){net=t;kdv=y2(t*r);top=y2(net+kdv);}else{top=t;net=y2(t/(1+r));kdv=y2(top-net);}
+    kopya.vNet=net;kopya.vKdv=kdv;kopya.vTop=top;
+    yaz('vEtiket',mod==='haric'?'KDV hariç tutar':'KDV dahil tutar');
+    yaz('vNet',tl(net));yaz('vKdv',tl(kdv));yaz('vTop',tl(top));yaz('vKdvAd','KDV (%'+oran+')');
+  }
+  secGrup('vMod',function(){vHesap();$('vTutar').focus();});
+  secGrup('vOran',vHesap);
+  $('vTutar').addEventListener('input',vHesap);
+
+  /* ---------- ORTAK ---------- */
+  var toast=$('toast'),tz;
+  document.querySelectorAll('.satir[data-c]').forEach(function(s){s.onclick=function(){
+    var v=kopya[s.getAttribute('data-c')];if(v==null)return;
+    var metin=typeof v==='number'?f2.format(v):String(v);
+    function gos(){toast.classList.add('on');clearTimeout(tz);tz=setTimeout(function(){toast.classList.remove('on');},1300);}
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(metin).then(gos,function(){});}
+    else{var ta=document.createElement('textarea');ta.value=metin;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');gos();}catch(e){}ta.remove();}
+  };});
+  $('temizle').onclick=function(){
+    var sec=$('b-'+aktif);
+    sec.querySelectorAll('input').forEach(function(i){if(i.id==='tDoner')i.value='6.681';else if(i.id==='rVade')i.value='120';else if(i.id==='rFaiz')i.value='2,89';else if(i.id==='dSatTar')i.value=bugun.toISOString().slice(0,10);else if(i.id!=='kOran')i.value='';});
+    hepsi();
+  };
+  function hepsi(){kHesap();tHesap();dHesap();cHesap();rHesap();vHesap();}
+  var q=new URLSearchParams(location.search);
+  if(q.get('tutar')){$('vTutar').value=bicim(q.get('tutar').replace('.',','));if(!location.hash)history.replaceState(null,'','#kdv');}
+  if(q.get('fiyat')){['tBedel','dSatis','cFiyat'].forEach(function(id){$(id).value=bicim(q.get('fiyat').replace('.',','));});}
+  hepsi();
+  goster(location.hash.slice(1)||'kira');
+})();
+</script>
+</body>
+</html>
+
