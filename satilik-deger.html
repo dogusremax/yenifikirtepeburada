@@ -145,6 +145,7 @@
 .waonay{display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:14px;line-height:1.45}
 .waonay input{width:20px;height:20px;flex:none;margin-top:1px;accent-color:#25D366}
 .waonay span{color:#334}
+  .ek-detay{margin:4px 0 18px;border:1.5px dashed var(--line,#e3e6ec);border-radius:12px;padding:12px 14px}.ek-detay summary{cursor:pointer;font-weight:600;color:var(--blue,#0a2a5e);font-size:.95rem;list-style:none}.ek-detay summary::-webkit-details-marker{display:none}.ek-detay summary::before{content:"+ ";font-weight:700}.ek-detay[open] summary::before{content:"\2212  "}.ek-detay[open] summary{margin-bottom:14px}
 </style>
 <!-- Google tag (gtag.js) -->
 <script src="cerez.js" data-ga="G-ZNHG94R2JK"></script>
@@ -258,6 +259,36 @@
           <option>Diğer (listede yok)</option>
         </select>
       </div>
+
+      <div class="row">
+        <div class="group">
+          <label>Ad</label>
+          <input type="text" name="ad" required placeholder="Adınız" autocomplete="given-name">
+        </div>
+        <div class="group">
+          <label>Soyad</label>
+          <input type="text" name="soyad" required placeholder="Soyadınız" autocomplete="family-name">
+        </div>
+      </div>
+      <input type="hidden" name="ad_soyad">
+
+      <div class="group">
+        <label>Telefon</label>
+        <input type="tel" name="telefon" required placeholder="05XX XXX XX XX">
+      </div>
+
+
+      <div class="group">
+        <label class="waonay">
+          <input type="checkbox" name="wa_izin" value="1" required
+                 oninvalid="this.setCustomValidity('Devam etmek için bu kutuyu işaretleyin.')"
+                 oninput="this.setCustomValidity('')">
+          <span>Talebimle ilgili <strong>WhatsApp</strong> üzerinden bilgilendirilmek istiyorum.</span>
+        </label>
+      </div>
+
+      <details class="ek-detay">
+        <summary>Daha doğru değer için detay ekle <span class="opt">(isteğe bağlı)</span></summary>
             <div class="group" id="ekBlok" style="display:none">
         <label>Mülkü nasıl edindiniz?</label>
         <div class="radios">
@@ -357,33 +388,7 @@
         <label>Cephe / Manzara <span class="opt">(opsiyonel)</span></label>
         <input type="text" name="cephe" placeholder="Örn. Güney cephe, deniz manzaralı">
       </div>
-
-      <div class="row">
-        <div class="group">
-          <label>Ad</label>
-          <input type="text" name="ad" required placeholder="Adınız" autocomplete="given-name">
-        </div>
-        <div class="group">
-          <label>Soyad</label>
-          <input type="text" name="soyad" required placeholder="Soyadınız" autocomplete="family-name">
-        </div>
-      </div>
-      <input type="hidden" name="ad_soyad">
-
-      <div class="group">
-        <label>Telefon</label>
-        <input type="tel" name="telefon" required placeholder="05XX XXX XX XX">
-      </div>
-
-
-      <div class="group">
-        <label class="waonay">
-          <input type="checkbox" name="wa_izin" value="1" required
-                 oninvalid="this.setCustomValidity('Devam etmek için bu kutuyu işaretleyin.')"
-                 oninput="this.setCustomValidity('')">
-          <span>Talebimle ilgili <strong>WhatsApp</strong> üzerinden bilgilendirilmek istiyorum.</span>
-        </label>
-      </div>
+      </details>
 
       <button type="submit" class="submit">Satılık Değer Talebi Gönder</button>
     </form>
