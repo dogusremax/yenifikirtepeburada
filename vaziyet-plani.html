@@ -197,6 +197,14 @@
   body.carded .flt,.nopin .flt{opacity:0;pointer-events:none}
   body[data-f] .pin.hide{display:none}
   @media (prefers-reduced-motion:reduce){.flt button[data-f="now"] i{animation:none}}
+  /* 3D görünüm başlatılamazsa (WebGL hatası) yedek ekran */
+  .vzfb{position:fixed;inset:0;z-index:20;display:none;align-items:center;justify-content:center;padding:24px;background:linear-gradient(rgba(5,10,48,.78),rgba(5,10,48,.9)),url(assets/vr/plan.jpg) center/cover #0b1020}
+  .vzfb.on{display:flex}
+  .vzfb div{max-width:420px;text-align:center}
+  .vzfb b{display:block;font-size:1.25rem;margin-bottom:10px}
+  .vzfb p{margin:0 0 18px;font-size:.92rem;line-height:1.5;color:#d6dbea}
+  .vzfb a,.vzfb button{display:inline-block;margin:4px;padding:11px 20px;border:0;border-radius:999px;background:#DC1C2E;color:#fff;font:inherit;font-weight:700;font-size:.9rem;text-decoration:none;cursor:pointer}
+  .vzfb a.g{background:rgba(255,255,255,.14)}
 </style>
 <script src="dil.js"></script>
 </head>
@@ -596,6 +604,20 @@
     card.style.left=x.toFixed(0)+'px';card.style.top=y.toFixed(0)+'px';card.style.setProperty('--ox',ox);
   }
   addEventListener('keydown',function(e){if(e.key==='Escape')close();});
+})();
+</script>
+<div class="vzfb" id="vzfb" role="alert"><div><b>3D görünüm bu tarayıcıda açılamadı</b><p>Cihazınızın 3D çizim (WebGL) desteği kapalı ya da bu tarayıcıda başlatılamadı. Sayfayı yenileyebilir, Chrome ile açabilir veya etapları liste olarak inceleyebilirsiniz.</p><button type="button" onclick="location.reload()">Yenile</button><a class="g" href="etaplar.html">Etapları listele</a></div></div>
+<script>
+(function(){
+  // pannellum 3D başlatılamazsa hata kutusu yerine yedek ekran göster ve Analytics'e bildir
+  var done=false;
+  function fail(t){if(done)return;done=true;try{document.getElementById('vzfb').classList.add('on');}catch(e){}
+    try{window.gtag&&gtag('event','vaziyet_hata',{tur:String(t).slice(0,80),ua:navigator.userAgent.slice(0,90)});}catch(e){}}
+  addEventListener('error',function(e){if(e&&e.filename&&/pannellum/.test(e.filename))fail(e.message||'pannellum');});
+  addEventListener('load',function(){setTimeout(function(){var m=document.querySelector('.pnlm-error-msg');
+    if(m&&getComputedStyle(m).display!=='none')fail('pnlm:'+m.textContent);},300);
+    var n=0,t=setInterval(function(){var m=document.querySelector('.pnlm-error-msg');
+      if(m&&getComputedStyle(m).display!=='none'){clearInterval(t);fail('pnlm:'+m.textContent);}else if(++n>20)clearInterval(t);},500);});
 })();
 </script>
 </body>
