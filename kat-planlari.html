@@ -362,9 +362,16 @@
     // gerçek 3D modeli hazır olan planlarda "3D" sekmesi modeli açar (her yönden çevirme, yakınlaştırma)
     // WebGL'i olmayan bilgisayarlarda (eski ekran kartı) gerçek model açılamaz: önceden çekilmiş 360° karelerle aç
     var GL=(function(){try{var c=document.createElement('canvas');return !!(c.getContext('webgl2')||c.getContext('webgl')||c.getContext('experimental-webgl'));}catch(e){return false;}})()&&!/[?&]yedek360=1/.test(location.search);
+    try{if(sessionStorage.getItem('m3dYedek')==='1')GL=false;}catch(e){}
     function hasModel(id){return GL&&(window.KAT3D_MODELS||[]).indexOf(id)>=0;}
+    // WebGL var görünüp model çizilemezse (hata, bağlam düşmesi, 12 sn'de gelmiyor) aynı planı fotogerçekçi 360° karelerle aç
+    var M3t=0;
+    function yedek(){if(!GL)return;GL=false;clearTimeout(M3t);try{sessionStorage.setItem('m3dYedek','1');}catch(e){}try{if(M3)M3.hide();}catch(e){}
+      track('kat_plani3d_yedek',{});if(lb.classList.contains('open')&&mode==='spin')show(li);}
+    $('lb3m').addEventListener('webglcontextlost',function(e){e.preventDefault();yedek();},true);
     function model(id){$('lb3d').style.display='none';if(V3)V3.hide();
-      (M3p||(M3p=import('./assets/kat3d/model3d.js?v=4').then(function(m){M3=m.create($('lb3m'));return M3;}))).then(function(v){if(mode==='spin'&&lb.classList.contains('open'))v.show(id);});}
+      clearTimeout(M3t);window.__m3dReady=null;M3t=setTimeout(function(){if(mode==='spin'&&lb.classList.contains('open')&&window.__m3dReady!==id)yedek();},12000);
+      (M3p||(M3p=import('./assets/kat3d/model3d.js?v=4').then(function(m){M3=m.create($('lb3m'));return M3;}))).then(function(v){if(mode==='spin'&&lb.classList.contains('open'))v.show(id);}).catch(yedek);}
     $('lbseg').addEventListener('click',function(ev){var b=ev.target.closest('button');if(!b)return;mode=b.getAttribute('data-m');show(li);});
     function show(i){
       li=(i+list.length)%list.length;var e=ETAP[cur],r=list[li],src=file(e,r,true);
