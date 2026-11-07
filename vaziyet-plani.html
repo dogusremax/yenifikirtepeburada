@@ -205,6 +205,7 @@
   .vzfb p{margin:0 0 18px;font-size:.92rem;line-height:1.5;color:#d6dbea}
   .vzfb a,.vzfb button{display:inline-block;margin:4px;padding:11px 20px;border:0;border-radius:999px;background:#DC1C2E;color:#fff;font:inherit;font-weight:700;font-size:.9rem;text-decoration:none;cursor:pointer}
   .vzfb a.g{background:rgba(255,255,255,.14)}
+  .vzfb small{display:block;margin-top:16px;font-size:.68rem;line-height:1.4;color:#8a93ad;word-break:break-word}
 </style>
 <script src="dil.js"></script>
 </head>
@@ -606,14 +607,14 @@
   addEventListener('keydown',function(e){if(e.key==='Escape')close();});
 })();
 </script>
-<div class="vzfb" id="vzfb" role="alert"><div><b>3D görünüm bu tarayıcıda açılamadı</b><p>Cihazınızın 3D çizim (WebGL) desteği kapalı ya da bu tarayıcıda başlatılamadı. Sayfayı yenileyebilir, Chrome ile açabilir veya etapları liste olarak inceleyebilirsiniz.</p><button type="button" onclick="location.reload()">Yenile</button><a class="g" href="etaplar.html">Etapları listele</a></div></div>
+<div class="vzfb" id="vzfb" role="alert"><div><b>3D görünüm bu tarayıcıda açılamadı</b><p>Cihazınızın 3D çizim (WebGL) desteği kapalı ya da bu tarayıcıda başlatılamadı. Sayfayı yenileyebilir, Chrome ile açabilir veya etapları liste olarak inceleyebilirsiniz.</p><button type="button" onclick="location.reload()">Yenile</button><a class="g" href="etaplar.html">Etapları listele</a><small id="vzdet"></small></div></div>
 <script>
 (function(){
   // pannellum 3D başlatılamazsa hata kutusu yerine yedek ekran göster ve Analytics'e bildir
   var done=false;
-  function fail(t){if(done)return;done=true;try{document.getElementById('vzfb').classList.add('on');}catch(e){}
+  function fail(t){if(done)return;done=true;try{document.getElementById('vzdet').textContent='Teknik ayrıntı: '+String(t).slice(0,160);}catch(e){}try{document.getElementById('vzfb').classList.add('on');}catch(e){}
     try{window.gtag&&gtag('event','vaziyet_hata',{tur:String(t).slice(0,80),ua:navigator.userAgent.slice(0,90)});}catch(e){}}
-  addEventListener('error',function(e){if(e&&e.filename&&/pannellum/.test(e.filename))fail(e.message||'pannellum');});
+  addEventListener('error',function(e){if(e&&e.filename&&/pannellum/.test(e.filename))fail((e.message||'pannellum')+' @'+(e.lineno||'')+':'+(e.colno||''));});
   addEventListener('load',function(){setTimeout(function(){var m=document.querySelector('.pnlm-error-msg');
     if(m&&getComputedStyle(m).display!=='none')fail('pnlm:'+m.textContent);},300);
     var n=0,t=setInterval(function(){var m=document.querySelector('.pnlm-error-msg');
