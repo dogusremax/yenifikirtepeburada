@@ -239,6 +239,12 @@
 
 <div class="card" id="card" role="dialog" aria-labelledby="ct"></div>
 
+<script>
+/* WebGL var görünüp 360'ı çizemeyen bilgisayarlarda (eski ekran kartı) 3D'siz çizime geç: tarayıcıya WebGL yokmuş gibi davran */
+(function(){var y=/[?&]nogl=1/.test(location.search);try{if(sessionStorage.getItem('vzNoGL')==='1')y=true;}catch(e){}
+  window.__vzNoGL=y;if(!y)return;var g=HTMLCanvasElement.prototype.getContext;
+  HTMLCanvasElement.prototype.getContext=function(t){if(/webgl/i.test(t))return null;return g.apply(this,arguments);};})();
+</script>
 <script src="assets/vendor/pannellum/pannellum.js"></script>
 <script>
 (function(){
@@ -611,7 +617,12 @@
 (function(){
   // pannellum 3D başlatılamazsa hata kutusu yerine yedek ekran göster ve Analytics'e bildir
   var done=false;
-  function fail(t){if(done)return;done=true;try{document.getElementById('vzfb').classList.add('on');}catch(e){}
+  function fail(t){if(done)return;done=true;
+    // WebGL ile açılamadıysa bir kez 3D'siz çizimle yeniden aç; o da olmazsa hata kutusu
+    if(!window.__vzNoGL){try{sessionStorage.setItem('vzNoGL','1');}catch(e){}
+      try{window.gtag&&gtag('event','vaziyet_nogl',{tur:String(t).slice(0,80)});}catch(e){}
+      location.replace(location.pathname+(location.search?location.search+'&':'?')+'nogl=1'+location.hash);return;}
+    try{document.getElementById('vzfb').classList.add('on');}catch(e){}
     try{window.gtag&&gtag('event','vaziyet_hata',{tur:String(t).slice(0,80),ua:navigator.userAgent.slice(0,90)});}catch(e){}}
   addEventListener('error',function(e){if(e&&e.filename&&/pannellum/.test(e.filename))fail(e.message||'pannellum');});
   addEventListener('load',function(){setTimeout(function(){var m=document.querySelector('.pnlm-error-msg');
