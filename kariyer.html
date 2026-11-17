@@ -209,15 +209,6 @@ details .ans{padding:0 26px 24px;color:var(--steel);font-size:15px;max-width:680
 .form-card{background:#fff;border-radius:20px;padding:40px 36px;color:var(--navy-ink);box-shadow:0 30px 80px rgba(0,0,0,.35)}
 .form-card h3{font-size:22px;font-weight:800;margin-bottom:6px}
 .form-card .fc-sub{font-size:14px;color:var(--steel);margin-bottom:26px}
-.donem-serit{display:flex;flex-direction:column;gap:6px;margin:0 0 20px;padding:10px 16px;border-radius:14px;background:rgba(220,28,46,.18);border:1px solid rgba(255,77,94,.45);font-size:13.5px;font-weight:700;color:#fff}
-.donem-serit b{color:#FF8592}
-.secim{display:flex;flex-wrap:wrap;gap:8px}
-.secim label{display:inline-flex;align-items:center;gap:7px;margin:0;padding:9px 14px;border:1px solid var(--line);border-radius:999px;font-weight:600;font-size:13.5px;cursor:pointer}
-.secim input,.kvkk input{width:auto !important;height:auto !important;min-height:0 !important;margin:0;padding:0;border:0;box-shadow:none;flex:0 0 auto;accent-color:var(--red)}
-.secim input{width:18px !important;height:18px !important}.kvkk input{width:18px !important;height:18px !important;margin-top:2px}
-.kvkk{display:flex;gap:10px;align-items:flex-start;font-size:12.5px;line-height:1.5;margin:4px 0 18px;font-weight:500}
-.kvkk input{margin-top:3px;accent-color:var(--red);flex:0 0 auto}
-.kvkk details{margin-top:4px}.kvkk details{border:0;background:none;padding:0;box-shadow:none}.kvkk summary{display:inline;border:0;background:none;font-size:12.5px;padding:0;color:var(--red);font-weight:700}.kvkk summary::after{content:none}
 .frow{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .fgroup{margin-bottom:16px}
 .fgroup label{display:block;font-size:13px;font-weight:700;margin-bottom:7px}
@@ -323,7 +314,6 @@ footer .logo{font-size:16px}
         <span class="badge">🌍 Global RE/MAX ağı</span>
         <span class="badge">✈️ Kıbrıs · Dubai · Londra</span>
       </div>
-      <div class="donem-serit"><span>🗓️ Yeni dönem <b>11 Ocak 2027</b>'de başlıyor</span><span>☕ Kariyer Kahvaltısı: <b>5 · 12 · 19 Aralık</b> Cumartesi</span></div>
       <h1>Kariyerin<br>tam burada<br><span class="accent">yükseliyor.</span></h1>
       <p class="lead">Türkiye'nin en büyük kentsel dönüşümü Yeni Fikirtepe'nin merkezinde, teknolojisini kendi geliştiren bir ofiste gayrimenkul danışmanı olun. Deneyim şart değil — satış tutkusu şart.</p>
       <div class="hero-ctas">
@@ -541,10 +531,6 @@ footer .logo{font-size:16px}
         <h3>Danışman Adayı Başvuru Formu</h3>
         <p class="fc-sub">Bilgileriniz yalnızca işe alım süreci için kullanılır.</p>
         <input type="hidden" name="kaynak" value="Kariyer Sayfası">
-        <input type="hidden" name="kampanya" value="Ocak 2027 Danışman Alımı">
-        <input type="hidden" name="utm_kaynak" id="utmKaynak">
-        <input type="hidden" name="utm_kampanya" id="utmKampanya">
-        <input type="hidden" name="referans" id="referans">
         <input type="hidden" name="_subject" value="🧲 Yeni Danışman Adayı Başvurusu">
         <div class="frow">
           <div class="fgroup"><label for="ad">Ad Soyad *</label><input id="ad" name="ad_soyad" required autocomplete="name"></div>
@@ -565,27 +551,7 @@ footer .logo{font-size:16px}
             </select>
           </div>
         </div>
-        <div class="fgroup"><label>Tam zamanlı çalışabilir misiniz? *</label>
-          <div class="secim">
-            <label><input type="radio" name="tam_zamanli" value="Evet, tam zamanlı" required> Evet, tam zamanlı</label>
-            <label><input type="radio" name="tam_zamanli" value="Şu an başka işteyim, geçiş planlıyorum"> Geçiş planlıyorum</label>
-            <label><input type="radio" name="tam_zamanli" value="Hayır, yarı zamanlı"> Hayır</label>
-          </div>
-        </div>
-        <div class="fgroup"><label for="kahvalti">Kariyer Kahvaltısı tarihi *</label>
-          <select id="kahvalti" name="kahvalti" required>
-            <option value="" disabled selected>Seçin</option>
-            <option>5 Aralık Cumartesi, 10:00</option>
-            <option>12 Aralık Cumartesi, 10:00</option>
-            <option>19 Aralık Cumartesi, 10:00</option>
-            <option>Bu tarihler uymuyor, beni arayın</option>
-          </select>
-        </div>
         <div class="fgroup"><label for="neden">Bu işi neden istiyorsunuz? (kısaca)</label><textarea id="neden" name="motivasyon" placeholder="Birkaç cümle yeterli..."></textarea></div>
-        <label class="kvkk"><input type="checkbox" name="kvkk_onay" value="Onaylandı" required>
-          <span>Kişisel verilerimin yalnızca danışman adaylığı değerlendirmesi ve benimle iletişim kurulması amacıyla işlenmesini kabul ediyorum. *
-            <details><summary>Aydınlatma metni</summary>Veri sorumlusu UMT GROUP Gayrimenkul Yatırım Danışmanlık (RE/MAX Doğuş). Ad, telefon, e-posta, ilçe ve formdaki yanıtlarınız; başvurunuzu değerlendirmek ve sizinle iletişime geçmek amacıyla, KVKK m.5/1 (açık rıza) kapsamında işlenir ve süreç tamamlandıktan sonra en geç 1 yıl içinde silinir. KVKK m.11'deki haklarınız için dogusremax@gmail.com adresine yazabilirsiniz.</details>
-          </span></label>
         <button type="submit" class="btn btn-red" id="sendBtn">Başvurumu Gönder →</button>
       </form>
       <div class="form-ok" id="formOk">
@@ -690,13 +656,6 @@ vol.addEventListener('input',calc);calc();
   update();
 })();
 
-// ---- kampanya kaynağı (?utm_source=meta&utm_campaign=ocak27 · referans: ?ref=gizem)
-(function(){try{var q=new URLSearchParams(location.search),k=function(x){return (q.get(x)||'').slice(0,60)};
-  var u=k('utm_source'),c=k('utm_campaign'),r=k('ref');
-  try{if(u||r)sessionStorage.setItem('kr',JSON.stringify({u:u,c:c,r:r}));else{var o=JSON.parse(sessionStorage.getItem('kr')||'{}');u=o.u||'';c=o.c||'';r=o.r||''}}catch(e){}
-  document.getElementById('utmKaynak').value=u||(document.referrer?'yönlendirme: '+document.referrer.split('/')[2]:'doğrudan');
-  document.getElementById('utmKampanya').value=c;document.getElementById('referans').value=r;
-}catch(e){}})();
 // ---- form
 var form=document.getElementById('applyForm'),ok=document.getElementById('formOk'),btn=document.getElementById('sendBtn');
 form.addEventListener('submit',function(ev){
